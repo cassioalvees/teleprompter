@@ -180,7 +180,7 @@ function toast(t) {
   let el = $('#toast'); if (!el) { el = document.createElement('div'); el.id = 'toast'; el.className = 'toast'; document.body.appendChild(el); }
   el.textContent = t; el.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => { el.hidden = true; }, 2600);
 }
-document.querySelectorAll('[data-cmd]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); cmd(b.dataset.cmd); poke(); }));
+document.querySelectorAll('[data-cmd]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); cmd(b.dataset.cmd); if (b.closest('#top')) poke(); else showCtrl(); }));
 $('#speed').addEventListener('input', e => cmd('speed', +e.target.value));
 document.querySelectorAll('[data-set-mode]').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); setMode(b.dataset.setMode); }));
 function setMode(m) { prefs.mode = m; savePrefs(); body.dataset.mode = m; }
@@ -191,31 +191,39 @@ addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT') return;
   if (e.key === 'f' || e.key === 'F') { e.preventDefault(); toggleFs(); return; }
   const c = KEYS[e.key]; if (!c) return;
-  e.preventDefault(); poke();
+  e.preventDefault(); showCtrl();
   // Setas com o prompt parado andam linha a linha; + e − sempre mudam a velocidade.
   if ((e.key === 'ArrowDown' || e.key === 'ArrowUp') && state && !state.live) cmd(e.key === 'ArrowDown' ? 'lineDown' : 'lineUp'); else cmd(c);
 });
 
 // ——— Toque: mostra as barras; arrasta o texto quando pausado ———
-let idleT = 0, dragY = 0, touch = null;
-// A barra de cima some sozinha (rápido no modo limpo); volta ao mexer o mouse ou tocar na tela.
-function poke() {
-  body.classList.remove('hidebar', 'idle'); clearTimeout(idleT);
+let idleT = 0, barT = 0, dragY = 0, touch = null;
+// Cursor e controles de baixo: aparecem ao mexer o mouse em qualquer lugar e somem parados (rápido no modo limpo).
+function showCtrl() {
+  body.classList.remove('idle'); clearTimeout(idleT);
   idleT = setTimeout(() => { body.classList.add('idle', 'hidebar'); }, prefs.mode === 'limpa' ? 1500 : 4000);
 }
+// Toque, teclado e botões: mostram também a barra de cima.
+function poke() { clearTimeout(barT); body.classList.remove('hidebar'); showCtrl(); }
+// Com mouse, a barra de cima só aparece com o mouse no topo da tela (como num player de vídeo) e some ao sair dele:
+// mexer no resto da tela — por exemplo, para mudar a velocidade nos controles de baixo — não a traz de volta.
+const topBar = $('#top');
+const inTopZone = y => y <= topBar.offsetHeight + 16;
 // Só movimento de verdade: quando a barra some debaixo de um cursor parado, o navegador manda um mousemove
-// "falso" (mesma posição), que mostrava a barra de novo — em tela cheia ela nunca sumia.
+// "falso" (mesma posição), que a mostrava de novo — em tela cheia ela nunca sumia.
 let lastMove = 0, lastX = -1, lastY = -1;
 addEventListener('mousemove', e => {
   if (e.screenX === lastX && e.screenY === lastY) return;
   lastX = e.screenX; lastY = e.screenY;
-  const n = performance.now(); if (n - lastMove > 120) { lastMove = n; poke(); }
+  if (inTopZone(e.clientY)) { clearTimeout(barT); body.classList.remove('hidebar'); }
+  else if (!body.classList.contains('hidebar')) { clearTimeout(barT); barT = setTimeout(() => body.classList.add('hidebar'), 500); }
+  const n = performance.now(); if (n - lastMove > 120) { lastMove = n; showCtrl(); }
 });
 // Ao entrar ou sair da tela cheia, a barra começa a contar para sumir de novo.
 document.addEventListener('fullscreenchange', poke);
 document.addEventListener('webkitfullscreenchange', poke);
 stage.addEventListener('pointerdown', e => {
-  poke();
+  if (e.pointerType === 'mouse') showCtrl(); else poke();
   if (!prefs.swipe || !state || !state.webCtrl) return;
   touch = { y: along(e), k: stage.clientWidth / 1000, moved: false, live: !!state.live, acc: 0 };
 });
@@ -234,7 +242,7 @@ addEventListener('pointermove', e => {
 let wheelAcc = 0;
 addEventListener('wheel', e => {
   if (!state || (e.target instanceof Element && e.target.closest('dialog'))) return;
-  e.preventDefault(); poke();
+  e.preventDefault(); showCtrl();
   if (state.live) {
     wheelAcc += e.deltaY;
     while (Math.abs(wheelAcc) >= 100) { cmd(wheelAcc > 0 ? 'faster' : 'slower'); wheelAcc -= Math.sign(wheelAcc) * 100; }

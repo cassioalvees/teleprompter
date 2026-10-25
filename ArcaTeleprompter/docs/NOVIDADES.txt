@@ -1,7 +1,11 @@
-ARCA Teleprompter 2.8.1 — novidades
+ARCA Teleprompter 2.8.2 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- Monitor web: a barra de cima só aparece levando o mouse ao topo da tela. Mexer o mouse para mudar a velocidade nos controles de baixo não a traz mais de volta.
+- Atualização automática: corrigido o erro 618 ao baixar a versão nova pelo GitHub.
+
+Também nesta atualização (2.8.1):
 - Monitor web (navegador e iPad): a barra de cima some em tela cheia, mesmo com o mouse parado em cima dela.
 - Monitor web: os Ajustes rolam com o título fixo e a barra de rolagem no visual do app.
 - Avisos do app não cortam mais botões (ex.: Ajuda › Licença com "Fechar", "Minha conta" e "Desativar este computador").

@@ -61,6 +61,20 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.8.2) — barra do monitor web com mouse
+
+App licenciado, monitor web na porta de teste 8430, eventos de mouse e teclado simulados na página:
+
+| Caso | Barra de cima |
+|---|---|
+| Ao abrir | Aparece (some sozinha depois) |
+| Mouse mexendo no meio da tela (10 movimentos) | Some em 0,5 s e continua escondida; controles de baixo visíveis |
+| Clique no + dos controles de baixo · seta do teclado | Continua escondida |
+| Mouse no topo | Aparece; ao sair do topo, some em 0,5 s |
+| Toque na tela (iPad) | Aparece |
+
+Sem erros de script no navegador (módulo conferido com `node --check`).
+
 ## Resultados (versão 2.8.1) — atualização automática pelo GitHub de verdade
 
 Computador do usuário com a 2.8.0 instalada em Arquivos de Programas; v2.8.1 publicada no GitHub Releases.
