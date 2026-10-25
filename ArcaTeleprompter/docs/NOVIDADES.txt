@@ -1,11 +1,15 @@
-ARCA Teleprompter 2.8.0 — novidades
+ARCA Teleprompter 2.8.1 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- Monitor web (navegador e iPad): a barra de cima some em tela cheia, mesmo com o mouse parado em cima dela.
+- Monitor web: os Ajustes rolam com o título fixo e a barra de rolagem no visual do app.
+- Avisos do app não cortam mais botões (ex.: Ajuda › Licença com "Fechar", "Minha conta" e "Desativar este computador").
+
+Também nesta atualização (2.8.0):
 - Licença gratuita e vitalícia: crie sua conta no site e ative o app com o código que fica em Minha conta › Licenças. A ativação usa a internet uma vez; depois o app funciona offline.
 - Trocar de computador: em Minha conta › Licenças, "Remover deste computador" e ative no novo com o mesmo código (ou Ajuda › Licença › Desativar este computador).
 - Sem licença, o app funciona em modo demonstração: 10 minutos de prompter por dia, um roteiro e uma tela de prompter.
-- Monitor web: a barra de cima some em tela cheia mesmo com o mouse parado em cima dela; Ajustes com rolagem no visual do app.
 - Instalação mais segura: se outro programa estiver usando um arquivo, o instalador espera, diz qual programa é e oferece "Tentar de novo"; se falhar, a instalação anterior volta inteira.
 
 Também nesta atualização (2.7.0):
