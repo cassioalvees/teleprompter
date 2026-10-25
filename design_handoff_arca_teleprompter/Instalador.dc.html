@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;height:100%;background:#e9e9e6;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+input,button,select{font:inherit;color:inherit}
+a{color:#d42b1e;text-decoration:none}a:hover{text-decoration:underline}
+@font-face{font-family:'GC Epic Pro';src:url('fonts/gc-epic-pro.ttf') format('truetype');font-weight:400 700;font-display:swap}
+input[type=checkbox]{accent-color:#d42b1e}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:#d6d6d1;border-radius:5px;border:2px solid transparent;background-clip:padding-box}
+</style>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:32px 16px;font-family:'Raleway',system-ui,sans-serif;font-size:13px;color:#1a1a18">
+
+  <div style="display:flex;padding:3px;gap:2px;background:#dcdcd8;border-radius:980px">
+    <sc-for list="{{ modes }}" as="m" hint-placeholder-count="2">
+      <button onClick="{{ m.onClick }}" style="height:30px;padding:0 16px;border:none;border-radius:980px;background:{{ m.bg }};box-shadow:{{ m.shadow }};color:{{ m.color }};font-weight:600;font-size:12px;cursor:pointer">{{ m.label }}</button>
+    </sc-for>
+  </div>
+
+  <div data-screen-label="{{ screenLabel }}" style="width:760px;max-width:100%;height:500px;display:grid;grid-template-columns:232px minmax(0,1fr);background:#ffffff;border-radius:10px;overflow:hidden;box-shadow:0 0 0 1px rgba(0,0,0,.08),0 24px 60px rgba(26,26,24,.22)">
+
+    <div style="background:#141416;color:#ececef;display:flex;flex-direction:column;padding:22px 20px 18px;min-width:0">
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-family:'GC Epic Pro','Sora',sans-serif;font-size:15px;letter-spacing:3.5px">ARCA</span>
+        <span style="width:1px;height:14px;background:#3a3a40"></span>
+        <span style="font-weight:600;font-size:12.5px">Teleprompter</span>
+      </div>
+      <div style="font-family:'Sora',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#91919a;margin-top:6px">{{ sideCaption }}</div>
+
+      <div style="display:flex;flex-direction:column;gap:2px;margin-top:34px">
+        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="5">
+          <div style="display:grid;grid-template-columns:22px minmax(0,1fr);gap:10px;align-items:center;height:34px">
+            <div style="width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Sora',sans-serif;font-size:10.5px;font-weight:600;background:{{ s.dotBg }};color:{{ s.dotFg }};box-shadow:{{ s.dotRing }}">{{ s.mark }}</div>
+            <span style="font-size:12.5px;font-weight:{{ s.weight }};color:{{ s.color }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ s.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+
+      <span style="flex:1"></span>
+      <div style="font-family:'Sora',sans-serif;font-size:10.5px;color:#6e6e76;line-height:1.6">Versão 1.0.0 · 64 bits<br>© 2026 ARCA</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;min-width:0;min-height:0">
+      <div style="height:36px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 4px 0 20px;border-bottom:1px solid #ebebeb">
+        <span style="font-size:12px;color:#5a5a55">{{ winTitle }}</span>
+        <div style="display:flex">
+          <div style="width:40px;height:30px;display:flex;align-items:center;justify-content:center;color:#5a5a55"><svg viewBox="0 0 16 16" style="width:10px;height:10px;stroke:currentColor;stroke-width:1.2"><path d="M3 8h10"></path></svg></div>
+          <button onClick="{{ askCancel }}" title="Fechar" style="width:40px;height:30px;border:none;background:transparent;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#5a5a55;cursor:pointer" style-hover="background:#e5484d;color:#fff"><svg viewBox="0 0 16 16" style="width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.3;stroke-linecap:round"><path d="M4 4l8 8M12 4l-8 8"></path></svg></button>
+        </div>
+      </div>
+
+      <div style="flex:1;min-height:0;overflow:auto;padding:28px 32px 20px;display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <div style="font-family:'Sora',sans-serif;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:#d42b1e">{{ eyebrow }}</div>
+          <div style="font-family:'Sora',sans-serif;font-size:21px;font-weight:600;letter-spacing:-.2px;line-height:1.25;text-wrap:pretty">{{ title }}</div>
+          <div style="color:#5a5a55;line-height:1.55;text-wrap:pretty;max-width:440px">{{ lead }}</div>
+        </div>
+
+        <sc-if value="{{ isWelcome }}">
+          <div style="display:flex;flex-direction:column;gap:0;border:1px solid #e2e2de;border-radius:12px;overflow:hidden">
+            <sc-for list="{{ welcomeRows }}" as="w">
+              <div style="display:grid;grid-template-columns:120px minmax(0,1fr);gap:12px;padding:10px 14px;border-top:1px solid {{ w.line }}"><span style="color:#67675f">{{ w.k }}</span><span style="font-weight:500">{{ w.v }}</span></div>
+            </sc-for>
+          </div>
+          <div style="font-size:12px;color:#67675f;line-height:1.55">Feche outros programas antes de continuar. O instalador não reinicia o computador.</div>
+        </sc-if>
+
+        <sc-if value="{{ isLicense }}">
+          <div style="height:190px;overflow:auto;border:1px solid #e2e2de;border-radius:10px;background:#f7f7f5;padding:14px 16px;font-size:12px;line-height:1.65;color:#3a3a36">
+            <div style="font-weight:700;margin-bottom:6px">Contrato de licença de usuário final — ARCA Teleprompter</div>
+            <p style="margin:0 0 8px">1. Concessão. A ARCA concede a você uma licença não exclusiva para instalar e usar o software em computadores sob seu controle, de acordo com o plano contratado.</p>
+            <p style="margin:0 0 8px">2. Restrições. Não é permitido sublicenciar, alugar, fazer engenharia reversa ou remover avisos de propriedade.</p>
+            <p style="margin:0 0 8px">3. Componentes de terceiros. A saída NDI usa o NDI® Runtime, distribuído sob a licença do respectivo fabricante.</p>
+            <p style="margin:0 0 8px">4. Dados. Roteiros e configurações ficam no seu computador. O monitor web funciona apenas na rede local.</p>
+            <p style="margin:0 0 8px">5. Garantia. O software é fornecido "no estado em que se encontra", sem garantias além das exigidas por lei.</p>
+            <p style="margin:0">6. Lei aplicável. Este contrato é regido pelas leis da República Federativa do Brasil.</p>
+          </div>
+          <label style="display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:500"><input type="checkbox" checked="{{ accepted }}" onChange="{{ toggleAccept }}" style="width:16px;height:16px;margin:0">Li e aceito os termos do contrato de licença</label>
+        </sc-if>
+
+        <sc-if value="{{ isLocation }}">
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:12px;color:#5a5a55;font-weight:600">Pasta de destino</span>
+            <div style="display:flex;gap:8px">
+              <input value="{{ path }}" onChange="{{ onPath }}" spellcheck="false" style="flex:1;min-width:0;height:34px;border-radius:10px;border:1px solid #e2e2de;background:#ffffff;padding:0 12px;font-family:'Sora',sans-serif;font-size:12px;outline:none">
+              <button onClick="{{ browse }}" style="height:34px;padding:0 16px;border-radius:980px;border:none;background:#eeeeec;font-weight:600;font-size:12px;cursor:pointer" style-hover="background:#e4e4e1">Procurar…</button>
+            </div>
+            <sc-if value="{{ pathErr }}"><span style="font-size:12px;color:#d42b1e">Informe uma pasta válida, por exemplo C:\Program Files\ARCA Teleprompter</span></sc-if>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:12px;color:#5a5a55;font-weight:600">Instalar para</span>
+            <div style="display:flex;padding:2px;gap:2px;background:#eeeeec;border-radius:11px;width:fit-content">
+              <sc-for list="{{ scopes }}" as="sc"><button onClick="{{ sc.onClick }}" style="height:28px;padding:0 14px;border:none;border-radius:9px;background:{{ sc.bg }};box-shadow:{{ sc.shadow }};color:{{ sc.color }};font-size:12px;font-weight:600;cursor:pointer">{{ sc.label }}</button></sc-for>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1px;background:#e2e2de;border:1px solid #e2e2de;border-radius:10px;overflow:hidden">
+            <sc-for list="{{ diskStats }}" as="d"><div style="background:#ffffff;padding:10px 12px;display:flex;flex-direction:column;gap:2px"><span style="font-size:11px;color:#67675f">{{ d.k }}</span><span style="font-family:'Sora',sans-serif;font-weight:600">{{ d.v }}</span></div></sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isComponents }}">
+          <div style="display:flex;flex-direction:column;border:1px solid #e2e2de;border-radius:12px;overflow:hidden">
+            <sc-for list="{{ components }}" as="c">
+              <label style="display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 14px;border-top:1px solid {{ c.line }};cursor:{{ c.cursor }};background:{{ c.bg }}">
+                <input type="checkbox" checked="{{ c.on }}" disabled="{{ c.required }}" onChange="{{ c.onToggle }}" style="width:16px;height:16px;margin:0">
+                <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:600">{{ c.name }}</span><span style="font-size:12px;color:#67675f;line-height:1.45">{{ c.desc }}</span></div>
+                <span style="font-family:'Sora',sans-serif;font-size:11.5px;color:#5a5a55;white-space:nowrap">{{ c.size }}</span>
+              </label>
+            </sc-for>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ extras }}" as="x"><label style="display:flex;align-items:center;gap:10px;cursor:pointer"><input type="checkbox" checked="{{ x.on }}" onChange="{{ x.onToggle }}" style="width:16px;height:16px;margin:0">{{ x.label }}</label></sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isProgress }}">
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:8px">
+            <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ progTask }}</span><span style="font-family:'Sora',sans-serif;font-weight:600;font-size:15px">{{ progPct }}</span></div>
+            <div style="height:6px;border-radius:3px;background:#eeeeec;overflow:hidden"><div style="height:100%;width:{{ progPct }};background:#d42b1e;border-radius:3px;transition:width .25s linear"></div></div>
+            <div style="font-family:'Sora',sans-serif;font-size:11px;color:#67675f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ progFile }}</div>
+          </div>
+          <div style="height:150px;overflow:auto;border:1px solid #e2e2de;border-radius:10px;background:#f7f7f5;padding:10px 12px;font-family:'Sora',sans-serif;font-size:11px;line-height:1.75;color:#5a5a55">
+            <sc-for list="{{ log }}" as="l"><div style="display:flex;gap:8px"><span style="color:{{ l.c }}">{{ l.mark }}</span><span>{{ l.t }}</span></div></sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isDone }}">
+          <div style="display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;background:#e9f5ee">
+            <div style="width:34px;height:34px;border-radius:50%;background:#2f8f5b;display:flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 16 16" style="width:16px;height:16px;fill:none;stroke:#fff;stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="M3.5 8.5l3 3 6-6.5"></path></svg></div>
+            <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:600">{{ doneHead }}</span><span style="font-size:12px;color:#3a5a48;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ doneSub }}</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <sc-for list="{{ doneChecks }}" as="x"><label style="display:flex;align-items:center;gap:10px;cursor:pointer"><input type="checkbox" checked="{{ x.on }}" onChange="{{ x.onToggle }}" style="width:16px;height:16px;margin:0">{{ x.label }}</label></sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ isUnConfirm }}">
+          <div style="display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid #e2e2de;border-radius:12px">
+            <div style="width:36px;height:36px;border-radius:9px;background:#141416;color:#fff;display:flex;align-items:center;justify-content:center;font-family:'GC Epic Pro','Sora',sans-serif;font-size:11px;letter-spacing:1.5px;flex:none">A</div>
+            <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:600">ARCA Teleprompter 1.0.0</span><span style="font-family:'Sora',sans-serif;font-size:11px;color:#67675f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">C:\Program Files\ARCA Teleprompter · 318 MB</span></div>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:12px;color:#5a5a55;font-weight:600">O que fazer com seus dados</span>
+            <div style="display:flex;flex-direction:column;border:1px solid #e2e2de;border-radius:12px;overflow:hidden">
+              <sc-for list="{{ keepOpts }}" as="k">
+                <label style="display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 14px;border-top:1px solid {{ k.line }};cursor:pointer">
+                  <input type="checkbox" checked="{{ k.on }}" onChange="{{ k.onToggle }}" style="width:16px;height:16px;margin:0">
+                  <div style="display:flex;flex-direction:column;gap:2px;min-width:0"><span style="font-weight:600">{{ k.name }}</span><span style="font-size:12px;color:#67675f;line-height:1.45">{{ k.desc }}</span></div>
+                  <span style="font-family:'Sora',sans-serif;font-size:11.5px;color:#5a5a55;white-space:nowrap">{{ k.size }}</span>
+                </label>
+              </sc-for>
+            </div>
+          </div>
+          <sc-if value="{{ appRunning }}">
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:10px;background:rgba(212,43,30,.08);color:#8a1c13">
+              <span style="flex:1;font-size:12px;line-height:1.5">O ARCA Teleprompter está aberto. Ele será fechado antes de remover os arquivos.</span>
+              <button onClick="{{ closeApp }}" style="height:28px;padding:0 12px;border-radius:980px;border:none;background:#ffffff;color:#8a1c13;font-weight:600;font-size:12px;cursor:pointer;flex:none">Fechar agora</button>
+            </div>
+          </sc-if>
+        </sc-if>
+
+        <sc-if value="{{ isUnFeedback }}">
+          <div style="display:flex;flex-wrap:wrap;gap:6px">
+            <sc-for list="{{ reasons }}" as="r"><button onClick="{{ r.onClick }}" style="height:30px;padding:0 14px;border-radius:980px;border:1px solid {{ r.bd }};background:{{ r.bg }};color:{{ r.fg }};font-size:12px;font-weight:500;cursor:pointer">{{ r.label }}</button></sc-for>
+          </div>
+          <textarea value="{{ feedback }}" onChange="{{ onFeedback }}" placeholder="Comentário opcional" style="height:84px;resize:none;border-radius:10px;border:1px solid #e2e2de;padding:10px 12px;font:13px 'Raleway',sans-serif;outline:none"></textarea>
+        </sc-if>
+      </div>
+
+      <div style="height:60px;flex:none;display:flex;align-items:center;gap:8px;padding:0 20px;border-top:1px solid #ebebeb;background:#fafaf8">
+        <sc-if value="{{ showBack }}"><button onClick="{{ back }}" style="height:34px;padding:0 18px;border-radius:980px;border:none;background:#eeeeec;font-weight:600;font-size:12.5px;cursor:pointer" style-hover="background:#e4e4e1">Voltar</button></sc-if>
+        <span style="flex:1"></span>
+        <sc-if value="{{ showCancel }}"><button onClick="{{ askCancel }}" style="height:34px;padding:0 16px;border-radius:980px;border:none;background:transparent;color:#5a5a55;font-weight:600;font-size:12.5px;cursor:pointer" style-hover="background:#eeeeec">Cancelar</button></sc-if>
+        <button onClick="{{ next }}" disabled="{{ nextDisabled }}" style="height:34px;min-width:112px;padding:0 20px;border-radius:980px;border:none;background:{{ nextBg }};color:{{ nextFg }};font-weight:600;font-size:12.5px;cursor:{{ nextCursor }}">{{ nextLabel }}</button>
+      </div>
+    </div>
+  </div>
+
+  <sc-if value="{{ confirmCancel }}">
+    <div style="position:fixed;inset:0;background:rgba(20,20,22,.35);display:flex;align-items:center;justify-content:center;padding:16px;z-index:10">
+      <div style="width:380px;max-width:100%;background:#ffffff;border-radius:14px;box-shadow:0 18px 50px rgba(26,26,24,.25);padding:20px;display:flex;flex-direction:column;gap:14px">
+        <div style="font-family:'Sora',sans-serif;font-size:15px;font-weight:600">{{ cancelTitle }}</div>
+        <div style="color:#5a5a55;line-height:1.55">{{ cancelText }}</div>
+        <div style="display:flex;justify-content:flex-end;gap:8px">
+          <button onClick="{{ keepGoing }}" style="height:32px;padding:0 16px;border-radius:980px;border:none;background:#eeeeec;font-weight:600;font-size:12.5px;cursor:pointer">Continuar</button>
+          <button onClick="{{ doCancel }}" style="height:32px;padding:0 16px;border-radius:980px;border:none;background:#d42b1e;color:#fff;font-weight:600;font-size:12.5px;cursor:pointer">{{ cancelBtn }}</button>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;startMode&quot;: {&quot;editor&quot;: &quot;enum&quot;, &quot;options&quot;: [&quot;install&quot;, &quot;uninstall&quot;], &quot;default&quot;: &quot;install&quot;, &quot;tsType&quot;: &quot;'install' | 'uninstall'&quot;}}">
+class Component extends DCLogic {
+  state = {
+    mode: this.props.startMode ?? 'install', step: 0, accepted: false,
+    path: 'C:\\Program Files\\ARCA Teleprompter', scope: 'all',
+    comp: { core: true, ndi: true, web: true, voice: true, fonts: true, samples: false },
+    desk: true, startMenu: true, assoc: true, launch: true, notes: false,
+    pct: 0, task: '', file: '', log: [], cancelAsk: false, cancelled: false,
+    keep: { scripts: true, prefs: true, profiles: true, logs: false }, running: true, reason: '', feedback: ''
+  };
+  COMP = [
+    ['core', 'Aplicativo ARCA Teleprompter', 'Editor, janela do talento, saídas para monitores e controle remoto.', 186, true],
+    ['ndi', 'Saída NDI', 'NDI Runtime para enviar o prompter ao vMix e outros softwares na rede.', 48],
+    ['web', 'Monitor web', 'Servidor local para acompanhar o prompter pelo navegador na mesma rede.', 6],
+    ['voice', 'Acompanhamento por voz', 'Modelo de reconhecimento de fala em português, executado offline.', 64],
+    ['fonts', 'Fontes de leitura', 'Atkinson Hyperlegible, Source Sans 3, Source Serif 4 e IBM Plex Mono.', 14],
+    ['samples', 'Roteiros de exemplo', 'Três roteiros para testar marcadores, pausas e apresentadores.', 1]
+  ];
+  INSTALL_STEPS = ['Boas-vindas', 'Licença', 'Local', 'Componentes', 'Instalação', 'Concluído'];
+  UN_STEPS = ['Confirmar', 'Motivo', 'Remoção', 'Concluído'];
+  componentDidMount() { this.tick = setInterval(() => this.advance(), 120); }
+  componentWillUnmount() { clearInterval(this.tick); }
+  advance() {
+    const s = this.state, busy = s.mode === 'install' ? s.step === 4 : s.step === 2;
+    if (!busy || s.cancelAsk || s.cancelled) return;
+    if (!s.tasks || !s.tasks.length) return s.mode === 'install' ? this.startInstall() : this.startUninstall();
+    const tasks = s.tasks, n = tasks.length, p = Math.min(100, s.pct + 2 + Math.random() * 3), idx = Math.min(n - 1, Math.floor(p / (100 / n)));
+    const log = [...s.log]; for (let k = s.ti; k < idx; k++) log.push({ t: tasks[k][0], mark: '✓', c: '#2f8f5b' });
+    if (p >= 100) { log.push({ t: tasks[n - 1][0], mark: '✓', c: '#2f8f5b' }); this.setState({ pct: 100, ti: n, task: 'Concluído', file: '', log, step: s.step + 1, tasks: null }); return; }
+    const t = tasks[idx]; this.setState({ pct: p, ti: idx, log, task: t[0], file: t[1] + (t[2] ? t[2][Math.floor(Math.random() * t[2].length)] : '') });
+  }
+  size() { return this.COMP.reduce((a, c) => a + (this.state.comp[c[0]] ? c[3] : 0), 0); }
+  setMode(mode) { this.setState({ mode, tasks: null, ti: 0, step: 0, pct: 0, log: [], cancelAsk: false, cancelled: false, running: true }); }
+  run(tasks, step) { this.setState({ step, tasks, ti: 0, pct: 0, log: [], task: tasks[0][0], file: tasks[0][1], cancelled: false }); }
+  startInstall() {
+    const s = this.state, P = s.path.replace(/\\$/, '') + '\\', tasks = [['Preparando a instalação', 'Verificando espaço em disco e permissões']];
+    tasks.push(['Copiando o aplicativo', P, ['ARCA Teleprompter.exe', 'resources\\app.asar', 'locales\\pt-BR.pak', 'ffmpeg.dll', 'd3dcompiler_47.dll']]);
+    if (s.comp.ndi) tasks.push(['Instalando NDI Runtime', P + 'ndi\\', ['Processing.NDI.Lib.x64.dll', 'ndi-runtime.msi']]);
+    if (s.comp.web) tasks.push(['Configurando o monitor web', 'Regra de firewall: porta 8420 (rede privada)']);
+    if (s.comp.voice) tasks.push(['Instalando modelo de voz pt-BR', P + 'voice\\', ['model-pt-br.bin', 'vocab.json']]);
+    if (s.comp.fonts) tasks.push(['Registrando fontes', P + 'fonts\\', ['AtkinsonHyperlegible-Regular.ttf', 'SourceSerif4-Regular.ttf', 'IBMPlexMono-Regular.ttf']]);
+    if (s.assoc) tasks.push(['Associando arquivos .tps', 'HKCR\\.tps → ARCA.Script']);
+    if (s.desk || s.startMenu) tasks.push(['Criando atalhos', [s.startMenu ? 'Menu Iniciar' : '', s.desk ? 'Área de trabalho' : ''].filter(Boolean).join(' · ')]);
+    tasks.push(['Registrando o desinstalador', 'Aplicativos instalados → ARCA Teleprompter']);
+    this.run(tasks, 4);
+  }
+  startUninstall() {
+    const k = this.state.keep, tasks = [['Fechando o ARCA Teleprompter', 'Encerrando processos']];
+    tasks.push(['Removendo arquivos do programa', 'C:\\Program Files\\ARCA Teleprompter\\', ['ARCA Teleprompter.exe', 'resources\\app.asar', 'ndi\\Processing.NDI.Lib.x64.dll', 'voice\\model-pt-br.bin']]);
+    tasks.push(['Removendo atalhos e associação .tps', 'Menu Iniciar · Área de trabalho · HKCR\\.tps']);
+    tasks.push(['Removendo regra de firewall', 'Porta 8420']);
+    if (!k.scripts) tasks.push(['Apagando roteiros e versões', '%APPDATA%\\ARCA Teleprompter\\docs\\']);
+    if (!k.prefs) tasks.push(['Apagando preferências', '%APPDATA%\\ARCA Teleprompter\\settings.json']);
+    if (!k.profiles) tasks.push(['Apagando perfis de apresentador', '%APPDATA%\\ARCA Teleprompter\\profiles.json']);
+    if (!k.logs) tasks.push(['Apagando registros e cache', '%LOCALAPPDATA%\\ARCA Teleprompter\\Cache\\']);
+    tasks.push(['Removendo registro do desinstalador', 'Aplicativos instalados']);
+    this.setState({ running: false }); this.run(tasks, 2);
+  }
+  renderVals() {
+    const s = this.state, inst = s.mode === 'install', names = inst ? this.INSTALL_STEPS : this.UN_STEPS, step = s.step;
+    const busy = inst ? step === 4 : step === 2, done = inst ? step === 5 : step === 3;
+    const pathOk = /^[a-zA-Z]:\\[^<>:"|?*]*$/.test(s.path.trim());
+    const ck = (on, fn, label) => ({ on, onToggle: fn, label });
+    const sz = this.size(), free = 214.6;
+    const C = {
+      install: [
+        ['Boas-vindas', 'Instalar o ARCA Teleprompter', 'Este assistente instala o teleprompter no seu computador. Leva cerca de um minuto.'],
+        ['Licença', 'Contrato de licença', 'Leia os termos antes de continuar.'],
+        ['Local', 'Onde instalar', 'Escolha a pasta e para quem o aplicativo ficará disponível.'],
+        ['Componentes', 'Escolha os componentes', 'Você pode adicionar ou remover componentes depois, em Configurações › Aplicativos.'],
+        ['Instalação', s.cancelled ? 'Instalação cancelada' : 'Instalando', s.cancelled ? 'Nenhuma alteração foi mantida no computador.' : 'Não desligue o computador durante a instalação.'],
+        ['Concluído', 'Tudo pronto', 'O ARCA Teleprompter foi instalado.']
+      ],
+      uninstall: [
+        ['Desinstalar', 'Remover o ARCA Teleprompter', 'Escolha o que manter. Os arquivos mantidos serão usados se você instalar de novo.'],
+        ['Motivo', 'Por que está removendo?', 'Opcional. Ajuda a melhorar o produto.'],
+        ['Remoção', 'Removendo', 'Isso leva alguns segundos.'],
+        ['Concluído', 'Desinstalação concluída', 'O ARCA Teleprompter foi removido deste computador.']
+      ]
+    }[s.mode][step];
+    const nextLabel = inst ? ['Avançar', 'Avançar', 'Avançar', 'Instalar', 'Instalando…', s.launch ? 'Abrir o app' : 'Concluir'][step] : ['Desinstalar', 'Remover', 'Removendo…', 'Fechar'][step];
+    const nextDisabled = busy || (inst && step === 1 && !s.accepted) || (inst && step === 2 && !pathOk) || (inst && step === 4 && s.cancelled);
+    return {
+      modes: [['install', 'Instalação'], ['uninstall', 'Desinstalação']].map(([v, l]) => ({ label: l, onClick: () => this.setMode(v), bg: s.mode === v ? '#ffffff' : 'transparent', shadow: s.mode === v ? '0 1px 2px rgba(26,26,24,.12)' : 'none', color: s.mode === v ? '#1a1a18' : '#5a5a55' })),
+      screenLabel: (inst ? 'Instalação · ' : 'Desinstalação · ') + names[step],
+      sideCaption: inst ? 'Assistente de instalação' : 'Desinstalador',
+      winTitle: inst ? 'Instalação do ARCA Teleprompter' : 'Desinstalar ARCA Teleprompter',
+      steps: names.map((n, i) => { const past = i < step || (done && i === step), cur = i === step && !done; return { label: n, mark: past ? '✓' : String(i + 1), dotBg: past ? '#ff5a4a' : 'transparent', dotFg: past ? '#1a0705' : cur ? '#ececef' : '#6e6e76', dotRing: past ? 'none' : cur ? 'inset 0 0 0 1.5px #ff5a4a' : 'inset 0 0 0 1px #3a3a40', color: cur ? '#ffffff' : past ? '#c8c8ce' : '#6e6e76', weight: cur ? 600 : 500 }; }),
+      eyebrow: C[0], title: C[1], lead: C[2],
+      isWelcome: inst && step === 0, isLicense: inst && step === 1, isLocation: inst && step === 2, isComponents: inst && step === 3, isProgress: busy || (inst && step === 4) || (!inst && step === 2), isDone: done,
+      isUnConfirm: !inst && step === 0, isUnFeedback: !inst && step === 1,
+      welcomeRows: [['Versão', '1.0.0 (64 bits)'], ['Requisitos', 'Windows 10 21H2 ou superior · 4 GB de RAM'], ['Espaço', '≈ ' + sz + ' MB'], ['Editor', 'ARCA']].map(([k, v], i) => ({ k, v, line: i ? '#ebebeb' : 'transparent' })),
+      accepted: s.accepted, toggleAccept: () => this.setState(x => ({ accepted: !x.accepted })),
+      path: s.path, onPath: e => this.setState({ path: e.target.value }), pathErr: !pathOk,
+      browse: () => this.setState({ path: s.scope === 'all' ? 'D:\\Aplicativos\\ARCA Teleprompter' : 'C:\\Program Files\\ARCA Teleprompter' }),
+      scopes: [['all', 'Todos os usuários'], ['me', 'Somente para mim']].map(([v, l]) => ({ label: l, onClick: () => this.setState({ scope: v, path: v === 'me' ? 'C:\\Users\\Operador\\AppData\\Local\\Programs\\ARCA Teleprompter' : 'C:\\Program Files\\ARCA Teleprompter' }), bg: s.scope === v ? '#ffffff' : 'transparent', shadow: s.scope === v ? '0 1px 2px rgba(26,26,24,.1)' : 'none', color: s.scope === v ? '#1a1a18' : '#5a5a55' })),
+      diskStats: [['Necessário', sz + ' MB'], ['Disponível', free.toFixed(1) + ' GB'], ['Unidade', (s.path.trim()[0] || 'C').toUpperCase() + ':']].map(([k, v]) => ({ k, v })),
+      components: this.COMP.map(([id, name, desc, mb, req], i) => ({ name: req ? name + ' (obrigatório)' : name, desc, size: mb + ' MB', on: s.comp[id], required: !!req, cursor: req ? 'default' : 'pointer', bg: req ? '#fafaf8' : '#ffffff', line: i ? '#ebebeb' : 'transparent', onToggle: () => !req && this.setState(x => ({ comp: { ...x.comp, [id]: !x.comp[id] } })) })),
+      extras: [ck(s.startMenu, () => this.setState(x => ({ startMenu: !x.startMenu })), 'Criar atalho no Menu Iniciar'), ck(s.desk, () => this.setState(x => ({ desk: !x.desk })), 'Criar atalho na área de trabalho'), ck(s.assoc, () => this.setState(x => ({ assoc: !x.assoc })), 'Abrir arquivos .tps com o ARCA Teleprompter')],
+      progTask: s.cancelled ? 'Revertendo alterações' : s.task, progPct: Math.round(s.pct) + '%', progFile: s.file, log: s.log,
+      doneHead: inst ? 'ARCA Teleprompter 1.0.0 instalado' : 'ARCA Teleprompter removido',
+      doneSub: inst ? s.path : (Object.values(s.keep).some(Boolean) ? 'Seus dados mantidos ficam em %APPDATA%\\ARCA Teleprompter' : 'Todos os dados foram apagados'),
+      doneChecks: inst ? [ck(s.launch, () => this.setState(x => ({ launch: !x.launch })), 'Abrir o ARCA Teleprompter agora'), ck(s.notes, () => this.setState(x => ({ notes: !x.notes })), 'Ver as novidades desta versão')] : [],
+      keepOpts: [['scripts', 'Manter roteiros e versões', 'Abas abertas, histórico e salvamento automático.', '12 MB'], ['prefs', 'Manter preferências', 'Atalhos, telas, NDI, monitor web e integrações.', '<1 MB'], ['profiles', 'Manter perfis de apresentador', 'Fonte, margem, cores e velocidade de cada perfil.', '<1 MB'], ['logs', 'Manter registros e cache', 'Arquivos temporários e registros de diagnóstico.', '84 MB']].map(([id, name, desc, size], i) => ({ name, desc, size, on: s.keep[id], line: i ? '#ebebeb' : 'transparent', onToggle: () => this.setState(x => ({ keep: { ...x.keep, [id]: !x.keep[id] } })) })),
+      appRunning: s.running, closeApp: () => this.setState({ running: false }),
+      reasons: ['Vou reinstalar', 'Instalei uma versão nova', 'Não uso mais', 'Problemas de desempenho', 'Falta um recurso', 'Outro'].map(l => ({ label: l, onClick: () => this.setState({ reason: s.reason === l ? '' : l }), bg: s.reason === l ? '#1a1a18' : '#ffffff', fg: s.reason === l ? '#ffffff' : '#1a1a18', bd: s.reason === l ? '#1a1a18' : '#e2e2de' })),
+      feedback: s.feedback, onFeedback: e => this.setState({ feedback: e.target.value }),
+      showBack: !busy && !done && step > 0, showCancel: !done && !(inst && step === 4 && s.cancelled) && !(!inst && step === 2),
+      back: () => this.setState({ step: Math.max(0, step - 1) }),
+      next: () => {
+        if (nextDisabled) return;
+        if (inst) { if (step === 3) return this.startInstall(); if (step === 5) return this.setMode('install'); return this.setState({ step: step + 1 }); }
+        if (step === 1) return this.startUninstall(); if (step === 3) return this.setMode('uninstall'); this.setState({ step: step + 1 });
+      },
+      nextLabel, nextDisabled, nextBg: nextDisabled ? '#e2e2de' : (!inst && step < 2 ? '#d42b1e' : '#d42b1e'), nextFg: nextDisabled ? '#8a8a84' : '#ffffff', nextCursor: nextDisabled ? 'default' : 'pointer',
+      askCancel: () => { if (done) return this.setMode(s.mode); this.setState({ cancelAsk: true }); }, confirmCancel: s.cancelAsk,
+      cancelTitle: inst ? 'Cancelar a instalação?' : 'Cancelar a desinstalação?',
+      cancelText: busy ? 'Os arquivos já copiados serão removidos e nenhuma alteração será mantida.' : (inst ? 'O ARCA Teleprompter não será instalado.' : 'O ARCA Teleprompter continuará instalado.'),
+      cancelBtn: inst ? 'Cancelar instalação' : 'Cancelar',
+      keepGoing: () => this.setState({ cancelAsk: false }),
+      doCancel: () => { if (busy) { this.setState({ cancelAsk: false, cancelled: true, tasks: null, task: 'Revertendo alterações', file: '' }); setTimeout(() => this.setMode(s.mode), 1400); } else this.setMode(s.mode); }
+    };
+  }
+}
+</script>
+</body>
+</html>

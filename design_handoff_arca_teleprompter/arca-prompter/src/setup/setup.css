@@ -1,0 +1,7 @@
+/* Estilos globais do protótipo (bloco <helmet>). */
+html,body{margin:0;height:100%;background:#e9e9e6;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+input,button,select{font:inherit;color:inherit}
+a{color:#d42b1e;text-decoration:none}a:hover{text-decoration:underline}
+input[type=checkbox]{accent-color:#d42b1e}
+::-webkit-scrollbar{width:10px}::-webkit-scrollbar-thumb{background:#d6d6d1;border-radius:5px;border:2px solid transparent;background-clip:padding-box}

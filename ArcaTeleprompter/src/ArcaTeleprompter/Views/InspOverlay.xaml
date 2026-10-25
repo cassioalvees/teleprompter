@@ -1,0 +1,67 @@
+<UserControl Grid.IsSharedSizeScope="True" Typography.NumeralStyle="Lining" x:Class="Arca.App.Views.InspOverlay"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Arca.App.Controls">
+  <UserControl.Resources><c:Is x:Key="Is"/><c:Fmt x:Key="Fmt"/><c:BoolVis x:Key="Vis"/></UserControl.Resources>
+  <StackPanel>
+    <TextBlock Text="OVERLAY" Style="{StaticResource Eyebrow}" Margin="16,8,16,10"/>
+    <Grid Margin="16,0,16,16">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/><ColumnDefinition Width="Auto" MinWidth="40" SharedSizeGroup="Val"/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="40"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+      <TextBlock Text="Tipo" Style="{StaticResource Label}"/>
+      <ComboBox Grid.Column="1" Grid.ColumnSpan="2" SelectedValuePath="Tag" SelectedValue="{Binding OverlayType}">
+        <ComboBoxItem Tag="nenhum" Content="Nenhum"/>
+        <ComboBoxItem Tag="faixa" Content="Faixa de leitura"/>
+        <ComboBoxItem Tag="fade" Content="Degradê nas bordas"/>
+        <ComboBoxItem Tag="destaque" Content="Destaque da linha"/>
+      </ComboBox>
+      <TextBlock Grid.Row="1" Text="Opacidade" Style="{StaticResource Label}"/>
+      <Slider Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="True" Value="{Binding OverlayOpacity}"/>
+      <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding OverlayOpacity, Converter={StaticResource Fmt}, ConverterParameter=P0}" Style="{StaticResource Num}" TextAlignment="Right"/>
+    </Grid>
+    <Border Style="{StaticResource Divider}"/>
+
+    <TextBlock Text="INDICADOR" Style="{StaticResource Eyebrow}" Margin="16,14,16,10"/>
+    <Grid Margin="16,0,16,16">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/><ColumnDefinition Width="Auto" MinWidth="40" SharedSizeGroup="Val"/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="40"/><RowDefinition Height="36"/><RowDefinition Height="Auto"/><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+      <TextBlock Text="Tipo" Style="{StaticResource Label}"/>
+      <ComboBox Grid.Column="1" Grid.ColumnSpan="2" SelectedValuePath="Tag" SelectedValue="{Binding IndicatorType}">
+        <ComboBoxItem Tag="nenhum" Content="Nenhum"/>
+        <ComboBoxItem Tag="seta" Content="Seta"/>
+        <ComboBoxItem Tag="quadrado" Content="Quadrado"/>
+        <ComboBoxItem Tag="ponto" Content="Ponto"/>
+        <ComboBoxItem Tag="linha" Content="Linha"/>
+      </ComboBox>
+      <TextBlock Grid.Row="1" Text="Tamanho" Style="{StaticResource Label}"/>
+      <Border Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Style="{StaticResource SegBox}" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal">
+          <RadioButton Style="{StaticResource Seg}" GroupName="isz" Content="P" IsChecked="{Binding IndicatorSize, Converter={StaticResource Is}, ConverterParameter=0}"/>
+          <RadioButton Style="{StaticResource Seg}" GroupName="isz" Content="M" IsChecked="{Binding IndicatorSize, Converter={StaticResource Is}, ConverterParameter=1}"/>
+          <RadioButton Style="{StaticResource Seg}" GroupName="isz" Content="G" IsChecked="{Binding IndicatorSize, Converter={StaticResource Is}, ConverterParameter=2}"/>
+        </StackPanel>
+      </Border>
+      <TextBlock Grid.Row="2" Text="Cor" Style="{StaticResource Label}"/>
+      <WrapPanel Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" x:Name="IndSwatches" Margin="0,4"/>
+      <TextBlock Grid.Row="3" Text="Posição" Style="{StaticResource Label}"/>
+      <Slider Grid.Row="3" Grid.Column="1" Minimum="10" Maximum="70" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding ReadPct}"/>
+      <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource Num}" TextAlignment="Right"><Run Text="{Binding ReadPct, Mode=OneWay}"/><Run Text="%"/></TextBlock>
+      <CheckBox Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2" Content="Linha de leitura atrás do texto" IsChecked="{Binding ReadingLine}"/>
+    </Grid>
+    <Border Style="{StaticResource Divider}"/>
+
+    <TextBlock Text="IMAGEM DE FUNDO" Style="{StaticResource Eyebrow}" Margin="16,14,16,10"/>
+    <Grid Margin="16,0">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/><ColumnDefinition Width="Auto" MinWidth="40" SharedSizeGroup="Val"/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="36"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+      <TextBlock Text="Arquivo" Style="{StaticResource Label}"/>
+      <StackPanel Grid.Column="1" Grid.ColumnSpan="2" Orientation="Horizontal">
+        <Button Style="{StaticResource Pill}" Height="28" Content="Escolher…" Click="PickBg_Click" Margin="0,0,6,0" Focusable="False"/>
+        <Button Style="{StaticResource Pill}" Height="28" Content="Remover" Click="ClearBg_Click" Focusable="False" Visibility="{Binding BgImagePath, Converter={StaticResource Vis}, FallbackValue=Collapsed, TargetNullValue=Collapsed}" x:Name="ClearBgBtn"/>
+      </StackPanel>
+      <TextBlock Grid.Row="1" Text="Opacidade" Style="{StaticResource Label}"/>
+      <Slider Grid.Row="1" Grid.Column="1" Minimum="0.05" Maximum="0.6" TickFrequency="0.05" IsSnapToTickEnabled="True" Value="{Binding BgImageOpacity}"/>
+      <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding BgImageOpacity, Converter={StaticResource Fmt}, ConverterParameter=P0}" Style="{StaticResource Num}" TextAlignment="Right"/>
+    </Grid>
+  </StackPanel>
+</UserControl>

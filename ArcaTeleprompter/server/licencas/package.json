@@ -1,0 +1,20 @@
+{
+  "name": "arca-licencas",
+  "private": true,
+  "description": "Servidor de licenças do ARCA Teleprompter (Cloudflare Workers + D1)",
+  "type": "module",
+  "scripts": {
+    "chaves": "node tools/gen-keys.mjs",
+    "banco:local": "wrangler d1 execute arca-licencas --local --file=schema.sql",
+    "banco:remoto": "wrangler d1 execute arca-licencas --remote --file=schema.sql",
+    "local": "wrangler dev --port 8787",
+    "publicar": "wrangler deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.152.0"
+  },
+  "allowScripts": {
+    "workerd@1.20261019.1": true,
+    "esbuild@0.28.2": true
+  }
+}

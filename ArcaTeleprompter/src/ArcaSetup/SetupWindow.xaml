@@ -1,0 +1,82 @@
+<Window x:Class="Arca.Setup.SetupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Instalação do ARCA Teleprompter" Width="800" Height="540" WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen" FontFamily="{StaticResource Sans}" FontSize="13" Foreground="#1A1A18"
+        UseLayoutRounding="True" TextOptions.TextFormattingMode="Display" Typography.NumeralStyle="Lining" Icon="pack://application:,,,/icon.ico">
+  <Grid Margin="20">
+    <!-- Cartão 760×500, raio 10, sombra (design do instalador). -->
+    <Border CornerRadius="10" Background="White" BorderBrush="#14000000" BorderThickness="1">
+      <Border.Effect><DropShadowEffect BlurRadius="40" ShadowDepth="10" Direction="270" Opacity="0.25" Color="#1A1A18"/></Border.Effect>
+    </Border>
+    <Border CornerRadius="10" ClipToBounds="True">
+      <Border.OpacityMask><VisualBrush><VisualBrush.Visual><Border Width="760" Height="500" CornerRadius="10" Background="Black"/></VisualBrush.Visual></VisualBrush></Border.OpacityMask>
+      <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="232"/><ColumnDefinition/></Grid.ColumnDefinitions>
+
+        <!-- Barra lateral -->
+        <Border Background="#141416" Padding="20,22,20,18" MouseLeftButtonDown="Drag">
+          <DockPanel>
+            <StackPanel DockPanel.Dock="Top">
+              <StackPanel Orientation="Horizontal">
+                <Image Source="pack://application:,,,/icon-64.png" Width="20" Height="20" Margin="0,0,10,0"/>
+                <TextBlock Text="ARCA" FontFamily="{StaticResource Num}" FontSize="15" Foreground="#ECECEF" VerticalAlignment="Center"/>
+                <Border Width="1" Height="14" Background="#3A3A40" Margin="10,0"/>
+                <TextBlock Text="Teleprompter" FontWeight="SemiBold" FontSize="12.5" Foreground="#ECECEF" VerticalAlignment="Center"/>
+              </StackPanel>
+              <TextBlock x:Name="SideCaption" Text="ASSISTENTE DE INSTALAÇÃO" FontFamily="{StaticResource Num}" FontSize="10" Foreground="#91919A" Margin="0,6,0,0"/>
+              <StackPanel x:Name="Steps" Margin="0,34,0,0"/>
+            </StackPanel>
+            <TextBlock x:Name="VersionText" DockPanel.Dock="Bottom" FontFamily="{StaticResource Num}" FontSize="10.5" Foreground="#6E6E76" LineHeight="17" VerticalAlignment="Bottom"/>
+          </DockPanel>
+        </Border>
+
+        <!-- Conteúdo -->
+        <DockPanel Grid.Column="1">
+          <Border DockPanel.Dock="Top" Height="36" BorderBrush="#EBEBEB" BorderThickness="0,0,0,1" Padding="20,0,4,0" Background="White" MouseLeftButtonDown="Drag">
+            <DockPanel>
+              <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                <Button Style="{StaticResource WinBtn}" Click="Min_Click" ToolTip="Minimizar"><Path Data="M3 8h10" Stroke="#5A5A55" StrokeThickness="1.2" Width="10" Height="10" Stretch="Uniform"/></Button>
+                <Button Style="{StaticResource WinClose}" Click="Close_Click" ToolTip="Fechar"><Path Data="M4 4l8 8M12 4l-8 8" Stroke="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}" StrokeThickness="1.3" Width="9" Height="9" Stretch="Uniform"/></Button>
+              </StackPanel>
+              <TextBlock x:Name="WinTitle" Text="Instalação do ARCA Teleprompter" FontSize="12" Foreground="#5A5A55" VerticalAlignment="Center"/>
+            </DockPanel>
+          </Border>
+          <Border DockPanel.Dock="Bottom" Height="60" Background="#FAFAF8" BorderBrush="#EBEBEB" BorderThickness="0,1,0,0" Padding="20,0">
+            <DockPanel>
+              <Button x:Name="BackBtn" Style="{StaticResource Soft}" Content="Voltar" Click="Back_Click"/>
+              <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="CancelBtn" Style="{StaticResource Ghost}" Content="Cancelar" Click="Close_Click" Margin="0,0,8,0"/>
+                <Button x:Name="NextBtn" Style="{StaticResource Primary}" Content="Avançar" MinWidth="112" Click="Next_Click"/>
+              </StackPanel>
+              <Border/>
+            </DockPanel>
+          </Border>
+          <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="32,28,32,20">
+            <StackPanel>
+              <TextBlock x:Name="Eyebrow" FontFamily="{StaticResource Num}" FontSize="10" Foreground="#D42B1E"/>
+              <TextBlock x:Name="TitleText" FontFamily="{StaticResource Num}" FontSize="21" FontWeight="SemiBold" Margin="0,6,0,0" TextWrapping="Wrap"/>
+              <TextBlock x:Name="Lead" Foreground="#5A5A55" LineHeight="20" TextWrapping="Wrap" MaxWidth="440" HorizontalAlignment="Left" Margin="0,6,0,16"/>
+              <ContentControl x:Name="Body"/>
+            </StackPanel>
+          </ScrollViewer>
+        </DockPanel>
+      </Grid>
+    </Border>
+
+    <!-- Confirmação de cancelamento -->
+    <Grid x:Name="Confirm" Visibility="Collapsed" Background="#59141416">
+      <Border Width="380" Background="White" CornerRadius="14" Padding="20" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Border.Effect><DropShadowEffect BlurRadius="50" ShadowDepth="18" Direction="270" Opacity="0.25"/></Border.Effect>
+        <StackPanel>
+          <TextBlock x:Name="ConfirmTitle" FontFamily="{StaticResource Num}" FontSize="15" FontWeight="SemiBold"/>
+          <TextBlock x:Name="ConfirmText" Foreground="#5A5A55" TextWrapping="Wrap" LineHeight="20" Margin="0,14"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Style="{StaticResource Soft}" Content="Continuar" Click="KeepGoing_Click" Margin="0,0,8,0"/>
+            <Button x:Name="ConfirmBtn" Style="{StaticResource Primary}" Click="DoCancel_Click"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Grid>
+  </Grid>
+</Window>

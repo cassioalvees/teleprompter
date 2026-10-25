@@ -1,0 +1,18 @@
+<Project>
+  <!-- Configuração comum a todas as bibliotecas e executáveis da solução ARCA Teleprompter. -->
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>2.8.0</Version>
+    <Company>ARCA</Company>
+    <Product>ARCA Teleprompter</Product>
+    <Copyright>© 2026 ARCA</Copyright>
+    <Authors>ARCA</Authors>
+    <PlatformTarget>x64</PlatformTarget>
+    <RuntimeIdentifier Condition="'$(OutputType)' == 'WinExe'">win-x64</RuntimeIdentifier>
+    <SatelliteResourceLanguages>pt-BR;en</SatelliteResourceLanguages>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+</Project>

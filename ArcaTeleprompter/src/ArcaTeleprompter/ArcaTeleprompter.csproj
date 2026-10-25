@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Aplicativo ARCA Teleprompter (WPF, DirectX). Usa as bibliotecas Arca.*.dll da solução. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows10.0.19041.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.19041.0</SupportedOSPlatformVersion>
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>false</UseWindowsForms>
+    <AssemblyName>ArcaTeleprompter</AssemblyName>
+    <RootNamespace>Arca.App</RootNamespace>
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TieredPGO>true</TieredPGO>
+    <WindowsSdkPackageVersion>10.0.19041.41</WindowsSdkPackageVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Arca.Core\Arca.Core.csproj" />
+    <ProjectReference Include="..\Arca.Import\Arca.Import.csproj" />
+    <ProjectReference Include="..\Arca.Ndi\Arca.Ndi.csproj" />
+    <ProjectReference Include="..\Arca.Audio\Arca.Audio.csproj" />
+    <ProjectReference Include="..\Arca.Server\Arca.Server.csproj" />
+    <ProjectReference Include="..\Arca.Mos\Arca.Mos.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\..\assets\fonts\*.ttf" Link="Fonts\%(Filename)%(Extension)" />
+    <Resource Include="Assets\icon.ico" />
+    <Resource Include="Assets\icon-64.png" />
+    <Resource Include="Assets\icon-256.png" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,22 @@
+# Saídas de compilação — os instaladores vão para o GitHub Releases (publish-release.ps1)
+bin/
+obj/
+*_wpftmp.csproj
+ArcaTeleprompter/out/
+ArcaTeleprompter/dist/
+ArcaTeleprompter/src/ArcaSetup/payload/
+
+# Servidor de licenças: dependências, estado local e SEGREDOS (chave de assinatura e token do administrador)
+node_modules/
+.wrangler/
+.dev.vars
+
+# Protótipo antigo (Electron): compilações
+design_handoff_arca_teleprompter/arca-prompter/release/
+design_handoff_arca_teleprompter/arca-prompter/dist/
+design_handoff_arca_teleprompter/arca-prompter/dist-electron/
+
+# Ferramentas e preferências locais
+.vs/
+*.user
+.claude/settings.local.json

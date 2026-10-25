@@ -1,0 +1,10 @@
+/* Estados :hover / :active do protótipo (atributos style-hover / style-active). */
+.h0:hover{background:var(--hover) !important}
+.h1:hover{background:#c42b1c !important;color:#fff !important}
+.h2:hover{background:var(--t-sunk) !important}
+.h3:hover{background:var(--hover) !important;color:var(--text) !important}
+.h4:hover{color:var(--text) !important}
+.h5:hover{border-color:var(--line) !important}
+.h6:hover{filter:brightness(.96) !important}
+.a7:active{transform:scale(.97) !important}
+.h8:hover{background:rgba(255,255,255,.08) !important}

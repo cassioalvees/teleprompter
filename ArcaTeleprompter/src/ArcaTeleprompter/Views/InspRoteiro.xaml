@@ -1,0 +1,131 @@
+<UserControl Grid.IsSharedSizeScope="True" Typography.NumeralStyle="Lining" x:Class="Arca.App.Views.InspRoteiro"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Arca.App.Controls"
+             xmlns:vm="clr-namespace:Arca.App.ViewModels">
+  <UserControl.Resources>
+    <c:Is x:Key="Is"/><c:HexBrush x:Key="Hex"/><c:Fmt x:Key="Fmt"/><c:BoolVis x:Key="Vis"/>
+  </UserControl.Resources>
+  <StackPanel>
+    <!-- Aparência -->
+    <DockPanel Margin="16,8,16,10">
+      <TextBlock DockPanel.Dock="Right" Text="Redefinir" Foreground="{DynamicResource Muted}" FontSize="12" Cursor="Hand" MouseLeftButtonUp="ResetLook_Click"/>
+      <TextBlock Text="APARÊNCIA" Style="{StaticResource Eyebrow}"/>
+    </DockPanel>
+    <Grid Margin="16,0,16,16">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/><RowDefinition/></Grid.RowDefinitions>
+      <TextBlock Text="Fundo" Style="{StaticResource Label}"/>
+      <WrapPanel Grid.Column="1" x:Name="BgSwatches" Margin="0,4"/>
+      <TextBlock Grid.Row="1" Text="Texto" Style="{StaticResource Label}"/>
+      <WrapPanel Grid.Row="1" Grid.Column="1" x:Name="FgSwatches" Margin="0,4"/>
+      <TextBlock Grid.Row="2" Text="Fonte" Style="{StaticResource Label}"/>
+      <ComboBox Grid.Row="2" Grid.Column="1" x:Name="FontBox" Margin="0,6" SelectionChanged="Font_Changed" ToolTip="Fontes do app e todas as fontes instaladas no Windows"/>
+      <TextBlock Grid.Row="3" Text="Alinhamento" Style="{StaticResource Label}"/>
+      <Border Grid.Row="3" Grid.Column="1" Style="{StaticResource SegBox}" HorizontalAlignment="Left" Margin="0,6">
+        <StackPanel Orientation="Horizontal">
+          <RadioButton Style="{StaticResource Seg}" GroupName="al" ToolTip="Esquerda" IsChecked="{Binding Align, Converter={StaticResource Is}, ConverterParameter=left}"><c:Icon Data="{x:Static c:Icons.AlignL}" Size="13" StrokeWidth="1.6"/></RadioButton>
+          <RadioButton Style="{StaticResource Seg}" GroupName="al" ToolTip="Centro" IsChecked="{Binding Align, Converter={StaticResource Is}, ConverterParameter=center}"><c:Icon Data="{x:Static c:Icons.AlignC}" Size="13" StrokeWidth="1.6"/></RadioButton>
+          <RadioButton Style="{StaticResource Seg}" GroupName="al" ToolTip="Direita" IsChecked="{Binding Align, Converter={StaticResource Is}, ConverterParameter=right}"><c:Icon Data="{x:Static c:Icons.AlignR}" Size="13" StrokeWidth="1.6"/></RadioButton>
+        </StackPanel>
+      </Border>
+      <TextBlock Grid.Row="4" Text="Espelhar" Style="{StaticResource Label}"/>
+      <StackPanel Grid.Row="4" Grid.Column="1" Orientation="Horizontal" Margin="0,6">
+        <CheckBox Content="Horizontal" IsChecked="{Binding EdFlipH}" Margin="0,0,10,0"/>
+        <CheckBox Content="Vertical" IsChecked="{Binding EdFlipV}"/>
+      </StackPanel>
+    </Grid>
+    <Border Style="{StaticResource Divider}"/>
+
+    <!-- Apresentadores -->
+    <DockPanel Margin="16,14,16,10">
+      <Button DockPanel.Dock="Right" Style="{StaticResource Pill}" Height="24" FontSize="12" Padding="10,0" Content="Adicionar" Click="AddPres_Click" Focusable="False"/>
+      <TextBlock Text="APRESENTADORES" Style="{StaticResource Eyebrow}" VerticalAlignment="Center"/>
+    </DockPanel>
+    <StackPanel Margin="16,0,16,12">
+      <ItemsControl ItemsSource="{Binding Presenters}">
+        <ItemsControl.ItemTemplate>
+          <DataTemplate DataType="vm:PresenterVM">
+            <Grid Margin="0,0,0,6">
+              <Grid.ColumnDefinitions><ColumnDefinition Width="24"/><ColumnDefinition/><ColumnDefinition Width="Auto" MinWidth="40" SharedSizeGroup="Val"/><ColumnDefinition Width="22"/></Grid.ColumnDefinitions>
+              <Button Style="{StaticResource Swatch}" Margin="0" Background="{Binding Color, Converter={StaticResource Hex}}" Click="PresColor_Click" Tag="{Binding}" ToolTip="Cor"/>
+              <TextBox Grid.Column="1" Style="{StaticResource Input}" Height="28" Margin="8,0" Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, Delay=300}"/>
+              <TextBlock Grid.Column="2" Text="{Binding Key}" FontFamily="{StaticResource FNum}" FontSize="11" Foreground="{DynamicResource Faint}" TextAlignment="Right" VerticalAlignment="Center"/>
+              <Button Grid.Column="3" Style="{StaticResource TinyBtn}" Click="RemovePres_Click" Tag="{Binding}" ToolTip="Remover apresentador" Focusable="False"><c:Icon Data="{x:Static c:Icons.X}" Size="10" StrokeWidth="1.7"/></Button>
+            </Grid>
+          </DataTemplate>
+        </ItemsControl.ItemTemplate>
+      </ItemsControl>
+      <CheckBox Content="Mostrar o nome no início de cada fala" IsChecked="{Binding PresenterNames}" Margin="0,4,0,8"/>
+      <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <TextBlock Text="Destacar" Style="{StaticResource Label}"/>
+        <WrapPanel Grid.Column="1" x:Name="OnlyChips"/>
+      </Grid>
+    </StackPanel>
+    <Border Style="{StaticResource Divider}"/>
+
+    <!-- Palavras por linha e margem -->
+    <DockPanel Margin="16,14,16,10">
+      <TextBlock DockPanel.Dock="Right" Text="Redefinir" Foreground="{DynamicResource Muted}" FontSize="12" Cursor="Hand" MouseLeftButtonUp="ResetLayout_Click"/>
+      <TextBlock Text="PALAVRAS POR LINHA E MARGEM" Style="{StaticResource Eyebrow}"/>
+    </DockPanel>
+    <Grid Margin="16,0,16,16">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/><ColumnDefinition Width="Auto" MinWidth="40" SharedSizeGroup="Val"/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="42"/><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+      <TextBlock Text="Palavras/linha" Style="{StaticResource Label}"/>
+      <Slider Grid.Column="1" Minimum="2" Maximum="12" SmallChange="0.25" LargeChange="1" TickFrequency="0.25" IsSnapToTickEnabled="True" Value="{Binding WordsPerLine}"/>
+      <TextBlock Grid.Column="2" Text="{Binding WplLabel}" Style="{StaticResource Num}" TextAlignment="Right"/>
+      <TextBlock Grid.Row="1" Text="Margem" Style="{StaticResource Label}"/>
+      <Slider Grid.Row="1" Grid.Column="1" Minimum="0" Maximum="400" TickFrequency="10" IsSnapToTickEnabled="True" Value="{Binding Margin}"/>
+      <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding Margin}" Style="{StaticResource Num}" TextAlignment="Right"/>
+      <TextBlock Grid.Row="2" Text="Posição" Style="{StaticResource Label}"/>
+      <StackPanel Grid.Row="2" Grid.Column="1" VerticalAlignment="Center">
+        <Slider Minimum="-1" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="True" Value="{Binding MarginPos}" MouseDoubleClick="ResetMPos_Click" ToolTip="Duplo clique: esquerda"/>
+        <DockPanel TextElement.FontSize="10" TextElement.Foreground="{DynamicResource Faint}">
+          <TextBlock DockPanel.Dock="Left" Text="Esq."/><TextBlock DockPanel.Dock="Right" Text="Dir."/><TextBlock Text="Centro" HorizontalAlignment="Center"/>
+        </DockPanel>
+      </StackPanel>
+      <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding MarginPosLabel}" Style="{StaticResource Num}" TextAlignment="Right"/>
+      <TextBlock Grid.Row="3" Text="Entrelinha" Style="{StaticResource Label}"/>
+      <Slider Grid.Row="3" Grid.Column="1" Minimum="1" Maximum="2" TickFrequency="0.05" IsSnapToTickEnabled="True" Value="{Binding LineHeight}"/>
+      <TextBlock Grid.Row="3" Grid.Column="2" Text="{Binding LineHeight, Converter={StaticResource Fmt}, ConverterParameter=0.00}" Style="{StaticResource Num}" TextAlignment="Right"/>
+      <TextBlock Grid.Row="4" Text="Parágrafos" Style="{StaticResource Label}" ToolTip="Espaço entre parágrafos, em linhas"/>
+      <Slider Grid.Row="4" Grid.Column="1" Minimum="0" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="True" Value="{Binding ParagraphGap}"/>
+      <TextBlock Grid.Row="4" Grid.Column="2" Text="{Binding ParagraphGap, Converter={StaticResource Fmt}, ConverterParameter=0.00}" Style="{StaticResource Num}" TextAlignment="Right"/>
+    </Grid>
+    <Border Style="{StaticResource Divider}"/>
+
+    <!-- Velocidade -->
+    <DockPanel Margin="16,14,16,10">
+      <TextBlock DockPanel.Dock="Right" Text="{Binding UnitName}" Foreground="{DynamicResource Muted}" FontSize="12"/>
+      <TextBlock Text="VELOCIDADE" Style="{StaticResource Eyebrow}"/>
+    </DockPanel>
+    <Grid Margin="16,0,16,16">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/><ColumnDefinition Width="Auto" MinWidth="40" SharedSizeGroup="Val"/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+      <TextBlock Text="Mínima" Style="{StaticResource Label}"/>
+      <Slider Grid.Column="1" Minimum="0.1" Maximum="2" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MinSpeed}"/>
+      <TextBlock Grid.Column="2" Text="{Binding MinLabel}" Style="{StaticResource Num}" TextAlignment="Right"/>
+      <TextBlock Grid.Row="1" Text="Máxima" Style="{StaticResource Label}"/>
+      <Slider Grid.Row="1" Grid.Column="1" Minimum="1" Maximum="6" TickFrequency="0.1" IsSnapToTickEnabled="True" Value="{Binding MaxSpeed}"/>
+      <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding MaxLabel}" Style="{StaticResource Num}" TextAlignment="Right"/>
+      <TextBlock Grid.Row="2" Text="Atual" Style="{StaticResource Label}"/>
+      <Slider Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="1" SmallChange="0.01" Value="{Binding SpeedT}"/>
+      <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding SpeedValue}" Style="{StaticResource Num}" TextAlignment="Right"/>
+    </Grid>
+    <Border Style="{StaticResource Divider}"/>
+
+    <!-- Duração automática -->
+    <DockPanel Margin="16,14,16,10">
+      <CheckBox DockPanel.Dock="Right" Style="{StaticResource Switch}" IsChecked="{Binding AutoRun}" ToolTip="Calcula a velocidade para terminar no tempo total"/>
+      <TextBlock Text="DURAÇÃO AUTOMÁTICA" Style="{StaticResource Eyebrow}" VerticalAlignment="Center"/>
+    </DockPanel>
+    <Grid Margin="16,0,16,16">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition Width="Auto"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <TextBlock Text="Tempo total" Style="{StaticResource Label}"/>
+      <TextBox Grid.Column="1" Style="{StaticResource Input}" Width="84" FontFamily="{StaticResource FNum}" FontSize="12" Text="{Binding RunTarget, UpdateSourceTrigger=PropertyChanged, Delay=400}" ToolTip="hh:mm:ss ou mm:ss"/>
+      <TextBlock Grid.Column="2" Foreground="{DynamicResource Faint}" FontSize="12" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" Margin="10,0,0,0"><Run Text="atual "/><Run Text="{Binding TotalLabel, Mode=OneWay}"/></TextBlock>
+    </Grid>
+  </StackPanel>
+</UserControl>

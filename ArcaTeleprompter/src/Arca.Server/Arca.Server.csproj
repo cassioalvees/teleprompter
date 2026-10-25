@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Servidor do monitor web / PWA: Kestrel + WebSocket. Os arquivos do cliente web (wwwroot)
+       ficam embutidos nesta DLL, então ela é autossuficiente. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <GenerateEmbeddedFilesManifest>true</GenerateEmbeddedFilesManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.Extensions.FileProviders.Embedded" Version="8.0.11" />
+    <EmbeddedResource Include="wwwroot\**\*" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Arca.Core\Arca.Core.csproj" />
+  </ItemGroup>
+</Project>

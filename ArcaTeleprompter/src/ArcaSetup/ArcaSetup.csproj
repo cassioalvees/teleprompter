@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Instalador/desinstalador do ARCA Teleprompter (WPF).
+       EmbedPayload=true embute o pacote (payload.zip) — usado só no Setup; a cópia instalada na pasta do app
+       (ArcaUninstall.exe) é o mesmo código sem o pacote. -->
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>Arca.Setup</RootNamespace>
+    <AssemblyName Condition="'$(AssemblyName)' == ''">ArcaSetup</AssemblyName>
+    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationManifest>setup.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <ItemGroup>
+    <Resource Include="icon.ico" />
+    <Resource Include="icon-64.png" />
+    <Resource Include="..\..\assets\fonts\Raleway-*.ttf" Link="Fonts\%(Filename)%(Extension)" />
+    <Resource Include="..\..\assets\fonts\Sora-*.ttf" Link="Fonts\%(Filename)%(Extension)" />
+    <EmbeddedResource Include="payload\payload.zip" LogicalName="payload.zip" Condition="'$(EmbedPayload)' == 'true'" />
+  </ItemGroup>
+</Project>

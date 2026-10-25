@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700&family=Sora:wght@300;400;500;600&family=Atkinson+Hyperlegible:wght@400;700&family=Source+Sans+3:wght@400;600&family=Source+Serif+4:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;height:100%;overflow:hidden;background:#0e0e10;-webkit-font-smoothing:antialiased}
+input,select,button{font:inherit;color:inherit}
+*{box-sizing:border-box}
+@font-face{font-family:'GC Epic Pro';src:url('fonts/gc-epic-pro.ttf') format('truetype');font-weight:400 700;font-display:swap}
+[data-theme]{--t-bg:#f2f2f0;--t-ui:#ffffff;--t-soft:#f7f7f5;--t-sunk:#eeeeec;--t-border:#e2e2de;--t-hair:#ebebeb;--t-text:#1a1a18;--t-muted:#5a5a55;--t-faint:#67675f;--t-accent:#d42b1e;--t-accent-ink:#ffffff;--t-accent-soft:rgba(212,43,30,.08);--t-accent-line:rgba(212,43,30,.25);--t-ok:#2f8f5b;--t-ok-soft:#e9f5ee;--t-sh1:0 1px 2px rgba(26,26,24,.05);--t-sh2:0 4px 16px rgba(26,26,24,.08);--t-sh3:0 18px 50px rgba(26,26,24,.16);--f-brand:'GC Epic Pro','Sora',ui-sans-serif,sans-serif;--f-sans:'Raleway',ui-sans-serif,system-ui,sans-serif;--f-disp:'Sora',ui-sans-serif,sans-serif;--f-num:'Sora',ui-monospace,monospace}
+[data-theme=dark]{--t-bg:#0e0e10;--t-ui:#1b1b1e;--t-soft:#26262a;--t-sunk:#141416;--t-border:#34343a;--t-hair:#2b2b30;--t-text:#ececef;--t-muted:#a0a0a8;--t-faint:#91919a;--t-accent:#ff5a4a;--t-accent-ink:#1a0705;--t-accent-soft:rgba(255,90,74,.12);--t-accent-line:rgba(255,90,74,.3);--t-ok:#3ec27f;--t-ok-soft:#0f3d2e;--t-sh1:0 1px 2px rgba(0,0,0,.4);--t-sh2:0 4px 16px rgba(0,0,0,.45);--t-sh3:0 18px 50px rgba(0,0,0,.6)}
+[data-theme]{--bg:var(--t-bg);--panel:var(--t-ui);--raised:var(--t-ui);--field:var(--t-soft);--line:var(--t-border);--hover:var(--t-soft);--sel:var(--t-sunk);--text:var(--t-text);--muted:var(--t-muted);--faint:var(--t-faint);--inv:var(--t-accent);--invtext:var(--t-accent-ink);--shadow:var(--t-sh1);--live:var(--t-accent)}
+a{color:inherit}a:hover{opacity:.8}
+input[type=range]{accent-color:var(--t-accent);margin:0}
+select:focus,input:focus{outline:none;border-color:var(--t-accent)!important;box-shadow:0 0 0 3px var(--t-accent-soft)}
+button:focus-visible{outline:2px solid var(--t-accent-line);outline-offset:2px}
+::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--line);border-radius:5px;border:2px solid transparent;background-clip:padding-box}
+[data-ed]:focus{outline:none}
+[data-script] p{margin:0 0 .5em}
+[data-script] [data-bm]{font-family:'IBM Plex Mono',monospace;font-size:.3em;letter-spacing:.12em;text-transform:uppercase;opacity:.55;border-top:1px solid currentColor;padding:.7em 0 .2em;margin:1.2em 0 .8em;line-height:1.4;user-select:none}
+[data-script] [data-stop]{font-family:'IBM Plex Mono',monospace;font-size:.3em;letter-spacing:.12em;text-transform:uppercase;opacity:.65;border:1px dashed currentColor;border-radius:.4em;padding:.4em .9em;width:fit-content;line-height:1.4;user-select:none}
+[data-script] [data-stop]::before{content:'Pausa \00B7  '}
+[data-ed] [data-bm]{font-size:max(.3em,calc(11px / var(--k,1)));line-height:calc(var(--fs) * .42);padding:calc(var(--fs) * .21) 0 calc(var(--fs) * .06);margin:calc(var(--fs) * .36) 0 calc(var(--fs) * .24);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+[data-ed] [data-stop]{font-size:max(.3em,calc(11px / var(--k,1)));line-height:calc(var(--fs) * .42);padding:calc(var(--fs) * .12) calc(var(--fs) * .27);white-space:nowrap}
+[data-pr][contenteditable=true]{outline:none}
+[data-pr] [data-skipped]{display:none}
+[data-ed] [data-skipped]{opacity:.32;text-decoration:line-through}
+[data-script] [data-bm][data-skip]::after{content:' · pulado'}
+[data-script] [data-who="1"]{color:var(--who1,#ffd60a)}
+:root:not([data-who-names=off]) [data-script] [data-who="1"][data-who-start]::before{content:var(--who1-name,'')}
+:root[data-who-only="1"] [data-pr] [data-who]:not([data-who="1"]),:root[data-who-only="1"] [data-pr] p:not([data-who]):not([data-bm]):not([data-stop]){opacity:.22}
+[data-script] [data-who="2"]{color:var(--who2,#ffd60a)}
+:root:not([data-who-names=off]) [data-script] [data-who="2"][data-who-start]::before{content:var(--who2-name,'')}
+:root[data-who-only="2"] [data-pr] [data-who]:not([data-who="2"]),:root[data-who-only="2"] [data-pr] p:not([data-who]):not([data-bm]):not([data-stop]){opacity:.22}
+[data-script] [data-who="3"]{color:var(--who3,#ffd60a)}
+:root:not([data-who-names=off]) [data-script] [data-who="3"][data-who-start]::before{content:var(--who3-name,'')}
+:root[data-who-only="3"] [data-pr] [data-who]:not([data-who="3"]),:root[data-who-only="3"] [data-pr] p:not([data-who]):not([data-bm]):not([data-stop]){opacity:.22}
+[data-script] [data-who="4"]{color:var(--who4,#ffd60a)}
+:root:not([data-who-names=off]) [data-script] [data-who="4"][data-who-start]::before{content:var(--who4-name,'')}
+:root[data-who-only="4"] [data-pr] [data-who]:not([data-who="4"]),:root[data-who-only="4"] [data-pr] p:not([data-who]):not([data-bm]):not([data-stop]){opacity:.22}
+[data-script] [data-who="5"]{color:var(--who5,#ffd60a)}
+:root:not([data-who-names=off]) [data-script] [data-who="5"][data-who-start]::before{content:var(--who5-name,'')}
+:root[data-who-only="5"] [data-pr] [data-who]:not([data-who="5"]),:root[data-who-only="5"] [data-pr] p:not([data-who]):not([data-bm]):not([data-stop]){opacity:.22}
+[data-script] [data-who="6"]{color:var(--who6,#ffd60a)}
+:root:not([data-who-names=off]) [data-script] [data-who="6"][data-who-start]::before{content:var(--who6-name,'')}
+:root[data-who-only="6"] [data-pr] [data-who]:not([data-who="6"]),:root[data-who-only="6"] [data-pr] p:not([data-who]):not([data-bm]):not([data-stop]){opacity:.22}
+[data-script] [data-who="7"]{color:var(--who7,#ffd60a)}
+:root:not([data-who-names=off]) [data-script] [data-who="7"][data-who-start]::before{content:var(--who7-name,'')}
+:root[data-who-only="7"] [data-pr] [data-who]:not([data-who="7"]),:root[data-who-only="7"] [data-pr] p:not([data-who]):not([data-bm]):not([data-stop]){opacity:.22}
+[data-script] [data-who="8"]{color:var(--who8,#ffd60a)}
+:root:not([data-who-names=off]) [data-script] [data-who="8"][data-who-start]::before{content:var(--who8-name,'')}
+:root[data-who-only="8"] [data-pr] [data-who]:not([data-who="8"]),:root[data-who-only="8"] [data-pr] p:not([data-who]):not([data-bm]):not([data-stop]){opacity:.22}
+:root:not([data-who-names=off]) [data-script] [data-who-start]{position:relative;margin-top:.55em}
+[data-script] [data-who-start]::before{position:absolute;left:0;right:0;bottom:100%;display:block;font-family:'IBM Plex Mono',monospace;font-size:.3em;letter-spacing:.14em;text-transform:uppercase;line-height:1.5;opacity:.85;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}
+</style>
+</helmet>
+<div data-theme="{{ theme }}" style="height:100vh;display:flex;flex-direction:column;font:500 13px var(--f-sans);color:var(--text);background:var(--bg);user-select:none">
+
+  <div style="height:36px;flex:none;display:flex;align-items:center;background:var(--t-ui);border-bottom:1px solid var(--t-hair)">
+    <div style="flex:1;min-width:0;display:flex;align-items:center;gap:12px;padding:0 14px">
+      <span style="font-family:var(--f-brand);font-size:15px;letter-spacing:3.5px;line-height:1">ARCA</span>
+      <div style="width:1px;height:16px;background:var(--t-border)"></div>
+      <span style="font-weight:600;font-size:12.5px">Teleprompter</span>
+      <span style="font-size:12px;color:var(--t-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ docTitle }}</span>
+    </div>
+    <div style="display:flex;height:100%">
+      <div style="width:46px;display:flex;align-items:center;justify-content:center" style-hover="background:var(--hover)"><div style="width:10px;height:1px;background:var(--text)"></div></div>
+      <div style="width:46px;display:flex;align-items:center;justify-content:center" style-hover="background:var(--hover)"><div style="width:9px;height:9px;border:1px solid var(--text);border-radius:2px"></div></div>
+      <div style="width:46px;display:flex;align-items:center;justify-content:center;color:var(--text)" style-hover="background:#c42b1c;color:#fff"><svg viewBox="0 0 16 16" style="width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.4"><path d="M2 2l12 12M14 2L2 14"></path></svg></div>
+    </div>
+  </div>
+
+  <div style="height:32px;flex:none;display:flex;align-items:center;gap:2px;padding:0 8px;background:var(--t-ui);position:relative;z-index:75">
+    <sc-for list="{{ menus }}" as="m" hint-placeholder-count="8">
+      <div style="position:relative">
+        <div onClick="{{ m.onClick }}" onMouseEnter="{{ m.onEnter }}" style="height:26px;padding:0 10px;display:flex;align-items:center;border-radius:8px;background:{{ m.bg }};cursor:default" style-hover="background:var(--hover)">{{ m.label }}</div>
+        <sc-if value="{{ m.open }}">
+          <div style="position:absolute;top:30px;left:0;min-width:270px;width:max-content;max-width:min(440px,calc(100vw - 16px));padding:6px;z-index:50;background:var(--t-ui);border:1px solid var(--t-border);border-radius:12px;box-shadow:var(--t-sh2)">
+            <sc-for list="{{ m.items }}" as="it">
+              <sc-if value="{{ it.sep }}"><div style="height:1px;background:var(--line);margin:4px 6px"></div></sc-if>
+              <sc-if value="{{ it.isItem }}"><div onClick="{{ it.onClick }}" style="display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:6px;align-items:center;height:30px;padding:0 10px 0 6px;border-radius:8px;cursor:default" style-hover="background:var(--hover)"><span style="font-size:12px;color:var(--muted)">{{ it.check }}</span><span style="white-space:nowrap">{{ it.label }}</span><span style="color:var(--faint);font-size:12px;padding-left:24px">{{ it.key }}</span></div></sc-if>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+  <sc-if value="{{ presMenu }}"><div onMouseDown="{{ closePresMenu }}" style="position:fixed;inset:0;z-index:4"></div></sc-if>
+  <sc-if value="{{ anyMenu }}"><div onClick="{{ closeMenus }}" style="position:fixed;inset:0;z-index:70"></div></sc-if>
+
+  <div style="height:50px;flex:none;display:flex;align-items:center;gap:8px;padding:0 12px;background:var(--t-ui);border-bottom:1px solid var(--t-border);box-shadow:var(--t-sh1);position:relative;z-index:5">
+    <div style="flex:1;min-width:0;height:30px;display:flex;flex-wrap:nowrap;align-items:center;gap:0 2px;overflow-x:auto;overflow-y:hidden;scrollbar-width:none">
+      <sc-for list="{{ tools }}" as="b" hint-placeholder-count="12">
+        <sc-if value="{{ b.sep }}"><div style="width:1px;height:18px;background:var(--line);margin:6px 6px"></div></sc-if>
+        <sc-if value="{{ b.icon }}"><button onMouseDown="{{ b.onDown }}" title="{{ b.title }}" style="width:32px;height:30px;display:flex;align-items:center;justify-content:center;background:transparent;border:none;border-radius:980px;color:var(--text);cursor:pointer" style-hover="background:var(--t-sunk)"><svg viewBox="0 0 16 16" style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="{{ b.d }}"></path></svg></button></sc-if>
+        <sc-if value="{{ b.text }}"><button onMouseDown="{{ b.onDown }}" title="{{ b.title }}" style="width:32px;height:30px;background:transparent;border:none;border-radius:980px;color:var(--text);cursor:pointer;font:{{ b.font }};text-decoration:{{ b.deco }}" style-hover="background:var(--t-sunk)">{{ b.label }}</button></sc-if>
+        <sc-if value="{{ b.swatch }}"><button onMouseDown="{{ b.onDown }}" title="{{ b.title }}" style="width:24px;height:30px;padding:0;background:transparent;border:none;border-radius:980px;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--t-sunk)"><div style="width:12px;height:12px;border-radius:50%;background:{{ b.color }};box-shadow:inset 0 0 0 1px rgba(128,128,128,.6)"></div></button></sc-if>
+      </sc-for>
+    </div>
+    <div style="position:relative;flex:none">
+      <button onMouseDown="{{ togglePresMenu }}" title="Apresentador do trecho (Alt+1…8)" style="height:30px;display:flex;align-items:center;gap:7px;padding:0 10px 0 12px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap"><span style="width:10px;height:10px;border-radius:50%;background:{{ curPresColor }};box-shadow:inset 0 0 0 1px rgba(128,128,128,.6)"></span>{{ curPresName }}<svg viewBox="0 0 16 16" style="width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round"><path d="M4 6l4 4 4-4"></path></svg></button>
+      <sc-if value="{{ presMenu }}">
+        <div style="position:absolute;top:36px;right:0;min-width:220px;width:max-content;padding:6px;background:var(--t-ui);border:1px solid var(--t-border);border-radius:12px;box-shadow:var(--t-sh2);z-index:80">
+          <sc-for list="{{ presMenuItems }}" as="pm">
+            <div onMouseDown="{{ pm.onDown }}" style="display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:10px;align-items:center;height:30px;padding:0 10px;border-radius:8px;cursor:default;font-size:13px" style-hover="background:var(--hover)"><span style="width:10px;height:10px;border-radius:50%;background:{{ pm.color }};box-shadow:inset 0 0 0 1px rgba(128,128,128,.6)"></span><span style="white-space:nowrap">{{ pm.name }}</span><span style="color:var(--faint);font-size:12px;padding-left:16px">{{ pm.key }}</span></div>
+          </sc-for>
+        </div>
+      </sc-if>
+    </div>
+    <button onClick="{{ toggleLock }}" title="Bloquear / editar ao vivo (Ctrl+E)" style="height:30px;flex:none;padding:0 12px;display:flex;align-items:center;gap:7px;border-radius:980px;border:none;background:{{ lockBg }};color:var(--text);font:inherit;cursor:pointer;white-space:nowrap"><svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round"><path d="{{ lockIcon }}"></path></svg>{{ lockLabel }}</button>
+    <button onClick="{{ toggleTalent }}" title="Janela do talento (F5)" style="height:30px;flex:none;padding:0 12px;display:flex;align-items:center;gap:7px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer;white-space:nowrap" style-hover="background:var(--t-sunk)"><svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linejoin:round"><path d="M1.5 2.5h13v9h-13z M5.5 14.5h5 M8 11.5v3"></path></svg>Talento</button>
+    <button onClick="{{ togglePlay }}" title="Iniciar / parar prompt (Ctrl+Enter)" style="height:30px;flex:none;min-width:100px;padding:0 14px;display:flex;align-items:center;justify-content:center;gap:8px;border-radius:980px;border:none;background:{{ promptBg }};color:{{ promptFg }};font:600 13px var(--f-sans);cursor:pointer;white-space:nowrap"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:currentColor"><path d="{{ promptIcon }}"></path></svg>{{ promptLabel }}</button>
+  </div>
+
+  <div style="flex:1;min-height:0;display:grid;grid-template-columns:{{ gridCols }}">
+    <sc-if value="{{ showBm }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--panel);border-right:1px solid var(--line)">
+        <div style="height:40px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 14px">
+          <span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Marcadores</span>
+          <button onMouseDown="{{ insertBm }}" title="Inserir marcador (Ctrl+K)" style="width:26px;height:26px;border-radius:980px;border:none;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--hover);color:var(--text)"><svg viewBox="0 0 16 16" style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round"><path d="M8 2.5v11M2.5 8h11"></path></svg></button>
+        </div>
+        <div style="flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding:0 6px;display:flex;flex-direction:column;gap:1px">
+          <sc-for list="{{ bookmarks }}" as="b" hint-placeholder-count="6">
+            <div draggable="true" onDragStart="{{ b.onDragStart }}" onDragOver="{{ b.onDragOver }}" onDragLeave="{{ b.onDragLeave }}" onDrop="{{ b.onDrop }}" onDragEnd="{{ onBmDragEnd }}" onDoubleClick="{{ b.onJump }}" onContextMenu="{{ b.onDelete }}" title="Arraste para reordenar · Duplo clique: ir · Botão direito: excluir" style="border-top:2px solid {{ b.dropLine }};display:grid;grid-template-columns:14px minmax(0,1fr) 22px 22px;gap:2px;align-items:center;min-height:38px;padding:3px 2px 3px 8px;border-radius:9px;background:{{ b.bg }};font-weight:{{ b.weight }};opacity:{{ b.op }}" style-hover="background:var(--hover)">
+              <span style="font:600 11px var(--f-num);color:{{ b.keyColor }}">{{ b.key }}</span>
+              <div style="display:flex;flex-direction:column;min-width:0"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:{{ b.deco }}">{{ b.name }}</span><span style="font:10px var(--f-num);color:var(--t-faint);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ b.sub }}</span></div>
+              <button onClick="{{ b.onSkip }}" title="{{ b.skipTitle }}" style="width:22px;height:22px;border-radius:980px;border:none;background:transparent;color:{{ b.skipColor }};cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none" style-hover="background:var(--hover);color:var(--text)"><svg viewBox="0 0 16 16" style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="{{ b.skipIcon }}"></path></svg></button>
+              <button onClick="{{ b.onRemove }}" title="Excluir marcador" style="width:22px;height:22px;border-radius:980px;border:none;background:transparent;color:var(--t-faint);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none" style-hover="background:var(--hover);color:var(--text)"><svg viewBox="0 0 16 16" style="width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round"><path d="M4 4l8 8M12 4l-8 8"></path></svg></button>
+            </div>
+          </sc-for>
+          <sc-if value="{{ hasStops }}">
+            <div style="height:32px;flex:none;display:flex;align-items:center;padding:8px 8px 0;font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Pausas</div>
+            <sc-for list="{{ stopsList }}" as="p">
+              <div onDoubleClick="{{ p.onJump }}" title="Duplo clique: ir" style="display:grid;grid-template-columns:14px minmax(0,1fr) auto 22px;gap:6px;align-items:center;height:32px;padding:0 2px 0 8px;border-radius:9px" style-hover="background:var(--hover)">
+                <svg viewBox="0 0 16 16" style="width:10px;height:10px;fill:var(--t-faint)"><path d="M4 3h3v10H4z M9 3h3v10H9z"></path></svg>
+                <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}</span>
+                <span style="font:11px var(--f-num);color:var(--muted)">{{ p.time }}</span>
+                <button onClick="{{ p.onRemove }}" title="Excluir pausa" style="width:22px;height:22px;border-radius:980px;border:none;background:transparent;color:var(--t-faint);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none" style-hover="background:var(--hover);color:var(--text)"><svg viewBox="0 0 16 16" style="width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round"><path d="M4 4l8 8M12 4l-8 8"></path></svg></button>
+              </div>
+            </sc-for>
+          </sc-if>
+        </div>
+        <div style="flex:none;display:flex;flex-direction:column;gap:6px;padding:8px 10px 10px;border-top:1px solid var(--line);font-size:11px">
+          <div style="display:flex;align-items:center;gap:6px"><span style="color:var(--muted);flex:none">Programa</span><input value="{{ progInput }}" onChange="{{ onProgInput }}" onBlur="{{ onProgBlur }}" title="Duração do programa (mm:ss)" style="height:24px;width:52px;flex:none;border-radius:7px;border:1px solid transparent;background:var(--field);color:var(--text);font:11px var(--f-num);padding:0 6px;text-align:right;user-select:text"><span style="flex:1;min-width:0;text-align:right;font-family:var(--f-num);font-weight:600;color:{{ overColor }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis" title="{{ overTitle }} · estimado {{ rundownTotal }}">{{ overLabel }}</span></div>
+          <div onClick="{{ toggleRehearse }}" style="display:flex;align-items:center;gap:6px;cursor:default"><div style="width:13px;height:13px;border-radius:4px;border:1px solid {{ rehCk.bd }};background:{{ rehCk.bg }};display:flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 16 16" style="width:10px;height:10px;fill:none;stroke:var(--invtext);stroke-width:2.2;opacity:{{ rehCk.op }}"><path d="M3 8.5l3 3 7-7"></path></svg></div><span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Modo ensaio</span><sc-if value="{{ hasReh }}"><button onClick="{{ clearReh }}" style="border:none;background:transparent;color:var(--t-accent);font:inherit;cursor:pointer;padding:0">Zerar</button></sc-if></div>
+          <div style="display:flex;justify-content:space-between;gap:6px;color:var(--t-faint);white-space:nowrap"><span>{{ wordCount }} palavras</span><span style="font-family:var(--f-num)">est. {{ rundownTotal }}</span></div>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="display:flex;flex-direction:column;min-height:0;min-width:0">
+      <div style="height:38px;flex:none;display:flex;align-items:center;gap:2px;padding:0 6px;background:var(--panel);border-bottom:1px solid var(--line);overflow-x:auto;overflow-y:hidden;scrollbar-width:none">
+        <sc-for list="{{ docTabs }}" as="dt" hint-placeholder-count="1">
+          <div onClick="{{ dt.onClick }}" title="{{ dt.name }}" style="height:28px;flex:none;max-width:220px;display:flex;align-items:center;gap:6px;padding:0 4px 0 12px;border-radius:8px;background:{{ dt.bg }};box-shadow:{{ dt.shadow }};color:{{ dt.color }};font-size:12px;font-weight:{{ dt.weight }};cursor:default" style-hover="color:var(--text)">
+            <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ dt.name }}</span>
+            <span style="width:6px;height:6px;border-radius:50%;background:var(--t-accent);flex:none;opacity:{{ dt.dirtyOp }}"></span>
+            <button onClick="{{ dt.onClose }}" title="Fechar" style="width:20px;height:20px;border-radius:980px;border:none;background:transparent;color:var(--t-faint);cursor:pointer;display:flex;align-items:center;justify-content:center;flex:none" style-hover="background:var(--hover);color:var(--text)"><svg viewBox="0 0 16 16" style="width:9px;height:9px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round"><path d="M4 4l8 8M12 4l-8 8"></path></svg></button>
+          </div>
+        </sc-for>
+        <button onClick="{{ newTab }}" title="Novo roteiro (Ctrl+N)" style="width:28px;height:28px;flex:none;border-radius:8px;border:none;background:transparent;color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--hover);color:var(--text)"><svg viewBox="0 0 16 16" style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round"><path d="M8 2.5v11M2.5 8h11"></path></svg></button>
+      </div>
+      <div style="flex:1;min-height:0;position:relative;container-type:inline-size">
+        <div style="position:absolute;inset:0;background:{{ bg }}"></div>
+        <sc-if value="{{ hasBgImg }}"><div style="position:absolute;inset:0;background-image:url("{{ bgImg }}");background-size:cover;background-position:center;opacity:{{ bgImgOp }};pointer-events:none"></div></sc-if>
+        <div ref="{{ edScroll }}" onScroll="{{ onEdScroll }}" onWheel="{{ onEdWheel }}" style="position:absolute;inset:0;overflow-y:scroll;overflow-x:hidden">
+          <div ref="{{ edSizer }}" style="position:relative;width:100%;overflow:hidden">
+            <div ref="{{ edZoom }}" style="position:absolute;left:0;top:0;width:1000px;transform-origin:0 0">
+              <div ref="{{ edRef }}" data-ed="1" data-script="1" onInput="{{ onEdInput }}" spellcheck="false" style="--fs:{{ fontSize }}px;box-sizing:border-box;padding:0 {{ prRight }}px 0 {{ prMargin }}px;font-family:{{ fontFam }};font-size:{{ fontSize }}px;line-height:{{ lineH }};color:{{ fg }};text-align:{{ align }};caret-color:{{ fg }};user-select:text;transform:{{ edFlip }};cursor:{{ edCursor }}"></div>
+            </div>
+          </div>
+        </div>
+        <div style="position:absolute;left:0;right:10px;top:0;bottom:0;pointer-events:none;overflow:hidden">
+<sc-if value="{{ readingLine }}"><div style="position:absolute;left:0;right:0;top:calc({{ readPct }}% + {{ halfLineCq }});height:2px;background:{{ indColorV }};opacity:.35;pointer-events:none"></div></sc-if>
+<sc-if value="{{ ovFaixa }}"><div style="position:absolute;left:0;right:0;top:0;height:{{ readPct }}%;background:{{ dimColor }};pointer-events:none"></div><div style="position:absolute;left:0;right:0;bottom:0;top:calc({{ readPct }}% + {{ lineCq }});background:{{ dimColor }};pointer-events:none"></div></sc-if>
+<sc-if value="{{ ovFade }}"><div style="position:absolute;left:0;right:0;top:0;height:{{ readPct }}%;background:linear-gradient({{ dimColor }},transparent);pointer-events:none"></div><div style="position:absolute;left:0;right:0;bottom:0;top:calc({{ readPct }}% + {{ lineCq }});background:linear-gradient(transparent,{{ dimColor }});pointer-events:none"></div></sc-if>
+<sc-if value="{{ ovDestaque }}"><div style="position:absolute;left:0;right:0;top:{{ readPct }}%;height:{{ lineCq }};background:{{ hiColor }};pointer-events:none"></div></sc-if>
+<div style="position:absolute;left:{{ indLeft }};top:calc({{ readPct }}% + {{ halfLineCq }});transform:translateY(-50%);width:{{ indW }};height:{{ indH }};background:{{ indColorV }};clip-path:{{ indClip }};border-radius:{{ indRadius }};display:{{ indDisplay }};pointer-events:none"></div>
+
+        </div>
+        <div style="position:absolute;top:10px;left:50%;transform:translateX(-50%);display:{{ edBarDisplay }};align-items:center;gap:8px;padding:4px 4px 4px 12px;background:var(--raised);border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,.25);white-space:nowrap">
+          <span style="color:var(--muted)">{{ edBarText }}</span>
+          <sc-if value="{{ notFollowing }}"><button onMouseDown="{{ cursorToPrompter }}" style="height:26px;padding:0 10px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer" style-hover="background:var(--t-sunk)">Prompter no cursor</button></sc-if>
+          <button onClick="{{ edBarAction }}" style="height:26px;padding:0 10px;border-radius:980px;border:none;background:var(--inv);color:var(--invtext);font:600 12px var(--f-sans);cursor:pointer">{{ edBarBtn }}</button>
+        </div>
+        <sc-if value="{{ hasFlash }}"><div style="position:absolute;left:50%;bottom:76px;transform:translateX(-50%);max-width:calc(100% - 32px);box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:10px;padding:7px 14px 7px 8px;border-radius:980px;background:rgba(20,20,22,.82);color:#fff;pointer-events:none;z-index:4"><sc-if value="{{ hasFlashSub }}"><span style="display:flex;align-items:center;gap:5px;height:20px;padding:0 9px;border-radius:980px;background:{{ flashSubBg }};font:600 10px var(--f-num);letter-spacing:1.2px;text-transform:uppercase"><svg viewBox="0 0 16 16" style="width:9px;height:9px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="{{ flashArrow }}"></path></svg>{{ flashSub }}</span></sc-if><span style="font:600 13px var(--f-num);white-space:nowrap">{{ flashText }}</span><sc-if value="{{ flashBar }}"><div style="width:72px;height:3px;border-radius:2px;background:rgba(255,255,255,.2);flex:none"><div style="height:100%;width:{{ flashW }};border-radius:2px;background:#fff"></div></div></sc-if></div></sc-if>
+        <sc-if value="{{ counting }}"><div style="position:absolute;right:20px;top:14px;width:56px;height:56px;border-radius:50%;background:var(--raised);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font:500 26px var(--f-num)">{{ count }}</div></sc-if>
+      </div>
+    </div>
+
+    <sc-if value="{{ showInsp }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;flex-direction:column;min-height:0;min-width:0;background:var(--panel);border-left:1px solid var(--line)">
+        <div style="padding:10px 12px;flex:none">
+          <div style="display:flex;padding:2px;gap:2px;background:var(--t-sunk);border-radius:11px">
+            <sc-for list="{{ tabs }}" as="t" hint-placeholder-count="5">
+              <div onClick="{{ t.onClick }}" style="flex:1;height:26px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:{{ t.bg }};box-shadow:{{ t.shadow }};color:{{ t.color }};cursor:default;font-size:12px">{{ t.label }}</div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;padding-bottom:12px">
+
+          <sc-if value="{{ tabRoteiro }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;justify-content:space-between;padding:8px 16px 10px"><span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Aparência</span><span onClick="{{ resetLook }}" style="color:var(--muted);cursor:pointer;font-size:12px">Redefinir</span></div>
+            <div style="display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;align-items:center;padding:0 16px 16px">
+              <span style="color:var(--muted)">Fundo</span>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><sc-for list="{{ bgSwatches }}" as="w" hint-placeholder-count="4"><div onClick="{{ w.onClick }}" style="width:24px;height:24px;flex:none;border-radius:6px;background:{{ w.value }};box-shadow:inset 0 0 0 1px rgba(128,128,128,.45),0 0 0 2px var(--panel),0 0 0 3.5px {{ w.ring }};cursor:pointer"></div></sc-for><label title="Outra cor…" style="width:24px;height:24px;flex:none;border-radius:6px;position:relative;cursor:pointer;border:1px dashed var(--t-border);box-sizing:border-box;display:flex;align-items:center;justify-content:center;color:var(--muted);box-shadow:0 0 0 2px var(--panel),0 0 0 3.5px {{ bgPickRing }}"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round"><path d="M8 3v10M3 8h10"></path></svg><input type="color" value="{{ bg }}" onInput="{{ onBgPick }}" onChange="{{ onBgPick }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0"></label><input value="{{ bgHex }}" onChange="{{ onBgHex }}" onBlur="{{ onBgHexBlur }}" spellcheck="false" maxlength="7" style="width:84px;height:24px;flex:none;border-radius:6px;border:1px solid transparent;background:var(--field);color:var(--text);font:12px var(--f-num);padding:0 6px;text-transform:uppercase;user-select:text"></div>
+              <span style="color:var(--muted)">Texto</span>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><sc-for list="{{ fgSwatches }}" as="w" hint-placeholder-count="4"><div onClick="{{ w.onClick }}" style="width:24px;height:24px;flex:none;border-radius:6px;background:{{ w.value }};box-shadow:inset 0 0 0 1px rgba(128,128,128,.45),0 0 0 2px var(--panel),0 0 0 3.5px {{ w.ring }};cursor:pointer"></div></sc-for><label title="Outra cor…" style="width:24px;height:24px;flex:none;border-radius:6px;position:relative;cursor:pointer;border:1px dashed var(--t-border);box-sizing:border-box;display:flex;align-items:center;justify-content:center;color:var(--muted);box-shadow:0 0 0 2px var(--panel),0 0 0 3.5px {{ fgPickRing }}"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round"><path d="M8 3v10M3 8h10"></path></svg><input type="color" value="{{ fg }}" onInput="{{ onFgPick }}" onChange="{{ onFgPick }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0"></label><input value="{{ fgHex }}" onChange="{{ onFgHex }}" onBlur="{{ onFgHexBlur }}" spellcheck="false" maxlength="7" style="width:84px;height:24px;flex:none;border-radius:6px;border:1px solid transparent;background:var(--field);color:var(--text);font:12px var(--f-num);padding:0 6px;text-transform:uppercase;user-select:text"></div>
+              <span style="color:var(--muted)">Fonte</span>
+              <select value="{{ fontKey }}" onChange="{{ onFont }}" style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 6px;min-width:0"><option value="atk">Atkinson Hyperlegible</option><option value="sans">Source Sans 3</option><option value="serif">Source Serif 4</option><option value="mono">IBM Plex Mono</option></select>
+              <span style="color:var(--muted)">Alinhamento</span>
+              <div style="display:flex;padding:2px;gap:2px;background:var(--t-sunk);border-radius:11px;width:fit-content"><sc-for list="{{ aligns }}" as="a" hint-placeholder-count="2"><div onClick="{{ a.onClick }}" title="{{ a.title }}" style="width:36px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:{{ a.bg }};box-shadow:{{ a.shadow }};cursor:pointer"><svg viewBox="0 0 16 16" style="width:13px;height:13px;fill:none;stroke:var(--text);stroke-width:1.6;stroke-linecap:round"><path d="{{ a.d }}"></path></svg></div></sc-for></div>
+              <span style="color:var(--muted)">Espelhar</span>
+              <div style="display:flex;flex-wrap:wrap;gap:6px 14px"><sc-for list="{{ edFlipChecks }}" as="c" hint-placeholder-count="2"><div onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:7px;cursor:default"><div style="width:15px;height:15px;border-radius:4px;border:1px solid {{ c.bd }};background:{{ c.bg }};display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:var(--invtext);stroke-width:2.2;opacity:{{ c.op }}"><path d="M3 8.5l3 3 7-7"></path></svg></div>{{ c.label }}</div></sc-for></div>
+            </div>
+            <div style="height:1px;background:var(--line);margin:0 16px"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px"><span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Apresentadores</span><button onClick="{{ addPres }}" title="Adicionar apresentador" style="height:24px;padding:0 10px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;font-size:12px;cursor:pointer">Adicionar</button></div>
+            <div style="display:flex;flex-direction:column;gap:6px;padding:0 16px 12px">
+              <sc-for list="{{ presList }}" as="pr" hint-placeholder-count="2">
+                <div style="display:grid;grid-template-columns:24px minmax(0,1fr) 44px 22px;gap:8px;align-items:center">
+                  <label title="Cor" style="width:24px;height:24px;border-radius:6px;position:relative;cursor:pointer;background:{{ pr.color }};box-shadow:inset 0 0 0 1px rgba(128,128,128,.45)"><input type="color" value="{{ pr.color }}" onInput="{{ pr.onColor }}" onChange="{{ pr.onColor }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0"></label>
+                  <input value="{{ pr.name }}" onChange="{{ pr.onName }}" placeholder="Nome" style="height:28px;border-radius:8px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 8px;min-width:0;user-select:text">
+                  <span style="font:11px var(--f-num);color:var(--t-faint);text-align:right">{{ pr.key }}</span>
+                  <button onClick="{{ pr.onRemove }}" title="Remover apresentador" style="width:22px;height:22px;border-radius:980px;border:none;background:transparent;color:var(--t-faint);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--hover);color:var(--text)"><svg viewBox="0 0 16 16" style="width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round"><path d="M4 4l8 8M12 4l-8 8"></path></svg></button>
+                </div>
+              </sc-for>
+              <div onClick="{{ togglePresNames }}" style="display:flex;align-items:center;gap:8px;cursor:default;min-height:26px;padding-top:4px"><div style="width:15px;height:15px;border-radius:4px;border:1px solid {{ presNamesCk.bd }};background:{{ presNamesCk.bg }};display:flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:var(--invtext);stroke-width:2.2;opacity:{{ presNamesCk.op }}"><path d="M3 8.5l3 3 7-7"></path></svg></div>Mostrar o nome no início de cada fala</div>
+              <div style="display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;align-items:center">
+                <span style="color:var(--muted)">Destacar</span>
+                <div style="display:flex;flex-wrap:wrap;gap:4px"><sc-for list="{{ presOnlyOpts }}" as="po"><div onClick="{{ po.onClick }}" style="height:26px;display:flex;align-items:center;gap:6px;padding:0 10px;border-radius:980px;background:{{ po.bg }};color:{{ po.fg }};font-size:12px;cursor:pointer;white-space:nowrap"><span style="width:8px;height:8px;border-radius:50%;background:{{ po.color }};display:{{ po.dot }}"></span>{{ po.name }}</div></sc-for></div>
+              </div>
+            </div>
+            <div style="height:1px;background:var(--line);margin:0 16px"></div>
+            <div style="display:flex;justify-content:space-between;padding:14px 16px 10px"><span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Palavras por linha e margem</span><span onClick="{{ resetLayout }}" style="color:var(--muted);cursor:pointer;font-size:12px">Redefinir</span></div>
+            <div style="display:grid;grid-template-columns:84px minmax(0,1fr) 40px;gap:12px 10px;align-items:center;padding:0 16px 16px">
+              <span style="color:var(--muted)">Palavras/linha</span><input type="range" min="2" max="12" step="0.25" value="{{ wpl }}" onChange="{{ onWpl }}"><span style="font:12px var(--f-num);text-align:right">{{ wplLabel }}</span>
+              <span style="color:var(--muted)">Margem</span><input type="range" min="0" max="400" step="10" value="{{ margin }}" onChange="{{ onMargin }}"><span style="font:12px var(--f-num);text-align:right">{{ margin }}</span>
+              <span style="color:var(--muted)">Posição</span><div style="display:flex;flex-direction:column;gap:2px;min-width:0"><input type="range" min="-1" max="1" step="0.05" value="{{ mPos }}" onChange="{{ onMPos }}" onDoubleClick="{{ resetMPos }}" title="Duplo clique: esquerda"><div style="display:flex;justify-content:space-between;font-size:10px;color:var(--t-faint)"><span>Esq.</span><span>Centro</span><span>Dir.</span></div></div><span style="font:12px var(--f-num);text-align:right">{{ mPosLabel }}</span>
+              <span style="color:var(--muted)">Entrelinha</span><input type="range" min="1" max="2" step="0.05" value="{{ lineH }}" onChange="{{ onLineH }}"><span style="font:12px var(--f-num);text-align:right">{{ lineHLabel }}</span>
+            </div>
+            <div style="height:1px;background:var(--line);margin:0 16px"></div>
+            <div style="display:flex;justify-content:space-between;padding:14px 16px 10px"><span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Velocidade</span><span style="color:var(--muted);font-size:12px">{{ unitName }}</span></div>
+            <div style="display:grid;grid-template-columns:84px minmax(0,1fr) 40px;gap:12px 10px;align-items:center;padding:0 16px 16px">
+              <span style="color:var(--muted)">Mínima</span><input type="range" min="0.1" max="2" step="0.1" value="{{ minS }}" onChange="{{ onMinS }}"><span style="font:12px var(--f-num);text-align:right">{{ minLabel }}</span>
+              <span style="color:var(--muted)">Máxima</span><input type="range" min="1" max="6" step="0.1" value="{{ maxS }}" onChange="{{ onMaxS }}"><span style="font:12px var(--f-num);text-align:right">{{ maxLabel }}</span>
+              <span style="color:var(--muted)">Atual</span><input type="range" min="0" max="1" step="0.01" value="{{ speedT }}" onChange="{{ onSpeed }}"><span style="font:12px var(--f-num);text-align:right">{{ speedValue }}</span>
+            </div>
+            <div style="height:1px;background:var(--line);margin:0 16px"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px">
+              <span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Duração automática</span>
+              <div onClick="{{ toggleAutoRun }}" style="width:34px;height:20px;border-radius:10px;background:{{ autoRunT.track }};position:relative;cursor:pointer;flex:none"><div style="position:absolute;top:2px;left:{{ autoRunT.left }};width:16px;height:16px;border-radius:50%;background:{{ autoRunT.knob }};box-shadow:var(--shadow)"></div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;padding:0 16px">
+              <span style="color:var(--muted);width:84px;flex:none">Tempo total</span>
+              <input value="{{ runTarget }}" onChange="{{ onRunTarget }}" placeholder="hh:mm:ss" style="height:32px;width:92px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:12px var(--f-num);padding:0 8px;user-select:text">
+              <span style="color:var(--faint);font-size:12px">atual {{ totalLabel }}</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tabOverlay }}">
+            <div style="padding:8px 16px 10px;font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Overlay</div>
+            <div style="display:grid;grid-template-columns:84px minmax(0,1fr) 40px;gap:12px 10px;align-items:center;padding:0 16px 16px">
+              <span style="color:var(--muted)">Tipo</span>
+              <select value="{{ ovType }}" onChange="{{ onOvType }}" style="grid-column:span 2;height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 6px"><option value="nenhum">Nenhum</option><option value="faixa">Faixa de leitura</option><option value="fade">Degradê nas bordas</option><option value="destaque">Destaque da linha</option></select>
+              <span style="color:var(--muted)">Opacidade</span><input type="range" min="0" max="1" step="0.05" value="{{ ovOp }}" onChange="{{ onOvOp }}"><span style="font:12px var(--f-num);text-align:right">{{ ovOpLabel }}</span>
+            </div>
+            <div style="height:1px;background:var(--line);margin:0 16px"></div>
+            <div style="padding:14px 16px 10px;font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Indicador</div>
+            <div style="display:grid;grid-template-columns:84px minmax(0,1fr) 40px;gap:12px 10px;align-items:center;padding:0 16px 16px">
+              <span style="color:var(--muted)">Tipo</span>
+              <select value="{{ indType }}" onChange="{{ onIndType }}" style="grid-column:span 2;height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 6px"><option value="nenhum">Nenhum</option><option value="seta">Seta</option><option value="quadrado">Quadrado</option><option value="ponto">Ponto</option><option value="linha">Linha</option></select>
+              <span style="color:var(--muted)">Tamanho</span>
+              <div style="grid-column:span 2;display:flex;padding:2px;gap:2px;background:var(--t-sunk);border-radius:11px;width:fit-content"><sc-for list="{{ indSizes }}" as="z" hint-placeholder-count="3"><div onClick="{{ z.onClick }}" style="width:36px;height:24px;border-radius:8px;display:flex;align-items:center;justify-content:center;background:{{ z.bg }};box-shadow:{{ z.shadow }};color:{{ z.color }};cursor:pointer;font-size:12px">{{ z.label }}</div></sc-for></div>
+              <span style="color:var(--muted)">Cor</span>
+              <div style="grid-column:span 2;display:flex;gap:6px"><sc-for list="{{ indColors }}" as="w" hint-placeholder-count="4"><div onClick="{{ w.onClick }}" style="width:24px;height:24px;flex:none;border-radius:6px;background:{{ w.value }};box-shadow:inset 0 0 0 1px rgba(128,128,128,.45),0 0 0 2px var(--panel),0 0 0 3.5px {{ w.ring }};cursor:pointer"></div></sc-for><label title="Outra cor…" style="width:24px;height:24px;flex:none;border-radius:6px;position:relative;cursor:pointer;border:1px dashed var(--t-border);box-sizing:border-box;display:flex;align-items:center;justify-content:center;color:var(--muted);box-shadow:0 0 0 2px var(--panel),0 0 0 3.5px {{ indPickRing }}"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round"><path d="M8 3v10M3 8h10"></path></svg><input type="color" value="{{ indColor }}" onInput="{{ onIndPick }}" onChange="{{ onIndPick }}" style="position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;border:none;padding:0"></label><input value="{{ indColorHex }}" onChange="{{ onIndHex }}" onBlur="{{ onIndHexBlur }}" spellcheck="false" maxlength="7" style="width:84px;height:24px;flex:none;border-radius:6px;border:1px solid transparent;background:var(--field);color:var(--text);font:12px var(--f-num);padding:0 6px;text-transform:uppercase;user-select:text"></div>
+              <span style="color:var(--muted)">Posição</span><input type="range" min="10" max="70" step="1" value="{{ readPct }}" onChange="{{ onRead }}"><span style="font:12px var(--f-num);text-align:right">{{ readPct }}%</span>
+              <span></span>
+              <div onClick="{{ toggleReadingLine }}" style="grid-column:span 2;display:flex;align-items:center;gap:7px;cursor:default"><div style="width:15px;height:15px;border-radius:4px;border:1px solid {{ readingLineCk.bd }};background:{{ readingLineCk.bg }};display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:var(--invtext);stroke-width:2.2;opacity:{{ readingLineCk.op }}"><path d="M3 8.5l3 3 7-7"></path></svg></div>Linha de leitura atrás do texto</div>
+            </div>
+            <div style="height:1px;background:var(--line);margin:0 16px"></div>
+            <div style="padding:14px 16px 10px;font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Imagem de fundo</div>
+            <div style="display:grid;grid-template-columns:84px minmax(0,1fr) 40px;gap:12px 10px;align-items:center;padding:0 16px">
+              <span style="color:var(--muted)">Arquivo</span>
+              <div style="grid-column:span 2;display:flex;gap:6px"><button onClick="{{ pickBg }}" style="height:28px;padding:0 12px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer" style-hover="background:var(--t-sunk)">Escolher…</button><sc-if value="{{ hasBgImg }}"><button onClick="{{ clearBg }}" style="height:28px;padding:0 12px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer">Remover</button></sc-if></div>
+              <span style="color:var(--muted)">Opacidade</span><input type="range" min="0.05" max="0.6" step="0.05" value="{{ bgImgOp }}" onChange="{{ onBgOp }}"><span style="font:12px var(--f-num);text-align:right">{{ bgImgOpLabel }}</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tabTelas }}">
+            <div style="padding:8px 16px 10px;font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Saída · {{ pvLabel }}</div>
+            <div style="padding:0 16px 16px">
+              <div ref="{{ pvRef }}" onWheel="{{ onTvWheel }}" onDoubleClick="{{ toggleTalent }}" title="Duplo clique: abrir a janela do talento" style="position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:11px;box-shadow:0 0 0 1px {{ pvBorder }};background:{{ bg }};container-type:inline-size">
+                <sc-if value="{{ hasBgImg }}"><div style="position:absolute;inset:0;background-image:url("{{ bgImg }}");background-size:cover;opacity:{{ bgImgOp }}"></div></sc-if>
+                <div style="position:absolute;inset:0;transform:{{ pvFlip }}">
+                  <div ref="{{ pcRef }}" data-pr="1" data-script="1" style="position:absolute;left:0;top:0;width:1000px;box-sizing:border-box;transform-origin:0 0;padding:0 {{ prRight }}px 0 {{ prMargin }}px;font-family:{{ fontFam }};font-size:{{ fontSize }}px;line-height:{{ lineH }};color:{{ fg }};text-align:{{ pvAlign }}"></div>
+                  <sc-if value="{{ readingLine }}"><div style="position:absolute;left:0;right:0;top:calc({{ readPct }}% + {{ halfLineCq }});height:2px;background:{{ indColorV }};opacity:.35;pointer-events:none"></div></sc-if>
+<sc-if value="{{ ovFaixa }}"><div style="position:absolute;left:0;right:0;top:0;height:{{ readPct }}%;background:{{ dimColor }};pointer-events:none"></div><div style="position:absolute;left:0;right:0;bottom:0;top:calc({{ readPct }}% + {{ lineCq }});background:{{ dimColor }};pointer-events:none"></div></sc-if>
+<sc-if value="{{ ovFade }}"><div style="position:absolute;left:0;right:0;top:0;height:{{ readPct }}%;background:linear-gradient({{ dimColor }},transparent);pointer-events:none"></div><div style="position:absolute;left:0;right:0;bottom:0;top:calc({{ readPct }}% + {{ lineCq }});background:linear-gradient(transparent,{{ dimColor }});pointer-events:none"></div></sc-if>
+<sc-if value="{{ ovDestaque }}"><div style="position:absolute;left:0;right:0;top:{{ readPct }}%;height:{{ lineCq }};background:{{ hiColor }};pointer-events:none"></div></sc-if>
+<div style="position:absolute;left:{{ indLeft }};top:calc({{ readPct }}% + {{ halfLineCq }});transform:translateY(-50%);width:{{ indW }};height:{{ indH }};background:{{ indColorV }};clip-path:{{ indClip }};border-radius:{{ indRadius }};display:{{ indDisplay }};pointer-events:none"></div>
+                </div>
+              </div>
+            </div>
+            <div style="height:1px;background:var(--line);margin:0 16px"></div>
+            <div style="padding:14px 16px 6px;font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Telas conectadas</div>
+            <div style="display:flex;flex-direction:column;padding:0 8px">
+              <sc-for list="{{ displays }}" as="d" hint-placeholder-count="3">
+                <div style="display:flex;flex-direction:column;gap:8px;padding:10px 8px;border-radius:8px;background:{{ d.rowBg }}">
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <div onClick="{{ d.onToggle }}" title="Abrir prompter nesta tela" style="width:15px;height:15px;flex:none;border-radius:4px;border:1px solid {{ d.ck.bd }};background:{{ d.ck.bg }};display:flex;align-items:center;justify-content:center;cursor:pointer"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:var(--invtext);stroke-width:2.2;opacity:{{ d.ck.op }}"><path d="M3 8.5l3 3 7-7"></path></svg></div>
+                    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+                      <input value="{{ d.nick }}" onChange="{{ d.onNick }}" title="Clique para renomear" style="height:22px;background:transparent;border:1px solid transparent;border-radius:4px;color:var(--text);font:inherit;font-weight:600;padding:0 4px;margin-left:-5px;min-width:0;user-select:text" style-hover="border-color:var(--line)">
+                      <span style="font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ d.desc }}</span>
+                    </div>
+                  </div>
+                  <div style="display:flex;gap:4px;padding-left:25px">
+                    <sc-for list="{{ d.tools }}" as="b"><div onClick="{{ b.onClick }}" title="{{ b.title }}" style="width:30px;height:26px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:{{ b.bg }};border:none;color:{{ b.fg }};cursor:pointer"><svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="{{ b.d }}"></path></svg></div></sc-for>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="padding:8px 16px 0"><button onClick="{{ toggleTalent }}" style="height:28px;width:100%;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer" style-hover="background:var(--t-sunk)">Nova janela de prompter</button></div>
+            <div style="height:1px;background:var(--line);margin:16px 16px 0"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px"><span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Saída NDI</span><div onClick="{{ toggleNdi }}" style="width:34px;height:20px;border-radius:10px;background:{{ ndiT.track }};position:relative;cursor:pointer;flex:none"><div style="position:absolute;top:2px;left:{{ ndiT.left }};width:16px;height:16px;border-radius:50%;background:{{ ndiT.knob }};box-shadow:var(--shadow)"></div></div></div>
+            <div style="display:flex;flex-direction:column;gap:10px;padding:0 16px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t-muted)"><span style="width:7px;height:7px;border-radius:50%;background:{{ ndiDot }};flex:none"></span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ ndiStatus }}</span></div>
+              <div style="display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;align-items:center">
+                <span style="color:var(--muted)">Nome da fonte</span><input value="{{ ndiName }}" onChange="{{ onNdiName }}" style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 10px;min-width:0;user-select:text">
+                <span style="color:var(--muted)">Formato</span><select value="{{ ndiFmt }}" onChange="{{ onNdiFmt }}" style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 10px;min-width:0;user-select:text"><option value="1080p30">1920 × 1080 · 30p</option><option value="1080p60">1920 × 1080 · 60p</option><option value="1080p25">1920 × 1080 · 25p</option><option value="720p30">1280 × 720 · 30p</option></select>
+              </div>
+              <sc-for list="{{ ndiChecks }}" as="c"><div onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:8px;cursor:default;min-height:24px"><div style="width:15px;height:15px;border-radius:4px;border:1px solid {{ c.bd }};background:{{ c.bg }};display:flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:var(--invtext);stroke-width:2.2;opacity:{{ c.op }}"><path d="M3 8.5l3 3 7-7"></path></svg></div>{{ c.label }}</div></sc-for>
+            </div>
+            <div style="height:1px;background:var(--line);margin:16px 16px 0"></div>
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 16px 10px"><span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Monitor web</span><div onClick="{{ toggleWeb }}" style="width:34px;height:20px;border-radius:10px;background:{{ webT.track }};position:relative;cursor:pointer;flex:none"><div style="position:absolute;top:2px;left:{{ webT.left }};width:16px;height:16px;border-radius:50%;background:{{ webT.knob }};box-shadow:var(--shadow)"></div></div></div>
+            <div style="display:flex;flex-direction:column;gap:10px;padding:0 16px">
+              <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t-muted)"><span style="width:7px;height:7px;border-radius:50%;background:{{ webDot }};flex:none"></span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ webStatus }}</span></div>
+              <div style="display:flex;gap:6px"><input value="{{ webUrl }}" readonly="" style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 10px;min-width:0;user-select:text;flex:1;font-family:var(--f-num);font-size:12px;color:var(--t-muted)"><button onClick="{{ copyUrl }}" style="height:30px;padding:0 14px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer;white-space:nowrap">{{ copyLabel }}</button></div>
+              <div style="display:grid;grid-template-columns:84px minmax(0,1fr);gap:10px;align-items:center">
+                <span style="color:var(--muted)">Senha</span><input value="{{ webPass }}" onChange="{{ onWebPass }}" placeholder="opcional" style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 10px;min-width:0;user-select:text">
+              </div>
+              <sc-for list="{{ webChecks }}" as="c"><div onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:8px;cursor:default;min-height:24px"><div style="width:15px;height:15px;border-radius:4px;border:1px solid {{ c.bd }};background:{{ c.bg }};display:flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:var(--invtext);stroke-width:2.2;opacity:{{ c.op }}"><path d="M3 8.5l3 3 7-7"></path></svg></div>{{ c.label }}</div></sc-for>
+              <button onClick="{{ openMonitor }}" style="height:30px;padding:0 14px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer;white-space:nowrap">Abrir monitor web</button>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tabVoz }}">
+            <div style="padding:8px 16px 10px;font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Acompanhamento por voz</div>
+            <div style="display:flex;flex-direction:column;gap:10px;padding:0 16px 16px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="width:8px;height:8px;border-radius:50%;background:{{ vDot }};flex:none"></span>
+                <span style="font:600 11px var(--f-num);letter-spacing:.08em">{{ vCode }}</span>
+                <span style="color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ vTitle }}</span>
+              </div>
+              <div style="height:72px;overflow:hidden;display:flex;flex-wrap:wrap;gap:2px 6px;align-content:flex-start;padding:8px 10px;border-radius:6px;background:var(--field);border:1px solid var(--line);font:12px var(--f-num)">
+                <sc-if value="{{ noHeard }}" hint-placeholder-val="{{ true }}"><span style="color:var(--faint)">{{ vErrOrIdle }}</span></sc-if>
+                <sc-for list="{{ heard }}" as="h"><span style="color:{{ h.color }};text-decoration:{{ h.deco }}">{{ h.w }}</span></sc-for>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button onClick="{{ startMic }}" style="flex:1;height:30px;border-radius:980px;border:none;background:{{ micPrimary }};color:{{ micFg }};font:600 12px var(--f-sans);cursor:pointer">{{ micLabel }}</button>
+                <button onClick="{{ startSim }}" style="flex:1;height:30px;border-radius:980px;border:none;background:{{ simBg }};color:var(--text);font:inherit;cursor:pointer">{{ simLabel }}</button>
+              </div>
+            </div>
+            <div style="height:1px;background:var(--line);margin:0 16px"></div>
+            <div style="padding:14px 16px 10px;font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Entrada de áudio</div>
+            <div style="display:grid;grid-template-columns:84px minmax(0,1fr);gap:12px 10px;align-items:center;padding:0 16px 16px">
+              <span style="color:var(--muted)">Driver</span>
+              <div style="display:flex;padding:2px;gap:2px;background:var(--t-sunk);border-radius:11px;width:fit-content"><sc-for list="{{ drivers }}" as="z" hint-placeholder-count="2"><div onClick="{{ z.onClick }}" style="padding:0 14px;height:24px;border-radius:8px;display:flex;align-items:center;background:{{ z.bg }};box-shadow:{{ z.shadow }};color:{{ z.color }};cursor:pointer;font-size:12px">{{ z.label }}</div></sc-for></div>
+              <span style="color:var(--muted)">Dispositivo</span>
+              <select style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 6px;min-width:0"><sc-for list="{{ devices }}" as="o"><option>{{ o }}</option></sc-for></select>
+              <sc-if value="{{ isAsio }}">
+                <span style="color:var(--muted)">Canal</span>
+                <select value="{{ asioCh }}" onChange="{{ onAsioCh }}" style="height:32px;width:120px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 6px"><sc-for list="{{ channels }}" as="c"><option value="{{ c.v }}">{{ c.l }}</option></sc-for></select>
+              </sc-if>
+              <span style="color:var(--muted)">Nível</span>
+              <div style="position:relative;height:6px;border-radius:3px;background:var(--sel);overflow:visible"><div style="position:absolute;left:0;top:0;bottom:0;border-radius:3px;width:{{ levelPct }}%;background:{{ levelColor }}"></div><div style="position:absolute;top:-3px;bottom:-3px;left:{{ gatePct }}%;width:2px;border-radius:1px;background:var(--muted)"></div></div>
+              <span style="color:var(--muted)">Noise gate</span>
+              <div style="display:flex;align-items:center;gap:10px"><input type="range" min="-70" max="-20" step="1" value="{{ gate }}" onChange="{{ onGate }}" style="flex:1;min-width:0"><span style="font:12px var(--f-num);width:50px;text-align:right">{{ gate }} dB</span></div>
+              <span style="color:var(--muted)">Idioma</span>
+              <select value="{{ vLang }}" onChange="{{ onVLang }}" style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 6px;min-width:0"><option value="pt-BR">Português (Brasil)</option><option value="pt-PT">Português (Portugal)</option><option value="es-ES">Español</option><option value="en-US">English (US)</option></select>
+            </div>
+            <div style="height:1px;background:var(--line);margin:0 16px"></div>
+            <div style="padding:14px 16px 10px;font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Sensibilidade</div>
+            <div style="display:grid;grid-template-columns:84px minmax(0,1fr) 40px;gap:12px 10px;align-items:center;padding:0 16px">
+              <span style="color:var(--muted)">Busca à frente</span><input type="range" min="8" max="40" step="1" value="{{ win }}" onChange="{{ onWin }}"><span style="font:12px var(--f-num);text-align:right">{{ win }}</span>
+              <span style="color:var(--muted)">Improviso após</span><input type="range" min="2" max="6" step="1" value="{{ tol }}" onChange="{{ onTol }}"><span style="font:12px var(--f-num);text-align:right">{{ tol }}</span>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ tabVideo }}">
+            <div style="padding:8px 16px 10px;font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Gravação</div>
+            <div style="display:flex;flex-direction:column;gap:10px;padding:0 16px">
+              <div style="position:relative;width:100%;aspect-ratio:16/9;border-radius:8px;background:#0e0e0e;display:flex;align-items:center;justify-content:center;overflow:hidden">
+                <video ref="{{ videoRef }}" autoplay="" muted="" playsinline="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);visibility:{{ camVis }}"></video>
+                <sc-if value="{{ camOff }}" hint-placeholder-val="{{ true }}"><span style="color:#777;font-size:12px">{{ camMsg }}</span></sc-if>
+                <sc-if value="{{ recording }}"><div style="position:absolute;left:8px;top:8px;display:flex;align-items:center;gap:6px;padding:3px 8px;border-radius:5px;background:rgba(0,0,0,.6);color:#fff;font:500 11px var(--f-num)"><span style="width:7px;height:7px;border-radius:50%;background:var(--live)"></span>{{ recLabel }}</div></sc-if>
+              </div>
+              <div style="display:flex;gap:6px">
+                <button onClick="{{ toggleCam }}" style="flex:1;height:30px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer" style-hover="background:var(--t-sunk)">{{ camBtn }}</button>
+                <button onClick="{{ toggleRec }}" style="flex:1;height:30px;border-radius:980px;border:none;background:{{ recBg }};color:{{ recFg }};font:600 12px var(--f-sans);cursor:pointer">{{ recBtn }}</button>
+              </div>
+              <div onClick="{{ toggleRecWithPrompt }}" style="display:flex;align-items:center;gap:7px;cursor:default"><div style="width:15px;height:15px;border-radius:4px;border:1px solid {{ recWithCk.bd }};background:{{ recWithCk.bg }};display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:var(--invtext);stroke-width:2.2;opacity:{{ recWithCk.op }}"><path d="M3 8.5l3 3 7-7"></path></svg></div>Gravar junto com o prompt</div>
+              <sc-if value="{{ hasRecUrl }}"><a href="{{ recUrl }}" download="{{ recFile }}" style="height:30px;border-radius:6px;border:1px solid var(--line);display:flex;align-items:center;justify-content:center;text-decoration:none">Baixar gravação · {{ lastRecLabel }}</a></sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+  </div>
+
+  <div style="flex:none;min-height:60px;display:flex;flex-wrap:wrap;align-items:center;gap:8px 24px;padding:8px 18px;background:var(--t-ui);border-top:1px solid var(--t-border)">
+    <div style="display:flex;gap:22px;flex:none">
+      <sc-for list="{{ readouts }}" as="r" hint-placeholder-count="3">
+        <div onClick="{{ r.onClick }}" style="display:flex;flex-direction:column;gap:1px;cursor:default">
+          <span style="font-family:var(--f-num);font-size:9.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">{{ r.label }}</span>
+          <span style="font:600 17px var(--f-num);letter-spacing:-.3px;font-variant-numeric:tabular-nums;white-space:nowrap">{{ r.value }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="flex:1 1 auto;display:flex;justify-content:center;align-items:center;gap:4px">
+      <sc-for list="{{ transport }}" as="b" hint-placeholder-count="6">
+        <button onClick="{{ b.onClick }}" onMouseDown="{{ b.onDown }}" onMouseUp="{{ b.onUp }}" onMouseLeave="{{ b.onUp }}" title="{{ b.title }}" style="width:{{ b.w }};height:34px;display:flex;align-items:center;justify-content:center;border-radius:980px;border:{{ b.border }};background:{{ b.bg }};color:{{ b.fg }};cursor:pointer" style-hover="filter:brightness(.96)" style-active="transform:scale(.97)"><svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:{{ b.fill }};stroke:{{ b.stroke }};stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round"><path d="{{ b.d }}"></path></svg></button>
+      </sc-for>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex:1 1 240px;justify-content:flex-end;min-width:0">
+      <input type="range" min="0" max="1" step="0.01" value="{{ speedT }}" onChange="{{ onSpeed }}" style="flex:1;min-width:70px;max-width:200px">
+      <span style="font:500 14px var(--f-num);min-width:44px;text-align:right;color:{{ speedColor }}">{{ speedValue }}</span>
+      <select value="{{ unit }}" onChange="{{ onUnit }}" style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 6px"><option value="0">linhas/s</option><option value="1">linhas/min</option><option value="2">palavras/s</option><option value="3">palavras/min</option></select>
+    </div>
+  </div>
+
+  <div style="height:24px;flex:none;display:flex;align-items:center;gap:16px;padding:0 14px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden">
+    <span style="display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;border-radius:50%;background:{{ statusDot }}"></span>{{ statusLabel }}</span>
+    <span>{{ screensLabel }}</span>
+    <span>Voz: {{ vShort }}</span>
+    <span>{{ netLabel }}</span>
+    <span>{{ saveLabel }}</span>
+    <span style="flex:1"></span>
+    <span>{{ lastKeyLabel }}</span>
+  </div>
+
+  <input ref="{{ openFile }}" type="file" accept=".tps,.json,.txt,.html,.htm,.docx" onChange="{{ onOpenFile }}" style="display:none">
+  <input ref="{{ bgFile }}" type="file" accept="image/*,.svg,image/svg+xml" onChange="{{ onBgFile }}" style="display:none">
+  <div onMouseMove="{{ onTvMove }}" style="position:fixed;inset:0;z-index:80;visibility:{{ talentVis }};background:{{ bg }};overflow:hidden;cursor:{{ tvCursor }}">
+    <sc-if value="{{ hasBgImg }}"><div style="position:absolute;inset:0;background-image:url("{{ bgImg }}");background-size:cover;background-position:center;opacity:{{ bgImgOp }}"></div></sc-if>
+    <div ref="{{ tvRef }}" onWheel="{{ onTvWheel }}" onDoubleClick="{{ startInline }}" onPointerDown="{{ onTvDown }}" onPointerMove="{{ onTvPMove }}" onPointerUp="{{ onTvUp }}" onPointerLeave="{{ onTvUp }}" style="position:absolute;inset:0;overflow:hidden;container-type:inline-size;touch-action:none">
+      <div style="position:absolute;inset:0;transform:{{ tvFlip }}">
+        <sc-if value="{{ readingLine }}"><div style="position:absolute;left:0;right:0;top:calc({{ readPct }}% + {{ halfLineCq }});height:2px;background:{{ indColorV }};opacity:.3"></div></sc-if>
+        <div ref="{{ tcRef }}" data-pr="1" data-script="1" style="position:absolute;left:0;top:0;width:1000px;box-sizing:border-box;transform-origin:0 0;padding:0 {{ prRight }}px 0 {{ prMargin }}px;font-family:{{ fontFam }};font-size:{{ fontSize }}px;line-height:{{ lineH }};color:{{ fg }};text-align:{{ tvAlign }};caret-color:{{ fg }};will-change:transform"></div>
+        <sc-if value="{{ ovFaixa }}">
+          <div style="position:absolute;left:0;right:0;top:0;height:{{ readPct }}%;background:{{ dimColor }};pointer-events:none"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;top:calc({{ readPct }}% + {{ lineCq }});background:{{ dimColor }};pointer-events:none"></div>
+        </sc-if>
+        <sc-if value="{{ ovFade }}">
+          <div style="position:absolute;left:0;right:0;top:0;height:{{ readPct }}%;background:linear-gradient({{ dimColor }},transparent);pointer-events:none"></div>
+          <div style="position:absolute;left:0;right:0;bottom:0;top:calc({{ readPct }}% + {{ lineCq }});background:linear-gradient(transparent,{{ dimColor }});pointer-events:none"></div>
+        </sc-if>
+        <sc-if value="{{ ovDestaque }}"><div style="position:absolute;left:0;right:0;top:{{ readPct }}%;height:{{ lineCq }};background:{{ hiColor }};pointer-events:none"></div></sc-if>
+        <div style="position:absolute;left:{{ indLeft }};top:calc({{ readPct }}% + {{ halfLineCq }});transform:translateY(-50%);width:{{ indW }};height:{{ indH }};background:{{ indColorV }};clip-path:{{ indClip }};border-radius:{{ indRadius }};display:{{ indDisplay }};pointer-events:none"></div>
+      </div>
+    </div>
+    <div style="position:absolute;inset:0;box-shadow:inset 0 0 0 6px var(--live);opacity:{{ blinkOp }};pointer-events:none"></div>
+
+    <div style="position:absolute;left:0;right:0;top:0;height:46px;display:flex;align-items:center;gap:4px;padding:0 10px;background:var(--panel);border-bottom:1px solid var(--line);color:var(--text);opacity:{{ tbOp }};pointer-events:{{ tbPe }};transition:opacity .2s">
+      <span style="font-size:12px;color:var(--muted);padding:0 8px;white-space:nowrap">{{ tvTitle }}</span>
+      <div style="width:1px;height:18px;background:var(--line);margin:0 6px"></div>
+      <sc-for list="{{ tvTools }}" as="b" hint-placeholder-count="7">
+        <button onClick="{{ b.onClick }}" title="{{ b.title }}" style="width:32px;height:30px;border-radius:980px;background:{{ b.bg }};border:none;color:{{ b.fg }};cursor:pointer;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 16 16" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round"><path d="{{ b.d }}"></path></svg></button>
+      </sc-for>
+      <div style="display:flex;align-items:center;gap:8px;padding:0 10px;color:var(--muted);font-size:12px"><span>Opacidade</span><input type="range" min="0.2" max="1" step="0.05" value="{{ ctrlOp }}" onChange="{{ onCtrlOp }}" style="width:90px"></div>
+      <div style="flex:1"></div>
+      <button onClick="{{ editHere }}" title="Abrir o editor neste trecho (E)" style="height:30px;padding:0 12px;display:flex;align-items:center;gap:7px;border-radius:980px;border:none;background:var(--inv);color:var(--invtext);font:600 12px var(--f-sans);cursor:pointer"><svg viewBox="0 0 16 16" style="width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linejoin:round"><path d="M10.5 2.5l3 3-8 8h-3v-3z"></path></svg>Editar trecho</button>
+      <button onClick="{{ toggleTalent }}" title="Fechar (Esc)" style="width:32px;height:30px;border-radius:980px;background:transparent;border:none;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--t-sunk)"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.4"><path d="M3 3l10 10M13 3L3 13"></path></svg></button>
+    </div>
+
+    <sc-if value="{{ inline }}">
+      <div style="position:absolute;left:50%;top:58px;transform:translateX(-50%);display:flex;align-items:center;gap:10px;padding:4px 4px 4px 12px;border-radius:8px;background:var(--raised);border:1px solid var(--line);color:var(--text);box-shadow:0 8px 24px rgba(0,0,0,.4);white-space:nowrap">
+        <span style="color:var(--muted)">Editando no prompter — posição mantida</span>
+        <button onClick="{{ finishInline }}" style="height:26px;padding:0 10px;border-radius:980px;border:none;background:var(--inv);color:var(--invtext);font:600 12px var(--f-sans);cursor:pointer">Concluir · Esc</button>
+      </div>
+    </sc-if>
+    <sc-if value="{{ talentHud }}"><div style="position:absolute;left:20px;right:20px;top:60px;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;pointer-events:none;z-index:3;color:#fff">
+      <div style="display:flex;align-items:center;gap:10px;min-width:0;padding:8px 14px;border-radius:12px;background:rgba(0,0,0,.62)">
+        <sc-if value="{{ isLastBlock }}"><span style="flex:none;padding:3px 8px;border-radius:980px;background:#e5484d;font:600 10px var(--f-num);letter-spacing:1.2px">ÚLTIMO BLOCO</span></sc-if>
+        <span style="font:600 13px var(--f-sans);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ hudBlock }}</span>
+        <span style="flex:none;font:600 15px var(--f-num);color:{{ blockLeftColor }}">{{ blockLeft }}</span>
+      </div>
+      <div style="flex:none;padding:8px 14px;border-radius:12px;background:rgba(0,0,0,.62);font:600 15px var(--f-num)">{{ clockV }}</div>
+    </div></sc-if>
+    <sc-if value="{{ hasFlash }}"><div style="position:absolute;left:50%;bottom:76px;transform:translateX(-50%);max-width:calc(100% - 32px);box-sizing:border-box;display:flex;flex-direction:row;align-items:center;gap:10px;padding:7px 14px 7px 8px;border-radius:980px;background:rgba(20,20,22,.82);color:#fff;pointer-events:none;z-index:4"><sc-if value="{{ hasFlashSub }}"><span style="display:flex;align-items:center;gap:5px;height:20px;padding:0 9px;border-radius:980px;background:{{ flashSubBg }};font:600 10px var(--f-num);letter-spacing:1.2px;text-transform:uppercase"><svg viewBox="0 0 16 16" style="width:9px;height:9px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round"><path d="{{ flashArrow }}"></path></svg>{{ flashSub }}</span></sc-if><span style="font:600 13px var(--f-num);white-space:nowrap">{{ flashText }}</span><sc-if value="{{ flashBar }}"><div style="width:72px;height:3px;border-radius:2px;background:rgba(255,255,255,.2);flex:none"><div style="height:100%;width:{{ flashW }};border-radius:2px;background:#fff"></div></div></sc-if></div></sc-if>
+    <sc-if value="{{ counting }}"><div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none"><div style="width:160px;height:160px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;font:500 84px var(--f-num);color:#fff">{{ count }}</div></div></sc-if>
+
+    <sc-if value="{{ ctrlOn }}" hint-placeholder-val="{{ true }}">
+      <div style="position:absolute;left:50%;bottom:20px;transform:translateX(-50%);display:flex;align-items:center;gap:4px;padding:6px;border-radius:12px;background:rgba(30,30,30,.92);border:1px solid rgba(255,255,255,.1);color:#e6e6e6;opacity:{{ ctrlOp }}">
+        <button onClick="{{ paraPrev }}" title="Parágrafo anterior ([)" style="width:36px;height:36px;border-radius:980px;border:none;background:transparent;color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:rgba(255,255,255,.08)"><svg viewBox="0 0 16 16" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round"><path d="M3.5 8L8 3.5 12.5 8 M3.5 12.5L8 8 12.5 12.5"></path></svg></button>
+        <button onClick="{{ lineUp }}" title="Linha anterior" style="width:36px;height:36px;border-radius:980px;border:none;background:transparent;color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:rgba(255,255,255,.08)"><svg viewBox="0 0 16 16" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round"><path d="M3.5 10L8 5.5l4.5 4.5"></path></svg></button>
+        <button onClick="{{ lineDown }}" title="Próxima linha" style="width:36px;height:36px;border-radius:980px;border:none;background:transparent;color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:rgba(255,255,255,.08)"><svg viewBox="0 0 16 16" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round"><path d="M3.5 6L8 10.5 12.5 6"></path></svg></button>
+        <button onClick="{{ paraNext }}" title="Próximo parágrafo (])" style="width:36px;height:36px;border-radius:980px;border:none;background:transparent;color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:rgba(255,255,255,.08)"><svg viewBox="0 0 16 16" style="width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round"><path d="M3.5 3.5L8 8 12.5 3.5 M3.5 8L8 12.5 12.5 8"></path></svg></button>
+        <button onClick="{{ togglePlay }}" title="Play / pausa" style="width:52px;height:36px;border-radius:980px;border:none;background:{{ playBg }};color:{{ playFg }};cursor:pointer;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:currentColor"><path d="{{ playIcon }}"></path></svg></button>
+        <button onClick="{{ rewind }}" title="Voltar ao início" style="width:36px;height:36px;border-radius:980px;border:none;background:transparent;color:inherit;cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:rgba(255,255,255,.08)"><svg viewBox="0 0 16 16" style="width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.4;stroke-linejoin:round"><path d="M3 3v10 M13 3L5.5 8 13 13z"></path></svg></button>
+        <div style="width:1px;height:20px;background:rgba(255,255,255,.15);margin:0 6px"></div>
+        <input type="range" min="0" max="1" step="0.01" value="{{ speedT }}" onChange="{{ onSpeedTv }}" disabled="{{ speedLock }}" style="width:150px">
+        <span style="font:500 13px var(--f-num);min-width:84px;text-align:center">{{ speedValue }} {{ unitName }}</span>
+      </div>
+    </sc-if>
+    <sc-if value="{{ stampOn }}" hint-placeholder-val="{{ true }}"><div onClick="{{ toggleStamp }}" style="position:absolute;right:20px;bottom:28px;padding:4px 10px;border-radius:6px;background:rgba(0,0,0,.55);color:#fff;font:500 22px var(--f-num);cursor:pointer">{{ stampValue }}</div></sc-if>
+    <sc-if value="{{ vActive }}"><div style="position:absolute;left:20px;bottom:28px;display:flex;align-items:center;gap:8px;padding:6px 12px;border-radius:6px;background:rgba(0,0,0,.6);color:#fff;font:600 11px var(--f-num);letter-spacing:.08em"><span style="width:7px;height:7px;border-radius:50%;background:{{ vDot }}"></span>{{ vCode }}</div></sc-if>
+  </div>
+
+  <sc-if value="{{ dlgOpen }}">
+    <div style="position:fixed;inset:0;z-index:90;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;padding:20px">
+      <div style="width:{{ dlgW }};max-width:100%;max-height:100%;display:flex;flex-direction:column;border-radius:14px;background:var(--t-ui);border:1px solid var(--t-border);box-shadow:var(--t-sh3);overflow:hidden">
+        <div style="height:40px;flex:none;display:flex;align-items:center;padding:0 6px 0 16px;border-bottom:1px solid var(--line)">
+          <span style="flex:1;font-weight:600">{{ dlgTitle }}</span>
+          <button onClick="{{ closeDlg }}" title="Fechar (Esc)" style="width:30px;height:28px;border-radius:980px;border:none;background:transparent;color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--t-sunk)"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:currentColor;stroke-width:1.4"><path d="M3 3l10 10M13 3L3 13"></path></svg></button>
+        </div>
+
+        <sc-if value="{{ dlgPrefs }}">
+          <div style="display:grid;grid-template-columns:150px minmax(0,1fr);min-height:380px">
+            <div style="display:flex;flex-direction:column;gap:2px;padding:10px;border-right:1px solid var(--line)">
+              <sc-for list="{{ prefTabs }}" as="t"><div onClick="{{ t.onClick }}" style="height:34px;display:flex;align-items:center;padding:0 12px;border-radius:9px;background:{{ t.bg }};font-weight:{{ t.weight }};cursor:default" style-hover="background:var(--hover)">{{ t.label }}</div></sc-for>
+            </div>
+            <div style="padding:16px 20px;overflow:auto;max-height:70vh">
+              <sc-if value="{{ prefGeral }}">
+                <div style="display:flex;flex-direction:column;gap:16px">
+                  <div style="display:flex;align-items:center;gap:16px"><span style="width:110px;color:var(--muted)">Aparência</span><div style="display:flex;padding:2px;gap:2px;background:var(--t-sunk);border-radius:11px"><sc-for list="{{ themes }}" as="z"><div onClick="{{ z.onClick }}" style="padding:0 16px;height:26px;border-radius:8px;display:flex;align-items:center;background:{{ z.bg }};box-shadow:{{ z.shadow }};color:{{ z.color }};cursor:pointer">{{ z.label }}</div></sc-for></div></div>
+                  <div style="height:1px;background:var(--line)"></div>
+                  <sc-for list="{{ prefChecks }}" as="c"><div onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:10px;cursor:default"><div style="width:15px;height:15px;border-radius:4px;border:1px solid {{ c.bd }};background:{{ c.bg }};display:flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:var(--invtext);stroke-width:2.2;opacity:{{ c.op }}"><path d="M3 8.5l3 3 7-7"></path></svg></div>{{ c.label }}</div></sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ prefAtalhos }}">
+                <div style="display:flex;flex-direction:column">
+                  <sc-for list="{{ shortcuts }}" as="k">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;height:36px;border-bottom:1px solid var(--line)">
+                      <span>{{ k.label }}</span>
+                      <button onClick="{{ k.onClick }}" title="Clique e pressione a nova tecla" style="min-width:120px;height:26px;padding:0 10px;border-radius:980px;border:none;background:{{ k.bg }};color:var(--text);font:12px var(--f-num);cursor:pointer">{{ k.key }}</button>
+                    </div>
+                  </sc-for>
+                  <div style="padding-top:12px;font-size:12px;line-height:1.6;color:var(--t-muted);text-wrap:pretty">{{ shortcutHint }}</div>
+                  <div style="display:flex;justify-content:flex-end;padding-top:12px"><button onClick="{{ resetKeys }}" style="height:28px;padding:0 12px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer" style-hover="background:var(--t-sunk)">Restaurar padrão</button></div>
+                </div>
+              </sc-if>
+              <sc-if value="{{ prefInteg }}">
+                <div style="display:flex;flex-direction:column;gap:14px">
+                  <span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Newsroom (MOS)</span>
+                  <div style="display:grid;grid-template-columns:110px minmax(0,1fr);gap:10px;align-items:center">
+                    <span style="color:var(--muted)">Sistema</span><select value="{{ mosSys }}" onChange="{{ onMosSys }}" style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 10px;min-width:0;user-select:text"><option>ENPS</option><option>Avid iNEWS</option><option>Octopus</option><option>Dalet</option><option>Ross Inception</option></select>
+                    <span style="color:var(--muted)">Servidor</span><input value="{{ mosHost }}" onChange="{{ onMosHost }}" style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 10px;min-width:0;user-select:text">
+                    <span style="color:var(--muted)">ID MOS</span><input value="{{ mosId }}" onChange="{{ onMosId }}" style="height:32px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 10px;min-width:0;user-select:text">
+                  </div>
+                  <div style="display:flex;align-items:center;gap:10px"><div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--t-muted)"><span style="width:7px;height:7px;border-radius:50%;background:{{ mosDot }};flex:none"></span><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ mosStatus }}</span></div><span style="flex:1"></span><button onClick="{{ toggleMos }}" style="height:30px;padding:0 14px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer;white-space:nowrap">{{ mosBtn }}</button></div>
+                  <div style="height:1px;background:var(--line)"></div>
+                  <span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Estúdio</span>
+                  <sc-for list="{{ integChecks }}" as="c"><div onClick="{{ c.onClick }}" style="display:flex;align-items:center;gap:8px;cursor:default;min-height:24px"><div style="width:15px;height:15px;border-radius:4px;border:1px solid {{ c.bd }};background:{{ c.bg }};display:flex;align-items:center;justify-content:center;flex:none"><svg viewBox="0 0 16 16" style="width:11px;height:11px;fill:none;stroke:var(--invtext);stroke-width:2.2;opacity:{{ c.op }}"><path d="M3 8.5l3 3 7-7"></path></svg></div>{{ c.label }}</div></sc-for>
+                </div>
+              </sc-if>
+              <sc-if value="{{ prefDisp }}">
+                <div style="display:flex;flex-direction:column">
+                  <sc-for list="{{ devicesList }}" as="d"><div style="display:flex;align-items:center;justify-content:space-between;gap:12px;height:36px;border-bottom:1px solid var(--line)"><span>{{ d.name }}</span><span style="color:var(--muted);font-size:12px">{{ d.state }}</span></div></sc-for>
+                  <div style="margin-top:16px;padding:14px;border-radius:8px;background:var(--field);border:1px solid var(--line);display:flex;align-items:center;justify-content:space-between">
+                    <span style="color:var(--muted)">Teste de entrada — pressione qualquer botão do controle</span>
+                    <span style="font:500 16px var(--f-num)">{{ lastKeyBig }}</span>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ dlgFind }}">
+          <div style="display:grid;grid-template-columns:90px minmax(0,1fr);gap:10px;align-items:center;padding:16px">
+            <span style="color:var(--muted)">Localizar</span><input value="{{ findQ }}" onChange="{{ onFindQ }}" onKeyDown="{{ onFindKey }}" autofocus="" style="height:30px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 10px;user-select:text">
+            <span style="color:var(--muted)">Substituir por</span><input value="{{ replQ }}" onChange="{{ onReplQ }}" style="height:30px;border-radius:10px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 10px;user-select:text">
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid var(--line)">
+            <span style="flex:1;color:var(--muted);font-size:12px">{{ findInfo }}</span>
+            <button onClick="{{ replaceAll }}" style="height:30px;padding:0 14px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer" style-hover="background:var(--t-sunk)">Substituir tudo</button>
+            <button onClick="{{ findNext }}" style="height:30px;padding:0 14px;border-radius:980px;border:none;background:var(--inv);color:var(--invtext);font:600 13px var(--f-sans);cursor:pointer">Próximo</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ dlgRemote }}">
+          <div style="display:flex;flex-direction:column;gap:14px;padding:18px">
+            <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>Wi-Fi · 192.168.0.24</span><span>Código 482 913</span></div>
+            <div style="padding:14px;border-radius:10px;background:var(--field);border:1px solid var(--line);display:flex;flex-direction:column;gap:4px">
+              <span style="font-size:12px;color:var(--muted)">No prompter</span>
+              <span style="font-weight:600;font-size:15px">{{ remoteCur }}</span>
+              <span style="font:12px var(--f-num);color:var(--muted)">{{ stampValue }} · {{ remoteSpeed }}</span>
+            </div>
+            <button onClick="{{ togglePlay }}" style="height:64px;border-radius:12px;border:none;background:{{ playBg }};color:{{ playFg }};cursor:pointer;display:flex;align-items:center;justify-content:center"><svg viewBox="0 0 16 16" style="width:22px;height:22px;fill:currentColor"><path d="{{ playIcon }}"></path></svg></button>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+              <button onClick="{{ rSlower }}" style="height:48px;border-radius:10px;border:none;background:var(--t-soft);color:var(--text);font:600 18px var(--f-sans);cursor:pointer">−</button>
+              <button onClick="{{ rFaster }}" style="height:48px;border-radius:10px;border:none;background:var(--t-soft);color:var(--text);font:600 18px var(--f-sans);cursor:pointer">+</button>
+              <button onClick="{{ rPrev }}" style="height:44px;border-radius:10px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer">Marcador anterior</button>
+              <button onClick="{{ rNext }}" style="height:44px;border-radius:10px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer">Próximo marcador</button>
+            </div>
+            <button onClick="{{ rewind }}" style="height:36px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer">Voltar ao início</button>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ dlgAbout }}">
+          <div style="display:flex;flex-direction:column;gap:6px;padding:22px 20px">
+            <span style="font-family:var(--f-disp);font-weight:600;font-size:18px;letter-spacing:-.3px">ARCA Prompter</span>
+            <span style="color:var(--muted)">Versão 0.3 · protótipo para Windows</span>
+            <span style="color:var(--muted);font-size:12px;padding-top:10px;text-wrap:pretty">Editor e prompter sincronizados, marcadores, várias telas e acompanhamento por voz.</span>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ dlgPerfis }}">
+          <div style="display:flex;flex-direction:column;gap:10px;padding:14px 16px 16px">
+            <div style="font-size:12px;color:var(--muted);text-wrap:pretty">Um perfil guarda fonte, tamanho (palavras por linha), margem, entrelinha, cores, alinhamento, seta e velocidade de cada apresentador.</div>
+            <div style="display:flex;gap:6px"><input value="{{ profName }}" onChange="{{ onProfName }}" placeholder="Nome do perfil (ex.: Ana — telejornal)" style="flex:1;height:30px;border-radius:9px;border:1px solid transparent;background:var(--field);color:var(--text);font:inherit;padding:0 10px;min-width:0;user-select:text"><button onClick="{{ saveProfile }}" style="height:28px;padding:0 12px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap;background:var(--t-accent);color:var(--t-accent-ink)">Salvar atual</button></div>
+            <div style="height:1px;background:var(--line)"></div>
+            <sc-if value="{{ noProfiles }}"><div style="padding:14px 0;text-align:center;color:var(--muted);font-size:13px">Nenhum perfil salvo.</div></sc-if>
+            <div style="display:flex;flex-direction:column;max-height:300px;overflow:auto">
+              <sc-for list="{{ profiles }}" as="pf">
+                <div style="display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center;padding:7px 8px;border-radius:9px" style-hover="background:var(--hover)">
+                  <div style="display:flex;flex-direction:column;min-width:0"><span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pf.name }}</span><span style="font:11px var(--f-num);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ pf.meta }}</span></div>
+                  <button onClick="{{ pf.onApply }}" style="height:28px;padding:0 12px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap">Aplicar</button>
+                  <button onClick="{{ pf.onDelete }}" title="Excluir perfil" style="width:26px;height:26px;border-radius:980px;border:none;background:transparent;color:var(--t-faint);cursor:pointer;display:flex;align-items:center;justify-content:center" style-hover="background:var(--hover);color:var(--text)"><svg viewBox="0 0 16 16" style="width:10px;height:10px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round"><path d="M4 4l8 8M12 4l-8 8"></path></svg></button>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ dlgVersoes }}">
+          <div style="display:flex;flex-direction:column;max-height:420px;overflow:auto;padding:6px">
+            <sc-if value="{{ noVersions }}"><div style="padding:24px 12px;text-align:center;color:var(--muted);font-size:13px">Nenhuma versão ainda. Versões são criadas ao salvar e a cada 2 minutos de edição.</div></sc-if>
+            <sc-for list="{{ versions }}" as="v">
+              <div style="display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 10px;border-radius:9px" style-hover="background:var(--hover)">
+                <div style="display:flex;flex-direction:column;min-width:0"><span style="font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ v.name }}</span><span style="font:11px var(--f-num);color:var(--muted)">{{ v.meta }}</span></div>
+                <button onClick="{{ v.onRestore }}" style="height:28px;padding:0 12px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap">Restaurar</button>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ dlgMonitor }}">
+          <div style="display:flex;flex-direction:column;gap:12px;padding:14px">
+            <div style="height:34px;display:flex;align-items:center;gap:8px;padding:0 14px;border-radius:980px;background:var(--t-soft);font:12px var(--f-num);color:var(--t-muted)"><svg viewBox="0 0 16 16" style="width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round"><path d="M3.5 7.5h9v7h-9z M5.5 7.5V5a2.5 2.5 0 0 1 5 0v2.5"></path></svg>{{ webUrl }}</div>
+            <div ref="{{ mvRef }}" style="position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;border-radius:11px;background:{{ bg }};container-type:inline-size">
+              <div style="position:absolute;inset:0">
+                <div ref="{{ mcRef }}" data-pr="1" data-script="1" style="position:absolute;left:0;top:0;width:1000px;box-sizing:border-box;transform-origin:0 0;padding:0 {{ prRight }}px 0 {{ prMargin }}px;font-family:{{ fontFam }};font-size:{{ fontSize }}px;line-height:{{ lineH }};color:{{ fg }};text-align:{{ align }}"></div>
+                <div style="position:absolute;left:{{ indLeft }};top:calc({{ readPct }}% + {{ halfLineCq }});transform:translateY(-50%);width:{{ indW }};height:{{ indH }};background:{{ indColorV }};clip-path:{{ indClip }};border-radius:{{ indRadius }};display:{{ indDisplay }}"></div>
+              </div>
+              <div style="position:absolute;left:10px;top:10px;padding:3px 9px;border-radius:980px;background:rgba(0,0,0,.6);color:#fff;font:600 10px var(--f-num);letter-spacing:1px">{{ monTag }}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap">
+              <div style="display:flex;flex-direction:column"><span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Bloco</span><span style="font-weight:600">{{ remoteCur }}</span></div>
+              <div style="display:flex;flex-direction:column"><span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Posição</span><span style="font:600 14px var(--f-num)">{{ stampValue }}</span></div>
+              <div style="display:flex;flex-direction:column"><span style="font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t-faint)">Velocidade</span><span style="font:600 14px var(--f-num)">{{ remoteSpeed }}</span></div>
+              <span style="flex:1"></span>
+              <sc-if value="{{ webCtrl }}"><button onClick="{{ togglePlay }}" style="height:34px;padding:0 18px;border-radius:980px;border:none;background:{{ playBg }};color:{{ playFg }};font:600 13px var(--f-sans);cursor:pointer">{{ monPlayLabel }}</button></sc-if>
+              <sc-if value="{{ webViewOnly }}"><span style="font-size:12px;color:var(--t-faint)">Somente visualização</span></sc-if>
+            </div>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ dlgNovo }}">
+          <div style="padding:20px;color:var(--muted)">Descartar o roteiro atual e começar um novo?</div>
+          <div style="display:flex;justify-content:flex-end;gap:8px;padding:12px 16px;border-top:1px solid var(--line)">
+            <button onClick="{{ closeDlg }}" style="height:30px;padding:0 14px;border-radius:980px;border:none;background:var(--t-soft);color:var(--text);font:inherit;cursor:pointer">Cancelar</button>
+            <button onClick="{{ confirmNew }}" style="height:30px;padding:0 14px;border-radius:980px;border:none;background:var(--inv);color:var(--invtext);font:600 13px var(--f-sans);cursor:pointer">Novo roteiro</button>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;simWordMs&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:340,&quot;min&quot;:150,&quot;max&quot;:800,&quot;unit&quot;:&quot;ms&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Simulação de voz&quot;},&quot;improvEvery&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:22,&quot;min&quot;:8,&quot;max&quot;:60,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Simulação de voz&quot;}}">
+const SCRIPT = `<p data-bm="1" contenteditable="false">Abertura</p><p>Boa noite. Começa agora o <b>Jornal da Noite</b>. Nesta edição, as chuvas que atingem o litoral, os novos números da economia e a decisão do campeonato.</p><p data-bm="1" contenteditable="false">Chuvas no litoral</p><p>A chuva forte das últimas vinte e quatro horas deixou cidades do litoral em estado de alerta.</p><p>A Defesa Civil registrou mais de cento e vinte milímetros em algumas regiões, e moradores de áreas de risco foram orientados a deixar suas casas.</p><p data-stop="1" contenteditable="false">Entra VT · 1 min 45 s</p><p>A previsão é de que o tempo melhore a partir de quinta-feira.</p><p data-bm="1" contenteditable="false">Economia</p><p>Na economia, a inflação de setembro ficou <span style="color:#ffd54a">abaixo do esperado</span> pelo mercado.</p><p>O resultado foi puxado principalmente pela queda no preço dos alimentos e dos combustíveis. Com isso, analistas já falam em novos cortes na taxa de juros até o fim do ano.</p><p data-bm="1" contenteditable="false">Esporte</p><p>No esporte, a rodada decisiva do campeonato reservou emoção até o último minuto. Com um gol nos acréscimos, o líder garantiu a vantagem para a reta final.</p><p data-bm="1" contenteditable="false">Encerramento</p><p>O Jornal da Noite fica por aqui. <u>Obrigado pela companhia</u> e até amanhã.</p>`;
+const I = {
+  new: 'M4 1.5h5l3 3v10H4z M9 1.5v3h3', open: 'M1.5 3.5h4.5l1.5 1.5h7v8h-13z', save: 'M2.5 2.5h9l2 2v9h-11z M5 2.5v3h5v-3 M5 13.5v-4h6v4',
+  undo: 'M5 3.5L2 6.5l3 3 M2 6.5h8a3.5 3.5 0 0 1 0 7H7', redo: 'M11 3.5l3 3-3 3 M14 6.5H6a3.5 3.5 0 0 0 0 7h3',
+  find: 'M7 2.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z M10.5 10.5l3.5 3.5', bm: 'M4 1.5h8v13l-4-3-4 3z', stopMk: 'M2.5 2.5h11v11h-11z M6.5 5.5v5 M9.5 5.5v5',
+  lock: 'M3.5 7.5h9v7h-9z M5.5 7.5V5a2.5 2.5 0 0 1 5 0v2.5', unlock: 'M3.5 7.5h9v7h-9z M5.5 7.5V5a2.5 2.5 0 0 1 4.9-.7',
+  flipH: 'M8 1.5v13 M6 4.5L2 11.5h4z M10 4.5l4 7h-4z', flipV: 'M1.5 8h13 M4.5 6L11.5 2v4z M4.5 10l7 4v-4z',
+  alignL: 'M2 3.5h12 M2 6.5h8 M2 9.5h12 M2 12.5h7', alignC: 'M2 3.5h12 M4 6.5h8 M2 9.5h12 M4.5 12.5h7', alignR: 'M2 3.5h12 M6 6.5h8 M2 9.5h12 M6.5 12.5h7.5',
+  controls: 'M1.5 2.5h13v8h-13z M4 13.5h8', clock: 'M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13z M8 4.5V8l2.5 1.5',
+  fs: 'M2 6V2h4 M10 2h4v4 M14 10v4h-4 M6 14H2v-4', target: 'M8 1.5v3 M8 11.5v3 M1.5 8h3 M11.5 8h3 M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
+  play: 'M4 2.5l9.5 5.5L4 13.5z', pause: 'M3.5 2.5h3v11h-3z M9.5 2.5h3v11h-3z', stop: 'M3 3h10v10H3z',
+  rew: 'M3 3v10 M13 3L5.5 8 13 13z', back: 'M8 3.5v9L1.5 8z M14.5 3.5v9L8 8z', fwd: 'M8 3.5v9L14.5 8z M1.5 3.5v9L8 8z',
+  dir: 'M5 2.5v11 M2.5 5L5 2.5 7.5 5 M11 13.5v-11 M8.5 11l2.5 2.5 2.5-2.5', up: 'M3.5 10L8 5.5l4.5 4.5', down: 'M3.5 6L8 10.5 12.5 6',
+  edit: 'M10.5 2.5l3 3-8 8h-3v-3z', close: 'M3 3l10 10M13 3L3 13'
+};
+const IMPROV = ['deixa', 'eu', 'só', 'fazer', 'um', 'comentário', 'rápido', 'aqui', 'antes'];
+const KEYMAP = { play: ' ', faster: 'ArrowDown', slower: 'ArrowUp', faster2: 'w', slower2: 's', reverse: 'r', stop: '0', rewind: 'Home', toEnd: 'End', nextBm: 'PageDown', prevBm: 'PageUp', nextPara: ']', prevPara: '[', editHere: 'e', mirror: 'm' };
+const ACTIONS = [['play', 'Play / pausa'], ['faster', 'Mais rápido (pausado: próxima linha)'], ['slower', 'Mais devagar (pausado: linha anterior)'], ['faster2', 'Mais rápido (alternativo)'], ['slower2', 'Mais devagar (alternativo)'], ['reverse', 'Inverter direção'], ['stop', 'Parar rolagem'], ['rewind', 'Voltar ao início'], ['toEnd', 'Ir para o fim'], ['nextBm', 'Próximo marcador'], ['prevBm', 'Marcador anterior'], ['nextPara', 'Próximo parágrafo'], ['prevPara', 'Parágrafo anterior'], ['editHere', 'Editar trecho atual'], ['mirror', 'Espelhar tela do prompter']];
+const esc = t => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+class Component extends DCLogic {
+  state = {
+    theme: 'light', menu: null, dlg: null, prefTab: 'geral', keymap: { ...KEYMAP }, capture: null, lastKey: '',
+    talent: false, playing: false, locked: false, follow: true, dir: 1, hold: 0, count: 0, lockOnPlay: true, countdownPref: false,
+    speedT: 0.3, minS: 0.3, maxS: 3, unit: 0, wpl: 5, margin: 0, mPos: -1, lineH: 1.3, fontKey: 'atk',
+    bg: '#000000', fg: '#ffffff', align: 'left', edFlipH: false, edFlipV: false,
+    ovType: 'faixa', ovOp: 0.55, indType: 'seta', indSize: 1, indColor: '#ffffff', readPct: 30, readingLine: false,
+    bgImg: null, bgImgOp: 0.2, autoRun: false, runTarget: '01:30', tab: 'roteiro', stampMode: 0, showBm: true, showInsp: true,
+    displays: [
+      { id: 'int', nick: 'Notebook', name: 'Tela integrada', res: '1920 × 1080', on: false, flipH: false, flipV: false, align: 'left', find: false },
+      { id: 'p', nick: 'Prompter câmera 1', name: 'LG 24MK430', res: '1920 × 1080', on: true, flipH: true, flipV: false, align: 'left', find: false },
+      { id: 'r', nick: 'Retorno estúdio', name: 'Samsung C27', res: '2560 × 1440', on: false, flipH: false, flipV: false, align: 'center', find: false }
+    ],
+    winFlipH: false, winFlipV: false, winAlign: 'left', ctrlOn: true, stampOn: true, ctrlOp: 0.9, speedLock: false, tbShow: true, inline: false, blink: false,
+    vMode: 'off', vState: 'off', heard: [], vErr: '', driver: 'wasapi', asioCh: 1, gate: -48, win: 20, tol: 3, level: -70, vLang: 'pt-BR',
+    ndiOn: false, ndiPeer: '', ndiName: 'ARCA-PROMPTER (Saída 1)', ndiFmt: '1080p30', ndiMirror: false, ndiAlpha: false, ndiTally: true, webOn: false, webViewers: 0, webPass: '', webCtrl: false, copied: false, mosSys: 'ENPS', mosHost: '192.168.0.10', mosId: 'ARCA.PROMPTER.1', mosOn: false, mosBusy: false, gpiAuto: false, ccOut: false, clock: '', endAt: '', flashText: '', flashPct: -1, camOn: false, camMsg: 'Câmera desligada', recording: false, recSec: 0, recUrl: '', lastRec: 0, recWithPrompt: false,
+    findQ: '', replQ: '', findInfo: '', docName: 'Jornal da Noite.tps', dirty: false, docs: [{ id: 1, name: 'Jornal da Noite.tps', html: '', y: 0, dirty: false }], active: 1, blocks: [], progSec: 600, talentHud: true, profiles: [], profName: '', dragBm: -1, dropBm: -1, pres: [{ name: 'Âncora', color: '#ffd60a' }, { name: 'Repórter', color: '#5ac8fa' }], presNames: true, presOnly: '0', presMenu: false, curWho: 0, hexEdit: {}, progInput: '10:00', rehearse: false, reh: {}, savedAt: '', versions: [],
+    words: 0, bms: [], stops: [], cur: -1, t: { line: 1, lines: 1, y: 0, end: 1 }
+  };
+  y = 0; anchor = { i: 0, frac: 0, text: '' }; wheel = 0; lastSet = -1; userY = null; fi = -1;
+  W = []; vp = 0; misses = 0; pending = null; vTarget = null;
+  edScroll = React.createRef(); edSizer = React.createRef(); edZoom = React.createRef(); edRef = React.createRef();
+  tvRef = React.createRef(); tcRef = React.createRef(); pvRef = React.createRef(); pcRef = React.createRef();
+  bgFile = React.createRef(); openFile = React.createRef(); videoRef = React.createRef(); mvRef = React.createRef(); mcRef = React.createRef();
+  fonts = { atk: ["'Atkinson Hyperlegible', sans-serif", 1], sans: ["'Source Sans 3', sans-serif", 1.1], serif: ["'Source Serif 4', serif", 1.02], mono: ["'IBM Plex Mono', monospace", 0.82] };
+
+  componentDidMount() {
+    const ed = this.edRef.current;
+    let saved = null; try { saved = JSON.parse(localStorage.getItem('arca-prompter-docs') || 'null'); } catch (e) {}
+    try { const pf = JSON.parse(localStorage.getItem('arca-prompter-profiles') || '[]'); if (pf.length) this.setState({ profiles: pf }); } catch (e) {}
+    let vers = []; try { vers = JSON.parse(localStorage.getItem('arca-prompter-versions') || '[]'); } catch (e) {}
+    if (saved && saved.docs && saved.docs.length) { const a = saved.docs.find(d => d.id === saved.active) || saved.docs[0]; ed.innerHTML = a.html || SCRIPT; this.setState({ docs: saved.docs, active: a.id, docName: a.name, versions: vers, savedAt: 'Restaurado da última sessão' }); }
+    else { ed.innerHTML = SCRIPT; this.setState({ versions: vers }); }
+    ed.contentEditable = 'true';
+    this.rehT = setInterval(() => { const s = this.state; if (s.rehearse && s.playing && s.cur >= 0) this.setState(x => ({ reh: { ...x.reh, [x.cur]: (x.reh[x.cur] || 0) + 0.5 } })); }, 500);
+    try { document.execCommand('defaultParagraphSeparator', false, 'p'); document.execCommand('styleWithCSS', false, true); } catch (e) {}
+    this.pushHtml(); this.setState({ dirty: false });
+    this.last = performance.now(); this.tick = 0;
+    const loop = t => { this.frame(Math.min(0.1, (t - this.last) / 1000)); this.last = t; this.raf = requestAnimationFrame(loop); };
+    this.raf = requestAnimationFrame(loop);
+    this.onKey = e => this.key(e); window.addEventListener('keydown', this.onKey);
+    this.onSel = () => { const ed = this.edRef.current, sel = window.getSelection(); if (!ed || !sel.rangeCount || !ed.contains(sel.anchorNode)) return; let n = sel.anchorNode; while (n && n.parentElement !== ed) n = n.parentElement; const w = n && n.getAttribute ? +(n.getAttribute('data-who') || 0) : 0; if (w !== this.state.curWho) this.setState({ curWho: w }); };
+    document.addEventListener('selectionchange', this.onSel);
+    this.blinkT = setInterval(() => { if (this.state.displays.some(d => d.find)) this.setState(s => ({ blink: !s.blink })); }, 450);
+  }
+  componentDidUpdate(pp, ps) {
+    const s = this.state, ed = this.edRef.current; if (ed) ed.contentEditable = String(!s.locked);
+    { const w = JSON.stringify([s.pres, s.presNames, s.presOnly]); if (w !== this.lastWho) { this.lastWho = w; const r = document.documentElement; for (let i = 0; i < 8; i++) { const p = s.pres[i]; r.style.setProperty('--who' + (i + 1), p ? p.color : 'inherit'); r.style.setProperty('--who' + (i + 1) + '-name', p ? JSON.stringify(p.name || ('Apresentador ' + (i + 1))) : "''"); } r.setAttribute('data-who-names', s.presNames ? 'on' : 'off'); if (s.presOnly !== '0') r.setAttribute('data-who-only', s.presOnly); else r.removeAttribute('data-who-only'); } }
+    const v = this.videoRef.current; if (v && this.cam && v.srcObject !== this.cam) v.srcObject = this.cam;
+    { const ar = s.autoRun ? [s.runTarget, s.wpl, s.margin, s.minS, s.maxS].join('|') : ''; if (ar !== this.lastAr) { this.lastAr = ar; if (ar) setTimeout(() => this.applyAutoRun(), 50); } }
+  }
+  componentWillUnmount() { document.removeEventListener('selectionchange', this.onSel); clearInterval(this.rehT); clearTimeout(this.autoT); cancelAnimationFrame(this.raf); clearInterval(this.blinkT); clearInterval(this.cdT); clearInterval(this.recT); window.removeEventListener('keydown', this.onKey); this.stopVoice(); if (this.cam) this.cam.getTracks().forEach(t => t.stop()); }
+
+  prM(fsz) { const s = this.state; let ind = 24; if (s.indType !== 'nenhum' && s.indType !== 'linha') { const w = { seta: 1.8, quadrado: 1.7, ponto: 1.8 }[s.indType] || 0, k = fsz * 0.028 * [0.65, 1, 1.45][s.indSize]; ind = Math.round((k * 0.4 + w * k) * 10 + 14); } return ind + Math.round(s.margin * (1 + s.mPos) / 2); }
+  prR() { const s = this.state; return 24 + Math.round(s.margin * (1 - s.mPos) / 2); }
+  fs() { const s = this.state, d = s.wpl * 3.05 * this.fonts[s.fontKey][1], b = (1000 - 48 - s.margin) / d; return Math.round((1000 - this.prR() - this.prM(b)) / d); }
+  lineHpx() { return this.fs() * this.state.lineH; }
+  lps() { const s = this.state; return s.minS + s.speedT * (s.maxS - s.minS); }
+  blocks() { const c = this.tcRef.current; return c ? c.children : []; }
+  endY() { const b = this.blocks(), l = b[b.length - 1]; return l ? Math.max(0, l.offsetTop + l.offsetHeight - this.lineHpx()) : 0; }
+  anchorAt(y) {
+    const b = this.blocks(); if (!b.length) return { i: 0, frac: 0, text: '' };
+    let i = 0; for (let k = 0; k < b.length; k++) { if (b[k].offsetTop <= y) i = k; else break; }
+    const top = b[i].offsetTop, h = Math.max(1, (b[i + 1] ? b[i + 1].offsetTop : top + b[i].offsetHeight) - top);
+    return { i, frac: Math.max(0, Math.min(1, (y - top) / h)), text: b[i].textContent.slice(0, 50) };
+  }
+  yOf(a) {
+    const b = this.blocks(); if (!b.length) return 0;
+    let i = Math.min(a.i, b.length - 1);
+    if (a.text && b[i].textContent.slice(0, 50) !== a.text) {
+      let best = -1, d = 1e9;
+      for (let k = 0; k < b.length; k++) if (b[k].textContent.slice(0, 50) === a.text && Math.abs(k - a.i) < d) { best = k; d = Math.abs(k - a.i); }
+      if (best >= 0) i = best;
+    }
+    const top = b[i].offsetTop, h = Math.max(1, (b[i + 1] ? b[i + 1].offsetTop : top + b[i].offsetHeight) - top);
+    return top + a.frac * h;
+  }
+  setY(y) { this.y = Math.max(0, Math.min(y, this.endY())); this.anchor = this.anchorAt(this.y); this.vTarget = null; this.syncUi(); }
+
+  frame(dt) {
+    const s = this.state, tc = this.tcRef.current; if (!tc) return;
+    const lh = this.lineHpx();
+    let y = this.yOf(this.anchor);
+    if (this.userY != null) { y = this.userY; this.userY = null; this.vTarget = null; }
+    if (s.vMode !== 'off') { if (this.vTarget != null) y += (this.vTarget - y) * Math.min(1, dt * 5); }
+    else if (s.playing && !s.inline) {
+      const v = (this.lps() * s.dir + s.hold * this.lps() * 2) * lh * dt, ny = y + v; let hit = false;
+      if (v > 0) for (const st of tc.querySelectorAll('[data-stop]')) { const t = st.offsetTop - lh * 0.2; if (t > y + 0.5 && t <= ny) { y = t; hit = true; break; } }
+      if (hit) this.pause(); else y = ny;
+    } else if (s.hold) y += s.hold * this.lps() * 3 * lh * dt;
+    if (this.wheel) { y += this.wheel; this.wheel = 0; }
+    const end = this.endY(); y = Math.max(0, Math.min(y, end));
+    if (s.playing && s.vMode === 'off' && ((y >= end && s.dir > 0) || (y <= 0 && s.dir < 0))) this.pause();
+    this.y = y; this.anchor = this.anchorAt(y);
+    this.apply(y);
+    this.tick += dt; if (this.tick > 0.2) { this.tick = 0; this.syncUi(); }
+  }
+  apply(y) {
+    const s = this.state, rp = s.readPct / 100;
+    [[this.tvRef, this.tcRef], [this.pvRef, this.pcRef], [this.mvRef, this.mcRef]].forEach(([v, c]) => {
+      if (!v.current || !c.current) return;
+      const k = v.current.clientWidth / 1000; if (!k) return;
+      c.current.style.transform = `scale(${k}) translateY(${((v.current.clientHeight / k) * rp - y).toFixed(2)}px)`;
+    });
+    const sc = this.edScroll.current, z = this.edZoom.current, sz = this.edSizer.current;
+    if (sc && z && sz) {
+      const k = sc.clientWidth / 1000, vh = sc.clientHeight / k;
+      z.style.transform = `scale(${k})`; z.style.setProperty('--k', k.toFixed(3)); z.style.paddingTop = (vh * rp) + 'px'; z.style.paddingBottom = vh + 'px';
+      sz.style.height = (z.offsetHeight * k) + 'px';
+      if (s.follow) { const t = y * k; if (Math.abs(sc.scrollTop - t) > 0.5) sc.scrollTop = t; this.lastSet = sc.scrollTop; }
+    }
+  }
+  syncUi() {
+    const tc = this.tcRef.current, pc = this.pcRef.current; if (!tc) return;
+    if (pc && !pc.innerHTML) pc.innerHTML = tc.innerHTML;
+    const mc = this.mcRef.current; if (mc && !mc.innerHTML) mc.innerHTML = tc.innerHTML;
+    { const p2 = n => String(n).padStart(2, '0'), hm = d => p2(d.getHours()) + ':' + p2(d.getMinutes()) + ':' + p2(d.getSeconds()), now = new Date();
+      const rem = (this.endY() - this.y) / (this.lps() * this.lineHpx()), clock = hm(now), endAt = hm(new Date(now.getTime() + Math.max(0, rem) * 1000));
+      if (clock !== this.state.clock || endAt !== this.state.endAt) this.setState({ clock, endAt }); }
+    const lh = this.lineHpx(), y = this.y, end = Math.max(1, this.endY());
+    const bms = [...tc.querySelectorAll('[data-bm]')].map(el => ({ name: el.textContent.trim() || 'Sem nome', y: el.offsetTop }));
+    const stops = [...tc.querySelectorAll('[data-stop]')].map(el => ({ name: el.textContent.trim() || 'Pausa', y: el.offsetTop }));
+    let cur = -1; bms.forEach((b, i) => { if (b.y <= y + lh * 0.5) cur = i; });
+    const t = { line: Math.floor(y / lh) + 1, lines: Math.max(1, Math.ceil(end / lh) + 1), y: Math.round(y), end: Math.round(end) };
+    const sig = JSON.stringify([bms, stops, cur, t]);
+    if (sig !== this.lastSig) { this.lastSig = sig; this.setState({ bms, stops, cur, t }); }
+    const lv = this.level ?? -70; if (Math.abs(lv - this.state.level) > 1) this.setState({ level: lv });
+  }
+
+  pushHtml() {
+    const ed = this.edRef.current; let skip = false; const blocks = [];
+    [...ed.children].forEach(ch => {
+      if (ch.hasAttribute('data-bm')) { skip = ch.hasAttribute('data-skip'); blocks.push({ words: 0, skip }); ch.removeAttribute('data-skipped'); return; }
+      if (skip) ch.setAttribute('data-skipped', '1'); else ch.removeAttribute('data-skipped');
+      if (blocks.length && !ch.hasAttribute('data-stop')) blocks[blocks.length - 1].words += ch.textContent.split(/\s+/).filter(Boolean).length;
+    });
+    let prev = null; [...ed.children].forEach(ch => { const w = ch.getAttribute('data-who'); if (ch.hasAttribute('data-bm') || ch.hasAttribute('data-stop')) { prev = null; return; } if (w && w !== prev) ch.setAttribute('data-who-start', '1'); else ch.removeAttribute('data-who-start'); prev = w; });
+    if (JSON.stringify(blocks) !== JSON.stringify(this.state.blocks)) this.setState({ blocks });
+    this.scheduleSave();
+    const html = ed.innerHTML;
+    [this.tcRef, this.pcRef, this.mcRef].forEach(r => { if (r.current && r.current.contentEditable !== 'true') r.current.innerHTML = html; });
+    let total = 0; [...ed.children].forEach(ch => { if (!ch.hasAttribute('data-bm') && !ch.hasAttribute('data-stop')) total += ch.textContent.split(/\s+/).filter(Boolean).length; });
+    this.buildWords(); this.setState({ words: total, dirty: true }); this.syncUi();
+  }
+  onEdInput = () => {
+    const ed = this.edRef.current, ci = this.caretIndex();
+    [...ed.children].forEach((ch, i) => {
+      const tx = ch.textContent;
+      if (i !== ci && !ch.hasAttribute('data-bm') && !ch.hasAttribute('data-stop') && /^\*\S/.test(tx)) { ch.setAttribute('data-bm', '1'); ch.contentEditable = 'false'; ch.textContent = tx.slice(1).trim(); }
+    });
+    this.pushHtml();
+  };
+  caretIndex() {
+    const ed = this.edRef.current, sel = window.getSelection(); if (!sel.rangeCount) return -1;
+    let n = sel.anchorNode; while (n && n.parentNode !== ed) n = n.parentNode;
+    return n ? [...ed.children].indexOf(n) : -1;
+  }
+  insertBlock(kind) {
+    const ed = this.edRef.current; let i = this.caretIndex(); if (i < 0) i = this.anchor.i;
+    const ref = ed.children[i]; const el = document.createElement('p');
+    el.setAttribute(kind, '1'); el.contentEditable = 'false';
+    el.textContent = kind === 'data-bm' ? ((ref && ref.textContent.split(/\s+/).slice(0, 3).join(' ')) || 'Novo marcador') : 'Ponto de pausa';
+    ed.insertBefore(el, ref || null); this.pushHtml();
+  }
+  exec(cmd, val) { if (this.state.locked) return; this.edRef.current.focus({ preventScroll: true }); document.execCommand(cmd, false, val); this.pushHtml(); }
+  upperSel() { const t = window.getSelection().toString(); if (t) this.exec('insertText', t.toUpperCase()); }
+  removeBlock(kind, i) { const el = this.edRef.current.querySelectorAll('[' + kind + ']')[i]; if (el) { el.remove(); this.pushHtml(); this.flash(kind === 'data-bm' ? 'Marcador excluído' : 'Pausa excluída'); } }
+  jumpPara(d) {
+    const tc = this.tcRef.current; if (!tc) return;
+    const ps = [...tc.children].filter(el => !el.hasAttribute('data-bm') && !el.hasAttribute('data-stop') && el.offsetParent !== null && el.textContent.trim());
+    if (!ps.length) return; const y = this.y, eps = 2;
+    let t = d > 0 ? ps.find(p => p.offsetTop > y + eps) : [...ps].reverse().find(p => p.offsetTop < y - eps);
+    if (!t) return this.flash(d > 0 ? 'Último parágrafo' : 'Primeiro parágrafo');
+    this.setY(t.offsetTop); this.setState({ follow: true });
+  }
+  jumpBm(i) { const b = this.state.bms[i]; if (b) { this.setY(b.y); this.setState({ follow: true }); } }
+
+  play() {
+    if (this.state.countdownPref && !this.state.playing) {
+      clearInterval(this.cdT); this.setState({ count: 3 });
+      this.cdT = setInterval(() => { const n = this.state.count - 1; if (n <= 0) { clearInterval(this.cdT); this.setState({ count: 0 }); this.go(); } else this.setState({ count: n }); }, 1000);
+      return;
+    }
+    this.go();
+  }
+  go() { if (this.state.inline) this.finishInline(); this.setState({ playing: true, locked: true, follow: true }); if (this.state.recWithPrompt && this.state.camOn && !this.state.recording) this.startRec(); }
+  pause() { clearInterval(this.cdT); this.setState({ playing: false, locked: false, follow: true, hold: 0, count: 0, tbShow: true }); if (this.state.recWithPrompt && this.state.recording) this.stopRec(); }
+  togglePlay = () => { if (this.state.vMode !== 'off') this.stopVoice(); (this.state.playing || this.state.count) ? this.pause() : this.play(); };
+  toggleLock = () => {
+    const s = this.state;
+    if (s.playing || s.count > 0) return this.flash('Pause o prompt para editar');
+    if (s.locked) this.setState({ locked: false, follow: true }, () => this.edRef.current.focus({ preventScroll: true }));
+    else this.setState({ locked: true, follow: true });
+  };
+  toggleTalent = () => { if (this.state.inline) this.finishInline(); this.setState(s => ({ talent: !s.talent, tbShow: true })); if (document.fullscreenElement) document.exitFullscreen().catch(() => {}); };
+  editHere = () => {
+    if (this.state.inline) this.finishInline();
+    if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
+    const i = this.anchor.i; this.stopVoice();
+    this.setState({ talent: false, playing: false, locked: false, follow: true, count: 0 }, () => {
+      const ed = this.edRef.current; let el = ed.children[i];
+      while (el && (el.hasAttribute('data-bm') || el.hasAttribute('data-stop'))) el = el.nextElementSibling;
+      if (!el) return;
+      ed.contentEditable = 'true'; ed.focus({ preventScroll: true });
+      const r = document.createRange(); r.selectNodeContents(el); r.collapse(false);
+      const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+      if (el.animate) el.animate([{ backgroundColor: 'rgba(128,128,128,.35)' }, { backgroundColor: 'rgba(128,128,128,0)' }], { duration: 1600 });
+    });
+  };
+  cursorToPrompter = e => { if (e && e.preventDefault) e.preventDefault(); const i = this.caretIndex(); const b = this.blocks()[i]; if (b) { this.setY(b.offsetTop); this.setState({ follow: true, locked: this.state.playing && this.state.lockOnPlay }); } };
+  startInline = () => { if (this.state.inline || this.state.playing || this.state.count > 0) return; const tc = this.tcRef.current; this.setState({ inline: true, playing: false, tbShow: true }); tc.contentEditable = 'true'; tc.focus({ preventScroll: true }); };
+  finishInline = () => { const tc = this.tcRef.current; tc.contentEditable = 'false'; this.edRef.current.innerHTML = tc.innerHTML; this.setState({ inline: false, locked: false }); this.pushHtml(); };
+  applyAutoRun() {
+    const s = this.state, parts = s.runTarget.trim().split(':').map(Number); if (parts.some(isNaN) || parts.length < 2 || parts.length > 3) return;
+    const sec = parts.reduce((a, v) => a * 60 + v, 0); if (!sec) return;
+    const need = (this.endY() / this.lineHpx()) / sec, t = Math.max(0, Math.min(1, (need - s.minS) / (s.maxS - s.minS)));
+    if (Math.abs(t - s.speedT) > 0.005) this.setState({ speedT: t });
+  }
+
+  newDoc() { this.openInTab('Sem título.tps', '<p><br></p>'); this.setState({ dlg: null }); }
+  snapshotDocs() { const s = this.state, ed = this.edRef.current; return s.docs.map(d => d.id === s.active ? { ...d, html: ed.innerHTML, y: this.y, name: s.docName, dirty: s.dirty } : d); }
+  openInTab(name, html, extra) { const docs = this.snapshotDocs(), id = Date.now(); docs.push({ id, name, html, y: 0, dirty: false }); this.loadDoc(docs, id, extra); }
+  loadDoc(docs, id, extra) {
+    if (this.state.playing) this.pause();
+    const d = docs.find(x => x.id === id); this.edRef.current.innerHTML = d.html || '<p><br></p>';
+    this.setState({ docs, active: id, docName: d.name, reh: {}, ...(extra || {}) }, () => { this.pushHtml(); this.setY(d.y || 0); this.setState({ dirty: !!d.dirty }); });
+  }
+  switchTab(id) { if (id === this.state.active) return; this.loadDoc(this.snapshotDocs(), id); }
+  closeTab(id) {
+    let docs = this.snapshotDocs(); const d = docs.find(x => x.id === id);
+    if (d && d.dirty && !confirm('Fechar "' + d.name + '" sem salvar? A versão automática continua no histórico.')) return;
+    if (d && d.dirty) this.addVersion(d.name, d.html);
+    docs = docs.filter(x => x.id !== id);
+    if (!docs.length) docs = [{ id: Date.now(), name: 'Sem título.tps', html: '<p><br></p>', y: 0, dirty: false }];
+    if (id === this.state.active) this.loadDoc(docs, docs[Math.max(0, docs.length - 1)].id); else this.setState({ docs });
+  }
+  scheduleSave() {
+    clearTimeout(this.autoT);
+    this.autoT = setTimeout(() => {
+      const docs = this.snapshotDocs(); try { localStorage.setItem('arca-prompter-docs', JSON.stringify({ docs, active: this.state.active })); } catch (e) {}
+      const now = Date.now(); if (this.state.dirty && now - (this.lastVer || 0) > 120000) { this.lastVer = now; this.addVersion(this.state.docName, this.edRef.current.innerHTML, 'automática'); }
+      const d = new Date(); this.setState({ docs, savedAt: 'Salvo automaticamente às ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0') });
+    }, 1200);
+  }
+  addVersion(name, html, kind) {
+    const v = [{ t: Date.now(), name, html, kind: kind || 'salva', words: (html.replace(/<[^>]+>/g, ' ').match(/\S+/g) || []).length }, ...this.state.versions].slice(0, 25);
+    try { localStorage.setItem('arca-prompter-versions', JSON.stringify(v)); } catch (e) {} this.setState({ versions: v });
+  }
+  setWho(n) {
+    const ed = this.edRef.current, sel = window.getSelection(); if (!sel.rangeCount || !ed.contains(sel.anchorNode)) return this.flash('Posicione o cursor no texto');
+    const r = sel.getRangeAt(0), blk = n => { while (n && n.parentElement !== ed) n = n.parentElement; return n; };
+    let a = blk(r.startContainer), b = blk(r.endContainer); if (!a) return;
+    for (let el = a; el; el = el.nextElementSibling) { if (!el.hasAttribute('data-bm') && !el.hasAttribute('data-stop')) { if (n) el.setAttribute('data-who', n); else el.removeAttribute('data-who'); } if (el === b) break; }
+    this.pushHtml(); this.setState({ curWho: n });
+  }
+  removePres(i) {
+    const ed = this.edRef.current, n = i + 1;
+    ed.querySelectorAll('[data-who]').forEach(el => { const w = +el.getAttribute('data-who'); if (w === n) el.removeAttribute('data-who'); else if (w > n) el.setAttribute('data-who', String(w - 1)); });
+    this.setState(x => ({ pres: x.pres.filter((_, j) => j !== i), presOnly: x.presOnly === String(n) ? '0' : (+x.presOnly > n ? String(+x.presOnly - 1) : x.presOnly) }), () => this.pushHtml());
+  }
+  moveBlock(from, to) {
+    const ed = this.edRef.current, bms = [...ed.querySelectorAll('[data-bm]')]; if (from === to || from < 0 || !bms[from]) return;
+    const frag = [], start = bms[from]; for (let el = start; el && (el === start || !el.hasAttribute('data-bm')); el = el.nextElementSibling) frag.push(el);
+    const ref = to < bms.length ? bms[to] : null; if (ref && frag.includes(ref)) return;
+    frag.forEach(el => ed.insertBefore(el, ref)); this.pushHtml(); this.flash('Bloco movido');
+  }
+  profSettings() { const s = this.state; return { fontKey: s.fontKey, wpl: s.wpl, margin: s.margin, mPos: s.mPos, lineH: s.lineH, bg: s.bg, fg: s.fg, align: s.align, indType: s.indType, indSize: s.indSize, indColor: s.indColor, readPct: s.readPct, speedT: s.speedT, minS: s.minS, maxS: s.maxS }; }
+  setProfiles(p) { try { localStorage.setItem('arca-prompter-profiles', JSON.stringify(p)); } catch (e) {} this.setState({ profiles: p }); }
+  printScript() {
+    const s = this.state, ed = this.edRef.current, wps = Math.max(0.1, this.lps() * s.wpl); let bi = -1, html = '';
+    const nm = n => { const p = s.pres[n - 1]; return p ? (p.name || 'Apresentador ' + n) : ''; };
+    [...ed.children].forEach(ch => {
+      if (ch.hasAttribute('data-bm')) { bi++; const b = s.blocks[bi] || { words: 0, skip: false }; html += `<h2${b.skip ? ' class="skip"' : ''}><span>${esc(ch.textContent)}${b.skip ? ' — pulado' : ''}</span><em>${this.fmt(b.words / wps)}</em></h2>`; return; }
+      if (ch.hasAttribute('data-stop')) { html += `<div class="stop">Pausa · ${esc(ch.textContent)}</div>`; return; }
+      const w = +(ch.getAttribute('data-who') || 0), st = ch.hasAttribute('data-who-start');
+      html += `<p${ch.hasAttribute('data-skipped') ? ' class="skip"' : ''}>${w && st ? `<b style="color:${s.pres[w - 1] ? s.pres[w - 1].color : '#000'}">${esc(nm(w))}</b>` : ''}${ch.innerHTML}</p>`;
+    });
+    const total = s.blocks.reduce((a, b) => a + (b.skip ? 0 : b.words / wps), 0);
+    const doc = `<!doctype html><html><head><meta charset="utf-8"><title>${esc(s.docName)}</title><style>body{font:12pt/1.55 Georgia,serif;color:#111;max-width:680px;margin:40px auto;padding:0 24px}header{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid #111;padding-bottom:8px;margin-bottom:20px}h1{font:600 18pt system-ui,sans-serif;margin:0}header span{font:10pt system-ui,sans-serif;color:#555}h2{display:flex;justify-content:space-between;font:600 10pt system-ui,sans-serif;letter-spacing:.08em;text-transform:uppercase;border-top:1px solid #bbb;padding-top:10px;margin:26px 0 10px}h2 em{font-style:normal;color:#555}p{margin:0 0 10px}p b{display:block;font:600 8.5pt system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}.stop{font:600 9pt system-ui,sans-serif;border:1px dashed #888;border-radius:4px;padding:3px 8px;display:inline-block;margin:4px 0 12px}.skip{opacity:.4;text-decoration:line-through}</style></head><body><header><h1>${esc(s.docName.replace(/\.tps$/, ''))}</h1><span>${s.words} palavras · estimado ${this.fmt(total)} · programa ${this.fmt(s.progSec)}</span></header>${html}<script>onload=()=>print()<\/script></body></html>`;
+    const w = window.open('', '_blank'); if (!w) return this.flash('Permita pop-ups para imprimir'); w.document.write(doc); w.document.close();
+  }
+  toggleSkip(i) { const el = this.edRef.current.querySelectorAll('[data-bm]')[i]; if (!el) return; if (el.hasAttribute('data-skip')) el.removeAttribute('data-skip'); else el.setAttribute('data-skip', '1'); this.pushHtml(); }
+  async readDocx(file) {
+    const buf = new Uint8Array(await file.arrayBuffer()), dv = new DataView(buf.buffer);
+    let eocd = -1; for (let i = buf.length - 22; i >= 0; i--) if (dv.getUint32(i, true) === 0x06054b50) { eocd = i; break; }
+    if (eocd < 0) throw new Error('zip');
+    let p = dv.getUint32(eocd + 16, true); const n = dv.getUint16(eocd + 10, true), dec = new TextDecoder();
+    for (let k = 0; k < n; k++) {
+      const method = dv.getUint16(p + 10, true), csize = dv.getUint32(p + 20, true), nl = dv.getUint16(p + 28, true), el = dv.getUint16(p + 30, true), cl = dv.getUint16(p + 32, true), off = dv.getUint32(p + 42, true);
+      const name = dec.decode(buf.subarray(p + 46, p + 46 + nl));
+      if (name === 'word/document.xml') {
+        const start = off + 30 + dv.getUint16(off + 26, true) + dv.getUint16(off + 28, true), data = buf.subarray(start, start + csize);
+        const raw = method === 0 ? data : new Uint8Array(await new Response(new Blob([data]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).arrayBuffer());
+        const xml = new DOMParser().parseFromString(dec.decode(raw), 'application/xml');
+        return [...xml.getElementsByTagNameNS('*', 'p')].map(pp => [...pp.getElementsByTagNameNS('*', '*')].map(x => x.localName === 't' ? x.textContent : x.localName === 'tab' ? ' ' : x.localName === 'br' ? ' ' : '').join('').trim()).filter(Boolean).join('\n');
+      }
+      p += 46 + nl + el + cl;
+    }
+    throw new Error('document.xml');
+  }
+  saveDoc() {
+    this.addVersion(this.state.docName, this.edRef.current.innerHTML, 'salva');
+    const s = this.state, data = { app: 'ARCA Prompter', v: 1, html: this.edRef.current.innerHTML, settings: { wpl: s.wpl, margin: s.margin, mPos: s.mPos, lineH: s.lineH, fontKey: s.fontKey, bg: s.bg, fg: s.fg, align: s.align, readPct: s.readPct, ovType: s.ovType, indType: s.indType, speedT: s.speedT, minS: s.minS, maxS: s.maxS, pres: s.pres, progSec: s.progSec, progInput: this.fmt(s.progSec) } };
+    this.download(s.docName.replace(/\.\w+$/, '') + '.tps', JSON.stringify(data), 'application/json'); this.setState({ dirty: false }, () => this.scheduleSave());
+  }
+  exportTxt() { const ed = this.edRef.current; const txt = [...ed.children].map(c => (c.hasAttribute('data-bm') ? '*' : c.hasAttribute('data-stop') ? '[PAUSA] ' : '') + c.textContent).join('\n\n'); this.download(this.state.docName.replace(/\.\w+$/, '') + '.txt', txt, 'text/plain'); }
+  download(name, data, type) { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([data], { type })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); }
+  onOpenFile = e => {
+    const f = e.target.files[0]; if (!f) return; e.target.value = '';
+    const toHtml = plain => plain.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => l.startsWith('*') ? `<p data-bm="1" contenteditable="false">${esc(l.slice(1).trim())}</p>` : /^\[pausa\]/i.test(l) ? `<p data-stop="1" contenteditable="false">${esc(l.replace(/^\[pausa\]\s*/i, '') || 'Pausa')}</p>` : `<p>${esc(l)}</p>`).join('');
+    if (/\.docx$/i.test(f.name)) { this.readDocx(f).then(t => this.openInTab(f.name.replace(/\.\w+$/, '') + '.tps', toHtml(t) || '<p><br></p>')).catch(() => this.flash('Não foi possível ler o .docx')); return; }
+    const r = new FileReader();
+    r.onload = () => {
+      let html = '', settings = null; const txt = String(r.result);
+      if (/\.(tps|json)$/i.test(f.name)) { try { const d = JSON.parse(txt); html = d.html || ''; settings = d.settings; } catch (err) { html = `<p>${esc(txt)}</p>`; } }
+      else {
+        const plain = /\.html?$/i.test(f.name) ? new DOMParser().parseFromString(txt, 'text/html').body.innerText : txt;
+        html = plain.split(/\r?\n/).map(l => l.trim()).filter(Boolean).map(l => l.startsWith('*') ? `<p data-bm="1" contenteditable="false">${esc(l.slice(1).trim())}</p>` : /^\[pausa\]/i.test(l) ? `<p data-stop="1" contenteditable="false">${esc(l.replace(/^\[pausa\]\s*/i, '') || 'Pausa')}</p>` : `<p>${esc(l)}</p>`).join('');
+      }
+      this.openInTab(f.name.replace(/\.\w+$/, '') + '.tps', html || '<p><br></p>', settings || {});
+    };
+    r.readAsText(f);
+  };
+  textNodes() { const out = [], tw = document.createTreeWalker(this.edRef.current, NodeFilter.SHOW_TEXT); let n; while ((n = tw.nextNode())) out.push(n); return out; }
+  findNext() {
+    const q = this.state.findQ.toLowerCase(); if (!q) return;
+    const hits = []; this.textNodes().forEach(n => { const d = n.data.toLowerCase(); let i = d.indexOf(q); while (i >= 0) { hits.push([n, i]); i = d.indexOf(q, i + q.length); } });
+    if (!hits.length) return this.setState({ findInfo: 'Nenhuma ocorrência' });
+    this.fi = (this.fi + 1) % hits.length; const [n, i] = hits[this.fi];
+    const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + q.length);
+    const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    let b = n.parentNode; const ed = this.edRef.current; while (b && b.parentNode !== ed) b = b.parentNode;
+    const idx = [...ed.children].indexOf(b); const tb = this.blocks()[idx]; if (tb && !this.state.playing) this.setY(tb.offsetTop);
+    this.setState({ findInfo: `${this.fi + 1} de ${hits.length}`, follow: true });
+  }
+  replaceAll() {
+    const q = this.state.findQ; if (!q) return; const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi'); let n = 0;
+    this.textNodes().forEach(t => { const m = t.data.match(re); if (m) { n += m.length; t.data = t.data.replace(re, this.state.replQ); } });
+    this.pushHtml(); this.setState({ findInfo: n ? `${n} substituída(s)` : 'Nenhuma ocorrência' });
+  }
+
+  key(e) {
+    const t = e.target, s = this.state, k = e.key, c = e.ctrlKey || e.metaKey;
+    if (s.capture) { e.preventDefault(); if (k !== 'Escape') this.setState(x => ({ keymap: { ...x.keymap, [x.capture]: k }, capture: null })); else this.setState({ capture: null }); return; }
+    const kn = this.keyName(k); if (kn !== s.lastKey) this.setState({ lastKey: kn });
+    if (k === 'Escape' && s.menu) return this.setState({ menu: null });
+    if (k === 'Escape' && s.dlg) return this.setState({ dlg: null });
+    if (s.dlg) return;
+    const typing = t.isContentEditable || t.tagName === 'SELECT' || t.tagName === 'TEXTAREA' || (t.tagName === 'INPUT' && t.type !== 'range');
+    if (k === 'F5') { e.preventDefault(); return this.toggleTalent(); }
+    if (e.altKey && !c && /^[0-8]$/.test(k) && !s.talent) { e.preventDefault(); if (+k > s.pres.length) return this.flash('Apresentador ' + k + ' não existe'); return this.setWho(+k); }
+    if (c) {
+      const lk = k.toLowerCase(), map = { p: () => this.printScript(), w: () => this.closeTab(s.active), enter: () => this.togglePlay(), e: () => this.toggleLock(), k: () => this.insertBlock('data-bm'), j: () => this.cursorToPrompter(), l: () => this.setState({ follow: true, locked: s.playing && s.lockOnPlay }), f: () => this.setState({ dlg: 'find' }), s: () => this.saveDoc(), o: () => this.openFile.current.click(), n: () => this.setState({ dlg: 'novo' }), ',': () => this.setState({ dlg: 'prefs' }) };
+      if (map[lk]) { e.preventDefault(); return map[lk](); }
+      if (/^[1-9]$/.test(k)) { e.preventDefault(); return this.jumpBm(+k - 1); }
+      return;
+    }
+    if (s.inline) { if (k === 'Escape') { e.preventDefault(); this.finishInline(); } return; }
+    if (k === 'Escape' && s.talent) return this.toggleTalent();
+    if (typing) return;
+    if (/^[1-9]$/.test(k) && s.keymap.stop !== k) { e.preventDefault(); return this.setSpeedT((+k - 1) / 8, true); }
+    if (k === 'Backspace') { e.preventDefault(); return this.setY(0); }
+    const act = Object.keys(s.keymap).find(a => s.keymap[a].toLowerCase() === k.toLowerCase()); if (!act) return;
+    e.preventDefault(); this.big = e.shiftKey; this.doAction(act); this.big = false;
+  }
+  doAction(a) {
+    const s = this.state, lh = this.lineHpx(), st = this.big ? 0.15 : 0.05, run = s.playing || s.count > 0;
+    ({ play: () => this.togglePlay(),
+      faster: () => run ? this.adjSpeed(st) : this.setY(this.y + lh * (this.big ? 5 : 1)),
+      slower: () => run ? this.adjSpeed(-st) : this.setY(this.y - lh * (this.big ? 5 : 1)),
+      faster2: () => this.adjSpeed(st), slower2: () => this.adjSpeed(-st),
+      reverse: () => { this.setState(x => ({ dir: -x.dir })); this.flashSpeed(s.speedT, -s.dir); },
+      stop: () => { if (s.playing) this.pause(); this.flash('Parado'); },
+      rewind: () => this.setY(0), toEnd: () => this.setY(this.endY()),
+      editHere: () => s.talent && this.editHere(), nextBm: () => this.jumpBm(s.cur + 1), prevBm: () => this.jumpBm(Math.max(0, s.cur - 1)), nextPara: () => this.jumpPara(1), prevPara: () => this.jumpPara(-1),
+      mirror: () => { const d = this.tvDisp(); if (d.id) { this.updDisp(d.id, x => ({ flipH: !x.flipH })); this.flash(d.flipH ? 'Espelho desligado' : 'Espelhado'); } } })[a]();
+  }
+  adjSpeed(d) {
+    if (this.state.speedLock && this.state.talent) return this.flash('Velocidade travada');
+    const s = this.state; let v = s.dir * s.speedT + d, dir = s.dir;
+    if (v < 0 && s.dir > 0) { dir = -1; v = 0; } else if (v > 0 && s.dir < 0) { dir = 1; v = 0; }
+    const t = Math.min(1, Math.abs(v));
+    this.setState({ speedT: t, dir, autoRun: false }); this.flashSpeed(t, dir);
+  }
+  setSpeedT(t, show) { this.setState({ speedT: t, autoRun: false }); if (show) this.flashSpeed(t, this.state.dir); }
+  flashSpeed(t, dir) { const s = this.state, lps = s.minS + t * (s.maxS - s.minS), u = [['linhas/s', 2, 1], ['linhas/min', 0, 60], ['palavras/s', 1, s.wpl], ['palavras/min', 0, s.wpl * 60]][s.unit]; this.flash(`${(lps * u[2]).toFixed(u[1])} ${u[0]}`, t, dir < 0 ? 'Ré' : 'Frente'); }
+  flash(text, pct, sub) { clearTimeout(this.flashT); this.setState({ flashText: text, flashPct: pct == null ? -1 : pct, flashSub: sub || '' }); this.flashT = setTimeout(() => this.setState({ flashText: '' }), 1100); }
+  onWheelCtl(e, area) {
+    const s = this.state;
+    if (e.ctrlKey) { const n = Math.max(2, Math.min(12, s.wpl + (e.deltaY > 0 ? 1 : -1))); if (n !== s.wpl) { this.setState({ wpl: n }); this.flash(n + ' palavras por linha'); } return; }
+    if (s.playing || s.count > 0) { const now = performance.now(); if (now - (this.lastWheel || 0) < 60) return; this.lastWheel = now; this.adjSpeed(e.deltaY > 0 ? 0.03 : -0.03); return; }
+    if (area === 'tv' && !s.speedLock) this.wheel += e.deltaY * 0.6;
+  }
+  onPtrDown(e) { if (e.button !== 0 || this.state.inline || e.detail > 1) return; this.drag = { y: e.clientY, sy: this.y, k: (this.tvRef.current.clientWidth / 1000) || 1, flip: this.state.winFlipV ? -1 : 1, moved: false }; }
+  onPtrMove(e) { const d = this.drag; if (!d) return; const dy = e.clientY - d.y; if (Math.abs(dy) > 4) d.moved = true; if (d.moved && !this.state.playing) this.setY(d.sy - dy / d.k * d.flip); }
+  onPtrUp() { this.drag = null; }
+  keyName(k) { return ({ ' ': 'Espaço', ArrowUp: '↑', ArrowDown: '↓', ArrowLeft: '←', ArrowRight: '→', Backspace: 'Backspace', PageUp: 'Page Up', PageDown: 'Page Down', Escape: 'Esc', Enter: 'Enter' })[k] || (k.length === 1 ? k.toUpperCase() : k); }
+
+  norm(w) { return w.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]/g, ''); }
+  buildWords() {
+    const tc = this.tcRef.current; this.W = []; if (!tc) return;
+    const tw = document.createTreeWalker(tc, NodeFilter.SHOW_TEXT, { acceptNode: n => n.parentElement.closest('[data-bm],[data-stop]') ? 2 : 1 });
+    let n; while ((n = tw.nextNode())) { const re = /[\p{L}\p{N}]+/gu; let m; while ((m = re.exec(n.data))) this.W.push({ node: n, i: m.index, len: m[0].length, w: m[0], n: this.norm(m[0]) }); }
+  }
+  wordY(i) {
+    const W = this.W[i], tc = this.tcRef.current; if (!W) return this.y;
+    let b = W.node.parentNode; while (b && b.parentNode !== tc) b = b.parentNode; if (!b) return this.y;
+    const r = document.createRange(); r.setStart(W.node, W.i); r.setEnd(W.node, W.i + W.len);
+    const rr = r.getBoundingClientRect(), br = b.getBoundingClientRect(); if (!br.height) return b.offsetTop;
+    const frac = this.state.winFlipV ? (br.bottom - rr.bottom) / br.height : (rr.top - br.top) / br.height;
+    return b.offsetTop + frac * b.offsetHeight;
+  }
+  sim(a, b) {
+    if (a === b) return 1; const m = a.length, n = b.length; if (!m || !n) return 0;
+    let p = Array.from({ length: n + 1 }, (_, j) => j);
+    for (let i = 1; i <= m; i++) { const c = [i]; for (let j = 1; j <= n; j++) c[j] = Math.min(p[j] + 1, c[j - 1] + 1, p[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1)); p = c; }
+    return 1 - p[n] / Math.max(m, n);
+  }
+  hear(raw) {
+    const n = this.norm(raw); if (!n) return;
+    const s = this.state, improv = this.misses >= s.tol;
+    const from = improv ? Math.max(0, this.vp - 10) : this.vp, to = Math.min(this.W.length, this.vp + (improv ? 30 : s.win));
+    let hit = -1;
+    if (!(improv && n.length < 3) && n.length >= 2) for (let i = from; i < to; i++) if (this.sim(n, this.W[i].n) >= 0.75) { hit = i; break; }
+    let st = s.vState, ok = 0;
+    if (hit >= 0 && improv) { if (this.pending != null && hit === this.pending + 1) { this.misses = 0; this.pending = null; } else { this.pending = hit; st = 'ressinc'; ok = 1; } }
+    if (hit >= 0 && this.misses < s.tol) { this.vp = hit + 1; this.vTarget = this.wordY(hit); this.misses = 0; st = 'seguindo'; ok = 2; }
+    else if (hit < 0) { this.misses++; if (this.misses >= s.tol) { st = 'improviso'; this.pending = null; } }
+    this.setState(x => ({ vState: st, heard: [...x.heard, { w: raw, ok }].slice(-16) }));
+  }
+  voiceStartPos() { let i = 0; while (i < this.W.length && this.wordY(i) < this.y - 2) i++; this.vp = i; this.misses = 0; this.pending = null; this.vTarget = null; }
+  startMic = () => {
+    if (this.state.vMode === 'mic') return this.stopVoice();
+    this.stopVoice();
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) return this.setState({ vErr: 'Reconhecimento de voz indisponível neste navegador. Use “Simular leitura”.' });
+    this.voiceStartPos();
+    const r = new SR(); r.lang = this.state.vLang; r.continuous = true; r.interimResults = true; this.proc = {};
+    r.onresult = e => { for (let i = e.resultIndex; i < e.results.length; i++) { const ws = e.results[i][0].transcript.trim().split(/\s+/).filter(Boolean); for (let k = this.proc[i] || 0; k < ws.length; k++) this.hear(ws[k]); this.proc[i] = ws.length; } };
+    r.onend = () => { if (this.rec === r) { this.proc = {}; try { r.start(); } catch (e) {} } };
+    r.onerror = ev => { if (/not-allowed|service-not-allowed/.test(ev.error)) { this.rec = null; this.stopVoice(); this.setState({ vErr: 'Microfone bloqueado. Libere o acesso ou use “Simular leitura”.' }); } };
+    this.rec = r; try { r.start(); } catch (e) {}
+    if (navigator.mediaDevices) navigator.mediaDevices.getUserMedia({ audio: true }).then(st => {
+      this.stream = st; const ac = new (window.AudioContext || window.webkitAudioContext)(); this.ac = ac;
+      const an = ac.createAnalyser(); an.fftSize = 1024; ac.createMediaStreamSource(st).connect(an); const buf = new Float32Array(an.fftSize);
+      this.levelT = setInterval(() => { an.getFloatTimeDomainData(buf); let q = 0; for (const v of buf) q += v * v; this.level = Math.max(-70, 20 * Math.log10(Math.sqrt(q / buf.length) + 1e-6)); }, 80);
+    }).catch(() => {});
+    this.setState({ vMode: 'mic', vState: 'ouvindo', heard: [], vErr: '', playing: false, locked: true, follow: true });
+  };
+  startSim = () => {
+    if (this.state.vMode === 'sim') return this.stopVoice();
+    this.stopVoice(); this.voiceStartPos();
+    let p = this.vp, said = 0, imp = -1; const every = this.props.improvEvery ?? 22;
+    this.simT = setInterval(() => {
+      if (imp >= 0) { this.hear(IMPROV[imp]); this.level = -22 - Math.random() * 6; imp++; if (imp >= IMPROV.length) { imp = -1; p = this.vp; } return; }
+      if (p >= this.W.length) return this.stopVoice();
+      this.hear(this.W[p].w); p++; said++; this.level = -18 - Math.random() * 8;
+      if (said % every === 0) imp = 0;
+    }, this.props.simWordMs ?? 340);
+    this.setState({ vMode: 'sim', vState: 'ouvindo', heard: [], vErr: '', playing: false, locked: true, follow: true });
+  };
+  stopVoice() {
+    clearInterval(this.simT); clearInterval(this.levelT); this.level = -70;
+    if (this.rec) { const r = this.rec; this.rec = null; try { r.stop(); } catch (e) {} }
+    if (this.stream) { this.stream.getTracks().forEach(t => t.stop()); this.stream = null; }
+    if (this.ac) { this.ac.close().catch(() => {}); this.ac = null; }
+    this.vTarget = null;
+    if (this.state.vMode !== 'off') this.setState({ vMode: 'off', vState: 'off', locked: false });
+  }
+  toggleCam = () => {
+    if (this.state.camOn) { if (this.state.recording) this.stopRec(); this.cam.getTracks().forEach(t => t.stop()); this.cam = null; return this.setState({ camOn: false, camMsg: 'Câmera desligada' }); }
+    if (!navigator.mediaDevices) return this.setState({ camMsg: 'Câmera indisponível' });
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then(st => { this.cam = st; this.setState({ camOn: true }); }).catch(() => this.setState({ camMsg: 'Câmera bloqueada ou indisponível' }));
+  };
+  startRec() {
+    if (!this.cam || !window.MediaRecorder) return;
+    this.chunks = []; const mr = new MediaRecorder(this.cam); this.mr = mr;
+    mr.ondataavailable = e => e.data.size && this.chunks.push(e.data);
+    mr.onstop = () => { const url = URL.createObjectURL(new Blob(this.chunks, { type: 'video/webm' })); this.setState(x => ({ recUrl: url, lastRec: x.recSec })); };
+    mr.start(); clearInterval(this.recT); this.setState({ recording: true, recSec: 0 }); this.recT = setInterval(() => this.setState(x => ({ recSec: x.recSec + 1 })), 1000);
+  }
+  stopRec() { clearInterval(this.recT); if (this.mr && this.mr.state !== 'inactive') this.mr.stop(); this.setState({ recording: false }); }
+  toggleNdi() { const on = !this.state.ndiOn; clearTimeout(this.ndiT); this.setState({ ndiOn: on, ndiPeer: '' }); if (on) this.ndiT = setTimeout(() => this.setState({ ndiPeer: 'vMix · 192.168.0.31' }), 1500); }
+  toggleWeb() { const on = !this.state.webOn; clearTimeout(this.webT); this.setState({ webOn: on, webViewers: 0 }); if (on) this.webT = setTimeout(() => this.setState({ webViewers: 1 }), 2000); }
+  tvDisp() { const d = this.state.displays; return d.find(x => x.on && x.id !== 'int') || d.find(x => x.on) || { nick: 'Janela flutuante', name: 'Janela', flipH: false, flipV: false, align: this.state.align, find: false }; }
+  fmt(sec) { if (!isFinite(sec)) sec = 0; sec = Math.max(0, Math.round(sec)); return String(Math.floor(sec / 60)).padStart(2, '0') + ':' + String(sec % 60).padStart(2, '0'); }
+  updDisp(id, patch) { this.setState(s => ({ displays: s.displays.map(d => d.id === id ? { ...d, ...(typeof patch === 'function' ? patch(d) : patch) } : d) })); }
+
+  renderVals() {
+    const s = this.state, fsz = this.fs(), lh = fsz * s.lineH, lps = this.lps(), pxs = lps * lh, td = this.tvDisp();
+    const live = s.playing || s.count > 0;
+    const ck = on => ({ bg: on ? 'var(--inv)' : 'transparent', bd: on ? 'var(--inv)' : 'var(--faint)', op: on ? 1 : 0 });
+    const sw = on => ({ track: on ? 'var(--t-accent)' : 'var(--t-border)', left: on ? '16px' : '2px', knob: '#fff' });
+    const seg = on => ({ bg: on ? 'var(--raised)' : 'transparent', shadow: on ? 'var(--shadow)' : 'none', color: on ? 'var(--text)' : 'var(--muted)' });
+    const down = fn => e => { e.preventDefault(); fn(); };
+    const units = [['linhas/s', 2, 1], ['linhas/min', 0, 60], ['palavras/s', 1, s.wpl], ['palavras/min', 0, s.wpl * 60]];
+    const u = units[s.unit], fu = v => (v * u[2]).toFixed(u[1]);
+    const pos = s.t.y / pxs, total = s.t.end / pxs, wps = Math.max(0.1, lps * s.wpl), estTotal = s.blocks.reduce((a, b) => a + (b.skip ? 0 : b.words / wps), 0);
+    const V = { off: ['DESLIGADO', 'Acompanhamento desligado', 'desligada'], ouvindo: ['OUVINDO', 'Aguardando a primeira palavra do roteiro', 'ouvindo'], seguindo: ['SEGUINDO', 'Rolagem acompanha a voz', 'seguindo'], improviso: ['IMPROVISO', 'Fora do roteiro — rolagem pausada', 'improviso'], ressinc: ['RESSINC.', 'Texto encontrado, confirmando posição', 'ressincronizando'] }[s.vState];
+    const ind = { seta: ['1.8', '2.4', 'polygon(0 0,100% 50%,0 100%)', '0'], quadrado: ['1.7', '1.7', 'none', '2px'], ponto: ['1.8', '1.8', 'none', '50%'], linha: ['4', '0.5', 'none', '1px'] }[s.indType] || ['0', '0', 'none', '0'];
+    const indK = fsz * 0.1 * 0.28 * [0.65, 1, 1.45][s.indSize];
+    const rgba = (h, a) => { const n = parseInt(h.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; };
+    const tb = (on, d, title, onClick) => ({ d, title, onClick, bg: on ? 'var(--t-accent-soft)' : 'transparent', bd: on ? 'var(--t-accent-line)' : 'var(--t-border)', fg: on ? 'var(--t-accent)' : 'var(--t-muted)' });
+    const it = (label, fn, key, check) => ({ isItem: true, sep: false, label, key: key || '', check: check ? '✓' : '', onClick: () => { this.setState({ menu: null }); fn(); } });
+    const SEP = { sep: true, isItem: false };
+    const menuDefs = [
+      ['Arquivo', [it('Novo', () => this.setState({ dlg: 'novo' }), 'Ctrl+N'), it('Abrir…', () => this.openFile.current.click(), 'Ctrl+O'), it('Salvar', () => this.saveDoc(), 'Ctrl+S'), SEP, it('Importar Word, texto ou HTML…', () => this.openFile.current.click()), it('Histórico de versões…', () => this.setState({ dlg: 'versoes' })), it('Fechar roteiro', () => this.closeTab(s.active), 'Ctrl+W'), it('Exportar como .txt', () => this.exportTxt()), it('Imprimir / exportar PDF…', () => this.printScript(), 'Ctrl+P'), SEP, it('Perfis de apresentador…', () => this.setState({ dlg: 'perfis' })), SEP, it('Preferências…', () => this.setState({ dlg: 'prefs', prefTab: 'geral' }), 'Ctrl+,')]],
+      ['Editar', [it('Desfazer', () => this.exec('undo'), 'Ctrl+Z'), it('Refazer', () => this.exec('redo'), 'Ctrl+Y'), SEP, it('Selecionar tudo', () => this.exec('selectAll'), 'Ctrl+A'), it('Localizar e substituir…', () => this.setState({ dlg: 'find' }), 'Ctrl+F'), SEP, it('Bloquear editor', () => this.toggleLock(), 'Ctrl+E', s.locked)]],
+      ['Formatar', [...s.pres.map((p, i) => it(p.name || ('Apresentador ' + (i + 1)), () => this.setWho(i + 1), 'Alt+' + (i + 1))), it('Sem apresentador', () => this.setWho(0), 'Alt+0'), SEP, it('Negrito', () => this.exec('bold'), 'Ctrl+B'), it('Itálico', () => this.exec('italic'), 'Ctrl+I'), it('Sublinhado', () => this.exec('underline'), 'Ctrl+U'), SEP, it('Converter para MAIÚSCULAS', () => this.upperSel()), SEP, ...[['▶', 'Seta de ação'], ['●', 'Ponto de destaque'], ['★', 'Estrela'], ['⚠', 'Atenção'], ['↓', 'Seta para baixo'], ['✓', 'Visto']].map(([c, n]) => it(`Inserir símbolo ${c}  ${n}`, () => this.exec('insertText', c + ' '))), it('Mais símbolos e emojis (Win + .)', () => {}), SEP, it('Limpar formatação', () => this.exec('removeFormat'))]],
+      ['Marcadores', [it('Inserir marcador', () => this.insertBlock('data-bm'), 'Ctrl+K'), it('Inserir ponto de pausa', () => this.insertBlock('data-stop')), it('Excluir marcador atual', () => s.cur >= 0 && this.removeBlock('data-bm', s.cur)), it('Excluir todas as pausas', () => { this.edRef.current.querySelectorAll('[data-stop]').forEach(el => el.remove()); this.pushHtml(); }), SEP, ...s.bms.slice(0, 9).map((b, i) => it(b.name, () => this.jumpBm(i), 'Ctrl+' + (i + 1))), SEP, it('Lista de marcadores', () => this.setState(x => ({ showBm: !x.showBm })), '', s.showBm)]],
+      ['Prompter', [it(s.playing ? 'Parar prompt' : 'Iniciar prompt', () => this.togglePlay(), 'Ctrl+Enter'), it('Voltar ao início', () => this.setY(0), this.keyName(s.keymap.rewind)), it('Parágrafo anterior', () => this.jumpPara(-1), this.keyName(s.keymap.prevPara || '[')), it('Próximo parágrafo', () => this.jumpPara(1), this.keyName(s.keymap.nextPara || ']')), SEP, it('Janela do talento', () => this.toggleTalent(), 'F5', s.talent), it('Editar trecho atual', () => this.editHere(), this.keyName(s.keymap.editHere)), SEP, it(`Espelhar horizontal · ${td.nick}`, () => td.id && this.updDisp(td.id, x => ({ flipH: !x.flipH })), '', td.flipH), it(`Espelhar vertical · ${td.nick}`, () => td.id && this.updDisp(td.id, x => ({ flipV: !x.flipV })), '', td.flipV), SEP, it('Simular acompanhamento por voz', () => this.startSim(), '', s.vMode === 'sim')]],
+      ['Exibir', [it('Informações na tela do talento', () => this.setState(x => ({ talentHud: !x.talentHud })), '', s.talentHud), SEP, it('Tema escuro', () => this.setState({ theme: 'dark' }), '', s.theme === 'dark'), it('Tema claro', () => this.setState({ theme: 'light' }), '', s.theme === 'light'), SEP, it('Marcadores', () => this.setState(x => ({ showBm: !x.showBm })), '', s.showBm), it('Inspetor', () => this.setState(x => ({ showInsp: !x.showInsp })), '', s.showInsp)]],
+      ['Janela', [it('Controle remoto…', () => this.setState({ dlg: 'remote' })), it('Monitor web…', () => this.setState({ dlg: 'monitor' })), it('Saída NDI', () => this.toggleNdi(), '', s.ndiOn), SEP, it('Telas conectadas', () => this.setState({ showInsp: true, tab: 'telas' })), it('Gravação de vídeo', () => this.setState({ showInsp: true, tab: 'video' }))]],
+      ['Ajuda', [it('Atalhos de teclado…', () => this.setState({ dlg: 'prefs', prefTab: 'atalhos' })), it('Sobre o Prompter Studio', () => this.setState({ dlg: 'about' }))]]
+    ];
+    const dlgMeta = { prefs: ['Preferências', '640px'], find: ['Localizar e substituir', '420px'], remote: ['Controle remoto', '340px'], about: ['Sobre', '380px'], novo: ['Novo roteiro', '380px'], versoes: ['Histórico de versões', '480px'], perfis: ['Perfis de apresentador', '480px'], monitor: ['Monitor web', '760px'] }[s.dlg] || ['', '400px'];
+    return {
+      theme: s.theme, docTitle: `${s.docName}${s.dirty ? ' •' : ''}`,
+      menus: menuDefs.map(([label, items]) => ({ label, items, open: s.menu === label, bg: s.menu === label ? 'var(--hover)' : 'transparent', onClick: () => this.setState({ menu: s.menu === label ? null : label }), onEnter: () => { if (this.state.menu && this.state.menu !== label) this.setState({ menu: label }); } })),
+      anyMenu: !!s.menu, closeMenus: () => this.setState({ menu: null }),
+      tools: [
+        { icon: true, d: I.new, title: 'Novo (Ctrl+N)', onDown: down(() => this.setState({ dlg: 'novo' })) }, { icon: true, d: I.open, title: 'Abrir (Ctrl+O)', onDown: down(() => this.openFile.current.click()) }, { icon: true, d: I.save, title: 'Salvar (Ctrl+S)', onDown: down(() => this.saveDoc()) },
+        { sep: true }, { icon: true, d: I.undo, title: 'Desfazer (Ctrl+Z)', onDown: down(() => this.exec('undo')) }, { icon: true, d: I.redo, title: 'Refazer (Ctrl+Y)', onDown: down(() => this.exec('redo')) }, { icon: true, d: I.find, title: 'Localizar (Ctrl+F)', onDown: down(() => this.setState({ dlg: 'find' })) },
+        { sep: true }, { text: true, label: 'B', title: 'Negrito', font: "700 14px var(--f-sans)", deco: 'none', onDown: down(() => this.exec('bold')) }, { text: true, label: 'I', title: 'Itálico', font: "italic 15px 'Source Serif 4',serif", deco: 'none', onDown: down(() => this.exec('italic')) }, { text: true, label: 'U', title: 'Sublinhado', font: "14px var(--f-sans)", deco: 'underline', onDown: down(() => this.exec('underline')) },
+        ...[['#ffffff', 'Cor padrão'], ['#ffd54a', 'Amarelo'], ['#ff6b6b', 'Vermelho'], ['#6ccb5f', 'Verde'], ['#6aa6dc', 'Azul']].map(([c, t]) => ({ swatch: true, color: c, title: t, onDown: down(() => c === '#ffffff' ? this.exec('removeFormat') : this.exec('foreColor', c)) })),
+        { sep: true }, { icon: true, d: I.bm, title: 'Inserir marcador (Ctrl+K)', onDown: down(() => this.insertBlock('data-bm')) }, { icon: true, d: I.stopMk, title: 'Inserir ponto de pausa', onDown: down(() => this.insertBlock('data-stop')) }
+      ].map(b => ({ sep: !!b.sep, icon: !!b.icon, text: !!b.text, swatch: !!b.swatch, ...b })),
+      insertBm: down(() => this.insertBlock('data-bm')),
+      toggleLock: this.toggleLock, toggleTalent: this.toggleTalent, togglePlay: this.togglePlay,
+      lockIcon: s.locked ? I.lock : I.unlock, lockLabel: s.playing || s.count > 0 ? 'Bloqueado · no ar' : s.locked ? 'Bloqueado' : 'Editável', edLockedNote: s.locked && !s.playing, lockBg: s.locked ? 'var(--t-sunk)' : 'var(--t-soft)',
+      promptBg: live ? 'var(--t-accent-soft)' : 'var(--t-accent)', promptFg: live ? 'var(--t-accent)' : 'var(--t-accent-ink)', promptIcon: live ? I.stop : I.play, promptLabel: live ? 'Parar' : 'Prompt',
+      gridCols: `${s.showBm ? 'clamp(190px,20%,230px) ' : ''}minmax(0,1fr)${s.showInsp ? ' clamp(272px,30%,320px)' : ''}`, showBm: s.showBm, showInsp: s.showInsp,
+      bookmarks: s.bms.map((b, i) => { const bl = s.blocks[i] || { words: 0, skip: false }, est = bl.words / wps, rh = s.reh[i]; return {
+        op: bl.skip ? 0.55 : 1, deco: bl.skip ? 'line-through' : 'none', sub: bl.skip ? 'Pulado' : this.fmt(b.y / pxs) + ' · ' + this.fmt(est) + (rh ? ' · E ' + this.fmt(rh) : ''),
+        onSkip: e => { e.stopPropagation(); this.toggleSkip(i); }, skipTitle: bl.skip ? 'Voltar o bloco ao roteiro' : 'Pular este bloco (não vai ao ar)', skipColor: bl.skip ? 'var(--t-accent)' : 'var(--t-faint)',
+        skipIcon: bl.skip ? 'M2 8s2.2-4.5 6-4.5S14 8 14 8s-2.2 4.5-6 4.5S2 8 2 8z M2.5 2.5l11 11' : 'M2 8s2.2-4.5 6-4.5S14 8 14 8s-2.2 4.5-6 4.5S2 8 2 8z M8 6.3a1.7 1.7 0 1 0 0 3.4a1.7 1.7 0 1 0 0-3.4',
+        dropLine: s.dropBm === i && s.dragBm !== i ? 'var(--t-accent)' : 'transparent',
+        onDragStart: e => { e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', String(i)); } catch (er) {} this.setState({ dragBm: i }); },
+        onDragOver: e => { if (this.state.dragBm < 0) return; e.preventDefault(); if (this.state.dropBm !== i) this.setState({ dropBm: i }); },
+        onDragLeave: () => {}, onDrop: e => { e.preventDefault(); const from = this.state.dragBm; this.setState({ dragBm: -1, dropBm: -1 }); this.moveBlock(from, i); },
+        key: i < 9 ? String(i + 1) : '', name: b.name, time: this.fmt(b.y / pxs), bg: i === s.cur ? 'var(--t-accent-soft)' : 'transparent', keyColor: i === s.cur ? 'var(--t-accent)' : 'var(--t-faint)', weight: i === s.cur ? 600 : 500, onJump: () => this.jumpBm(i), onDelete: e => { e.preventDefault(); this.removeBlock('data-bm', i); }, onRemove: e => { e.stopPropagation(); this.removeBlock('data-bm', i); } }; }),
+      docTabs: s.docs.map(d => { const on = d.id === s.active; return { name: on ? s.docName : d.name, onClick: () => this.switchTab(d.id), onClose: e => { e.stopPropagation(); this.closeTab(d.id); }, bg: on ? 'var(--raised)' : 'transparent', shadow: on ? 'var(--shadow)' : 'none', color: on ? 'var(--text)' : 'var(--muted)', weight: on ? 600 : 500, dirtyOp: (on ? s.dirty : d.dirty) ? 1 : 0 }; }),
+      newTab: () => this.newDoc(), saveLabel: s.savedAt,
+      talentHud: s.talentHud && s.talent, hudBlock: s.cur >= 0 && s.bms[s.cur] ? s.bms[s.cur].name : 'Abertura', isLastBlock: s.bms.length > 1 && s.cur === s.bms.length - 1, clockV: s.clock || '--:--:--',
+      blockLeft: (() => { const nx = s.bms[s.cur + 1], end = nx ? nx.y : s.t.end; return this.fmt(Math.max(0, (end - s.t.y) / pxs)); })(),
+      blockLeftColor: (() => { const nx = s.bms[s.cur + 1], end = nx ? nx.y : s.t.end; return (end - s.t.y) / pxs < 10 ? '#ff6b6b' : '#fff'; })(),
+      onBmDragEnd: () => this.setState({ dragBm: -1, dropBm: -1 }),
+      profName: s.profName, onProfName: e => this.setState({ profName: e.target.value }), noProfiles: !s.profiles.length,
+      saveProfile: () => { const name = s.profName.trim() || ('Perfil ' + (s.profiles.length + 1)); this.setProfiles([{ name, settings: this.profSettings(), t: Date.now() }, ...s.profiles.filter(p => p.name !== name)]); this.setState({ profName: '' }); this.flash('Perfil salvo'); },
+      profiles: s.profiles.map((p, i) => ({ name: p.name, meta: ({ atk: 'Atkinson', sans: 'Source Sans', serif: 'Source Serif', mono: 'Plex Mono' }[p.settings.fontKey] || p.settings.fontKey) + ' · ' + p.settings.wpl + ' palavras/linha · margem ' + p.settings.margin, onApply: () => { this.setState({ ...p.settings, dlg: null }); this.flash('Perfil "' + p.name + '" aplicado'); }, onDelete: () => this.setProfiles(s.profiles.filter((_, j) => j !== i)) })),
+      noVersions: !s.versions.length, versions: s.versions.map(v => { const d = new Date(v.t); return { name: v.name, meta: d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) + ' · ' + v.kind + ' · ' + v.words + ' palavras', onRestore: () => { this.openInTab(v.name.replace(/\.tps$/, '') + ' (restaurado).tps', v.html); this.setState({ dlg: null }); } }; }),
+      progInput: s.progInput, onProgInput: e => this.setState({ progInput: e.target.value }), onProgBlur: () => { const m = /^(\d{1,3})(?::(\d{1,2}))?$/.exec(s.progInput.trim()); const sec = m ? (+m[1]) * 60 + (+(m[2] || 0)) : s.progSec; this.setState({ progSec: sec, progInput: this.fmt(sec) }); },
+      rundownTotal: this.fmt(estTotal), wordCount: s.words, overLabel: estTotal > s.progSec ? '+' + this.fmt(estTotal - s.progSec) : '−' + this.fmt(s.progSec - estTotal), overTitle: estTotal > s.progSec ? 'Estoura o programa' : 'Sobra no programa', overColor: estTotal > s.progSec ? '#e5484d' : 'var(--t-ok)',
+      rehCk: ck(s.rehearse), toggleRehearse: () => this.setState(x => ({ rehearse: !x.rehearse })), hasReh: Object.keys(s.reh).length > 0, clearReh: e => { e.stopPropagation(); this.setState({ reh: {} }); },
+      hasStops: s.stops.length > 0, stopsList: s.stops.map((p, i) => ({ name: p.name, time: this.fmt(p.y / pxs), onJump: () => { this.setY(p.y); this.setState({ follow: true }); }, onRemove: e => { e.stopPropagation(); this.removeBlock('data-stop', i); } })),
+      wordsLabel: `${s.words} palavras · ${s.t.lines} linhas`,
+      edScroll: this.edScroll, edSizer: this.edSizer, edZoom: this.edZoom, edRef: this.edRef, tvRef: this.tvRef, tcRef: this.tcRef, pvRef: this.pvRef, pcRef: this.pcRef, mvRef: this.mvRef, mcRef: this.mcRef, bgFile: this.bgFile, openFile: this.openFile, videoRef: this.videoRef,
+      onEdInput: this.onEdInput, onOpenFile: this.onOpenFile,
+      onEdScroll: () => { const sc = this.edScroll.current; if (this.state.follow && !this.state.playing && this.state.vMode === 'off' && Math.abs(sc.scrollTop - this.lastSet) > 2) { this.userY = sc.scrollTop / (sc.clientWidth / 1000); this.lastSet = sc.scrollTop; } },
+      bg: s.bg, fg: s.fg, fontFam: this.fonts[s.fontKey][0], fontSize: fsz, lineH: s.lineH, lineHLabel: s.lineH.toFixed(2), margin: s.margin, align: s.align,
+      edFlip: `scale(${s.edFlipH ? -1 : 1},${s.edFlipV ? -1 : 1})`, edCursor: s.locked ? 'default' : 'text',
+      readPct: s.readPct, lineCq: (lh * 0.1).toFixed(2) + 'cqw', halfLineCq: (lh * 0.05).toFixed(2) + 'cqw',
+      edBarDisplay: (s.playing || s.count > 0) && !s.talent ? 'flex' : 'none', notFollowing: !s.follow,
+      edBarText: 'Editor bloqueado durante a reprodução — pause para editar',
+      edBarBtn: 'Pausar e editar', edBarAction: () => { this.pause(); this.setState({ talent: false, locked: false }, () => this.edRef.current.focus({ preventScroll: true })); },
+      cursorToPrompter: this.cursorToPrompter, counting: s.count > 0, count: s.count,
+      readouts: [
+        { label: s.stampMode ? 'Restante' : 'Posição', value: this.fmt(s.stampMode ? total - pos : pos), onClick: () => this.setState(x => ({ stampMode: 1 - x.stampMode })) },
+        { label: 'Duração', value: this.fmt(total), onClick: null },
+        { label: 'Relógio', value: s.clock || '--:--:--', onClick: null },
+        { label: 'Fim previsto', value: s.endAt || '--:--:--', onClick: null },
+        { label: 'Linha', value: `${s.t.line} / ${s.t.lines}`, onClick: null }
+      ],
+      transport: [
+        { d: I.rew, title: `Voltar ao início (${this.keyName(s.keymap.rewind)})`, onClick: () => this.setY(0) },
+        { d: I.back, title: 'Segure para recuar', onDown: () => this.setState({ hold: -1 }), onUp: () => this.state.hold && this.setState({ hold: 0 }), filled: true },
+        { d: live ? I.pause : I.play, title: 'Play / pausa (Espaço)', onClick: this.togglePlay, main: true, filled: true },
+        { d: I.fwd, title: 'Segure para avançar', onDown: () => this.setState({ hold: 1 }), onUp: () => this.state.hold && this.setState({ hold: 0 }), filled: true },
+        { d: I.dir, title: 'Inverter direção', onClick: () => this.setState(x => ({ dir: -x.dir })), on: s.dir < 0 }
+      ].map(b => ({ onClick: null, onDown: null, onUp: null, ...b, w: b.main ? '52px' : '38px', bg: b.main ? (live ? 'var(--t-accent-soft)' : 'var(--t-accent)') : (b.on ? 'var(--t-accent-soft)' : 'var(--t-soft)'), fg: b.main ? (live ? 'var(--t-accent)' : 'var(--t-accent-ink)') : (b.on ? 'var(--t-accent)' : 'var(--t-text)'), border: 'none', fill: b.filled ? 'currentColor' : 'none', stroke: b.filled ? 'none' : 'currentColor' })),
+      speedT: s.speedT, onSpeed: e => this.setState({ speedT: +e.target.value, autoRun: false }), speedValue: fu(lps), speedColor: s.dir < 0 ? 'var(--live)' : 'var(--text)',
+      unit: String(s.unit), onUnit: e => this.setState({ unit: +e.target.value }), unitName: u[0], minLabel: fu(s.minS), maxLabel: fu(s.maxS), totalLabel: this.fmt(total),
+      tabs: [['roteiro', 'Roteiro'], ['overlay', 'Overlay'], ['telas', 'Telas'], ['voz', 'Voz'], ['video', 'Vídeo']].map(([id, label]) => ({ label, ...seg(s.tab === id), onClick: () => this.setState({ tab: id }) })),
+      tabRoteiro: s.tab === 'roteiro', tabOverlay: s.tab === 'overlay', tabTelas: s.tab === 'telas', tabVoz: s.tab === 'voz', tabVideo: s.tab === 'video',
+      resetLook: () => this.setState({ bg: '#000000', fg: '#ffffff', fontKey: 'atk', align: 'left', edFlipH: false, edFlipV: false }), resetLayout: () => this.setState({ wpl: 5, margin: 0, mPos: -1, lineH: 1.3 }),
+      bgSwatches: ['#000000', '#1c1c1c', '#f4f1ea', '#ffffff'].map(v => ({ value: v, ring: s.bg === v ? 'var(--text)' : 'transparent', onClick: () => this.setState({ bg: v, fg: (v === '#f4f1ea' || v === '#ffffff') && s.fg === '#ffffff' ? '#111111' : (v.startsWith('#000') || v === '#1c1c1c') && s.fg === '#111111' ? '#ffffff' : s.fg }) })),
+      fgSwatches: ['#ffffff', '#ffe14a', '#d9d9d9', '#111111'].map(v => ({ value: v, ring: s.fg === v ? 'var(--text)' : 'transparent', onClick: () => this.setState({ fg: v }) })),
+      bgPickRing: ["#000000","#1c1c1c","#f4f1ea","#ffffff"].includes(String(s.bg).toLowerCase()) ? 'transparent' : 'var(--text)', onBgPick: e => this.setState({ bg: e.target.value }),
+      bgHex: s.hexEdit.bg ?? String(s.bg).toUpperCase(), onBgHex: e => this.setState({ hexEdit: { ...s.hexEdit, bg: e.target.value } }), onBgHexBlur: e => { let v = e.target.value.trim(); if (!v.startsWith('#')) v = '#' + v; if (/^#[0-9a-f]{3}$/i.test(v)) v = '#' + v.slice(1).split('').map(c => c + c).join(''); const ok = /^#[0-9a-f]{6}$/i.test(v); this.setState(x => { const h = { ...x.hexEdit }; delete h.bg; return ok ? { bg: v.toLowerCase(), hexEdit: h } : { hexEdit: h }; }); },
+      fgPickRing: ["#ffffff","#ffe14a","#d9d9d9","#111111"].includes(String(s.fg).toLowerCase()) ? 'transparent' : 'var(--text)', onFgPick: e => this.setState({ fg: e.target.value }),
+      fgHex: s.hexEdit.fg ?? String(s.fg).toUpperCase(), onFgHex: e => this.setState({ hexEdit: { ...s.hexEdit, fg: e.target.value } }), onFgHexBlur: e => { let v = e.target.value.trim(); if (!v.startsWith('#')) v = '#' + v; if (/^#[0-9a-f]{3}$/i.test(v)) v = '#' + v.slice(1).split('').map(c => c + c).join(''); const ok = /^#[0-9a-f]{6}$/i.test(v); this.setState(x => { const h = { ...x.hexEdit }; delete h.fg; return ok ? { fg: v.toLowerCase(), hexEdit: h } : { hexEdit: h }; }); },
+      indPickRing: ["#ffffff","#ffd54a","#ff6b6b","#6aa6dc"].includes(String(s.indColor).toLowerCase()) ? 'transparent' : 'var(--text)', onIndPick: e => this.setState({ indColor: e.target.value }),
+      indColorHex: s.hexEdit.indColor ?? String(s.indColor).toUpperCase(), onIndHex: e => this.setState({ hexEdit: { ...s.hexEdit, indColor: e.target.value } }), onIndHexBlur: e => { let v = e.target.value.trim(); if (!v.startsWith('#')) v = '#' + v; if (/^#[0-9a-f]{3}$/i.test(v)) v = '#' + v.slice(1).split('').map(c => c + c).join(''); const ok = /^#[0-9a-f]{6}$/i.test(v); this.setState(x => { const h = { ...x.hexEdit }; delete h.indColor; return ok ? { indColor: v.toLowerCase(), hexEdit: h } : { hexEdit: h }; }); },
+      presList: s.pres.map((p, i) => ({ n: String(i + 1), name: p.name || ('Apresentador ' + (i + 1)), color: p.color, key: 'Alt+' + (i + 1),
+        onColor: e => { const v = e.target.value; this.setState(x => ({ pres: x.pres.map((q, j) => j === i ? { ...q, color: v } : q) })); },
+        onName: e => { const v = e.target.value; this.setState(x => ({ pres: x.pres.map((q, j) => j === i ? { ...q, name: v } : q) })); },
+        onRemove: () => this.removePres(i) })),
+      addPres: () => { if (s.pres.length >= 8) return this.flash('Máximo de 8 apresentadores'); const pal = ['#ffd60a', '#5ac8fa', '#ff9f0a', '#a2e05c', '#ff6b9d', '#bf9bff', '#4cd9c4', '#ff8a65']; this.setState(x => ({ pres: [...x.pres, { name: 'Apresentador ' + (x.pres.length + 1), color: pal[x.pres.length % 8] }] })); },
+      presNamesCk: ck(s.presNames), togglePresNames: () => this.setState(x => ({ presNames: !x.presNames })),
+      presOnlyOpts: [{ n: '0', name: 'Todas', color: 'transparent' }, ...s.pres.map((p, i) => ({ n: String(i + 1), name: p.name || ('Apresentador ' + (i + 1)), color: p.color }))].map(o => { const on = s.presOnly === o.n; return { ...o, dot: o.n === '0' ? 'none' : 'block', bg: on ? 'var(--inv)' : 'var(--t-soft)', fg: on ? 'var(--invtext)' : 'var(--text)', onClick: () => this.setState({ presOnly: o.n }) }; }),
+      presMenu: s.presMenu, togglePresMenu: e => { e.preventDefault(); this.setState(x => ({ presMenu: !x.presMenu })); }, closePresMenu: e => { e.preventDefault(); this.setState({ presMenu: false }); },
+      curPresName: s.curWho && s.pres[s.curWho - 1] ? (s.pres[s.curWho - 1].name || 'Apresentador ' + s.curWho) : 'Sem apresentador', curPresColor: s.curWho && s.pres[s.curWho - 1] ? s.pres[s.curWho - 1].color : 'transparent',
+      presMenuItems: [...s.pres.map((p, i) => ({ name: p.name || ('Apresentador ' + (i + 1)), color: p.color, key: 'Alt+' + (i + 1), onDown: e => { e.preventDefault(); this.setWho(i + 1); this.setState({ presMenu: false }); } })), { name: 'Sem apresentador', color: 'transparent', key: 'Alt+0', onDown: e => { e.preventDefault(); this.setWho(0); this.setState({ presMenu: false }); } }],
+      fontKey: s.fontKey, onFont: e => this.setState({ fontKey: e.target.value }),
+      aligns: [['left', 'Esquerda', I.alignL], ['center', 'Centro', I.alignC], ['right', 'Direita', I.alignR]].map(([v, t, d]) => ({ title: t, d, ...seg(s.align === v), onClick: () => this.setState({ align: v, winAlign: v, displays: s.displays.map(x => ({ ...x, align: v })) }) })),
+      edFlipChecks: [['edFlipH', 'Horizontal'], ['edFlipV', 'Vertical']].map(([k, l]) => ({ label: l, ...ck(s[k]), onClick: () => this.setState(x => ({ [k]: !x[k] })) })),
+      wpl: s.wpl, onWpl: e => this.setState({ wpl: Math.max(2, Math.min(12, +e.target.value || 5)) }), wplLabel: (+s.wpl).toFixed(2).replace(/\.?0+$/, ''), onMargin: e => this.setState({ margin: Math.max(0, Math.min(400, +e.target.value || 0)) }), mPos: s.mPos, onMPos: e => { let v = +e.target.value; if (Math.abs(v) < 0.08) v = 0; this.setState({ mPos: v }); }, resetMPos: () => this.setState({ mPos: -1 }), mPosLabel: s.mPos <= -0.95 ? 'Esq.' : s.mPos >= 0.95 ? 'Dir.' : Math.abs(s.mPos) < 0.05 ? 'Centro' : (s.mPos < 0 ? 'E ' : 'D ') + Math.round(Math.abs(s.mPos) * 100) + '%', onLineH: e => this.setState({ lineH: Math.max(1, Math.min(2, +e.target.value || 1.3)) }),
+      minS: s.minS, maxS: s.maxS, onMinS: e => this.setState({ minS: Math.min(+e.target.value, s.maxS - 0.2) }), onMaxS: e => this.setState({ maxS: Math.max(+e.target.value, s.minS + 0.2) }),
+      autoRunT: sw(s.autoRun), toggleAutoRun: () => this.setState(x => ({ autoRun: !x.autoRun })), runTarget: s.runTarget, onRunTarget: e => this.setState({ runTarget: e.target.value }),
+      ovType: s.ovType, onOvType: e => this.setState({ ovType: e.target.value }), ovOp: s.ovOp, ovOpLabel: Math.round(s.ovOp * 100) + '%', onOvOp: e => this.setState({ ovOp: +e.target.value }),
+      ovFaixa: s.ovType === 'faixa', ovFade: s.ovType === 'fade', ovDestaque: s.ovType === 'destaque', dimColor: rgba(s.bg, s.ovOp), hiColor: rgba(s.indColor, s.ovOp * 0.3),
+      indType: s.indType, onIndType: e => this.setState({ indType: e.target.value }),
+      indSizes: ['P', 'M', 'G'].map((l, i) => ({ label: l, ...seg(s.indSize === i), onClick: () => this.setState({ indSize: i }) })),
+      indColors: ['#ffffff', '#ffd54a', '#ff6b6b', '#6aa6dc'].map(v => ({ value: v, ring: s.indColor === v ? 'var(--text)' : 'transparent', onClick: () => this.setState({ indColor: v }) })),
+      onRead: e => this.setState({ readPct: Math.max(10, Math.min(70, +e.target.value || 30)) }),
+      readingLine: s.readingLine, readingLineCk: ck(s.readingLine), toggleReadingLine: () => this.setState(x => ({ readingLine: !x.readingLine })),
+      prMargin: this.prM(fsz), prRight: this.prR(), indW: (+ind[0] * indK).toFixed(2) + 'cqw', indH: (+ind[1] * indK).toFixed(2) + 'cqw', indClip: ind[2], indRadius: ind[3], indLeft: s.indType === 'linha' ? '0' : (indK * 0.4).toFixed(2) + 'cqw',
+      indDisplay: s.indType === 'nenhum' ? 'none' : 'block', indColorV: s.indColor,
+      hasBgImg: !!s.bgImg, bgImg: s.bgImg || '', bgImgOp: s.bgImgOp, bgImgOpLabel: Math.round(s.bgImgOp * 100) + '%',
+      pickBg: () => this.bgFile.current && this.bgFile.current.click(), clearBg: () => this.setState({ bgImg: null }),
+      onBgFile: e => { const f = e.target.files[0]; if (!f) return; e.target.value = ''; const isSvg = /\.svg$/i.test(f.name) || f.type === 'image/svg+xml'; const r = new FileReader(); r.onload = () => { const v = isSvg ? 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(String(r.result)) : r.result; this.setState({ bgImg: v }); }; if (isSvg) r.readAsText(f); else r.readAsDataURL(f); },
+      onBgOp: e => this.setState({ bgImgOp: +e.target.value }),
+      tvFlip: `scale(${s.winFlipH ? -1 : 1},${s.winFlipV ? -1 : 1})`, tvAlign: s.winAlign, pvFlip: `scale(${td.flipH ? -1 : 1},${td.flipV ? -1 : 1})`, pvAlign: td.align, pvLabel: td.nick + (td.flipH || td.flipV ? ' (espelhada)' : ''), pvBorder: td.find && s.blink ? 'var(--live)' : 'var(--line)',
+      displays: s.displays.map(d => ({
+        nick: d.nick, desc: `${d.name} · ${d.res}${d.id === 'int' ? ' · operador' : ''}`, ck: ck(d.on), rowBg: d.find && s.blink ? 'rgba(229,72,77,.15)' : 'transparent',
+        onToggle: () => this.updDisp(d.id, x => ({ on: !x.on })), onNick: e => this.updDisp(d.id, { nick: e.target.value }),
+        tools: [tb(d.flipH, I.flipH, 'Espelhar horizontal', () => this.updDisp(d.id, x => ({ flipH: !x.flipH }))), tb(d.flipV, I.flipV, 'Espelhar vertical', () => this.updDisp(d.id, x => ({ flipV: !x.flipV }))), tb(false, d.align === 'center' ? I.alignC : I.alignL, 'Alinhamento nesta tela', () => this.updDisp(d.id, x => ({ align: x.align === 'center' ? 'left' : 'center' }))), tb(d.find, I.target, 'Localizar: pisca uma borda na tela', () => this.updDisp(d.id, x => ({ find: !x.find })))]
+      })),
+      vCode: V[0], vTitle: s.vErr || V[1], vShort: V[2], vActive: s.vMode !== 'off', vDot: s.vState === 'improviso' ? 'var(--live)' : (s.vMode !== 'off' ? 'var(--text)' : 'var(--faint)'),
+      heard: s.heard.map(h => ({ w: h.w, color: h.ok === 2 ? 'var(--text)' : h.ok === 1 ? 'var(--muted)' : 'var(--live)', deco: h.ok ? 'none' : 'line-through' })), noHeard: !s.heard.length,
+      vErrOrIdle: s.vErr || 'As palavras reconhecidas aparecem aqui',
+      startMic: this.startMic, startSim: this.startSim,
+      micLabel: s.vMode === 'mic' ? 'Parar microfone' : 'Usar microfone', micPrimary: s.vMode === 'mic' ? 'var(--live)' : 'var(--inv)', micFg: s.vMode === 'mic' ? '#fff' : 'var(--invtext)',
+      simLabel: s.vMode === 'sim' ? 'Parar simulação' : 'Simular leitura', simBg: s.vMode === 'sim' ? 'var(--sel)' : 'var(--raised)',
+      drivers: [['wasapi', 'WASAPI'], ['asio', 'ASIO']].map(([v, l]) => ({ label: l, ...seg(s.driver === v), onClick: () => this.setState({ driver: v }) })), isAsio: s.driver === 'asio',
+      devices: s.driver === 'asio' ? ['X-USB ASIO Driver', 'Yamaha Steinberg USB ASIO', 'Focusrite USB ASIO'] : ['Microfone (Realtek Audio)', 'Interface USB — Entrada 1/2', 'Microfone do headset'],
+      channels: Array.from({ length: 32 }, (_, i) => ({ v: String(i + 1), l: `Canal ${i + 1}` })), asioCh: String(s.asioCh), onAsioCh: e => this.setState({ asioCh: +e.target.value }),
+      levelPct: Math.round((s.level + 70) / 70 * 100), gatePct: Math.round((s.gate + 70) / 70 * 100), levelColor: s.level > s.gate ? 'var(--text)' : 'var(--faint)',
+      gate: s.gate, onGate: e => this.setState({ gate: +e.target.value }), win: s.win, onWin: e => this.setState({ win: +e.target.value }), tol: s.tol, onTol: e => this.setState({ tol: +e.target.value }),
+      vLang: s.vLang, onVLang: e => this.setState({ vLang: e.target.value }),
+      camVis: s.camOn ? 'visible' : 'hidden', camOff: !s.camOn, camMsg: s.camMsg, camBtn: s.camOn ? 'Desligar câmera' : 'Ligar câmera', toggleCam: this.toggleCam,
+      recording: s.recording, recLabel: this.fmt(s.recSec), recBtn: s.recording ? 'Parar gravação' : 'Gravar', recBg: s.recording ? 'var(--live)' : 'var(--inv)', recFg: s.recording ? '#fff' : 'var(--invtext)',
+      toggleRec: () => { if (!this.state.camOn) return this.setState({ camMsg: 'Ligue a câmera primeiro' }); this.state.recording ? this.stopRec() : this.startRec(); },
+      recWithCk: ck(s.recWithPrompt), toggleRecWithPrompt: () => this.setState(x => ({ recWithPrompt: !x.recWithPrompt })),
+      hasRecUrl: !!s.recUrl, recUrl: s.recUrl, recFile: s.docName.replace(/\.\w+$/, '') + '.webm', lastRecLabel: this.fmt(s.lastRec),
+      statusDot: live ? 'var(--live)' : (s.vMode !== 'off' ? 'var(--text)' : 'var(--faint)'), statusLabel: live ? 'No ar' : (s.vMode !== 'off' ? 'Acompanhando por voz' : 'Pronto'),
+      screensLabel: `${s.displays.filter(d => d.on).length} tela(s) de prompter`, lastKeyLabel: s.lastKey ? `Última entrada: ${s.lastKey}` : '',
+      talentVis: s.talent ? 'visible' : 'hidden', blinkOp: td.find && s.blink ? 1 : 0, tvTitle: s.winFlipH || s.winFlipV ? 'Janela do operador · espelhada' : 'Janela do operador · leitura normal',
+      onTvMove: e => { const show = e.clientY < 70; if (show !== this.state.tbShow) this.setState({ tbShow: show }); },
+      tbOp: s.tbShow || !s.playing ? 1 : 0, tbPe: s.tbShow || !s.playing ? 'auto' : 'none', tvCursor: s.playing && !s.tbShow ? 'none' : 'default',
+      tvTools: [
+        tb(s.ctrlOn, I.controls, 'Mostrar controles', () => this.setState(x => ({ ctrlOn: !x.ctrlOn }))), tb(s.stampOn, I.clock, 'Mostrar tempo', () => this.setState(x => ({ stampOn: !x.stampOn }))),
+        tb(s.winFlipH, I.flipH, 'Espelhar esta janela (horizontal)', () => this.setState(x => ({ winFlipH: !x.winFlipH }))), tb(s.winFlipV, I.flipV, 'Espelhar esta janela (vertical)', () => this.setState(x => ({ winFlipV: !x.winFlipV }))),
+        tb(s.speedLock, I.lock, 'Travar velocidade', () => this.setState(x => ({ speedLock: !x.speedLock }))), tb(false, s.winAlign === 'center' ? I.alignC : I.alignL, 'Alinhamento desta janela', () => this.setState(x => ({ winAlign: x.winAlign === 'center' ? 'left' : 'center' }))),
+        tb(false, I.fs, 'Tela cheia', () => { const el = this.tvRef.current && this.tvRef.current.parentNode; if (el && el.requestFullscreen) el.requestFullscreen().catch(() => {}); })
+      ],
+      ctrlOn: s.ctrlOn, stampOn: s.stampOn, ctrlOp: s.ctrlOp, onCtrlOp: e => this.setState({ ctrlOp: +e.target.value }),
+      editHere: this.editHere, startInline: this.startInline, finishInline: this.finishInline, inline: s.inline,
+      onTvWheel: e => this.onWheelCtl(e, 'tv'), onEdWheel: e => this.onWheelCtl(e, 'ed'), onTvDown: e => this.onPtrDown(e), onTvPMove: e => this.onPtrMove(e), onTvUp: () => this.onPtrUp(), flashText: s.flashText, hasFlash: !!s.flashText, hasFlashSub: !!s.flashSub, flashSub: s.flashSub, flashSubBg: s.flashSub === 'Ré' ? '#e5484d' : 'rgba(255,255,255,.16)', flashArrow: s.flashSub === 'Ré' ? 'M10 3L4 8l6 5' : 'M6 3l6 5-6 5', flashBar: s.flashPct >= 0, flashW: Math.round(Math.max(0, s.flashPct) * 100) + '%',
+      paraPrev: () => this.jumpPara(-1), paraNext: () => this.jumpPara(1), lineUp: () => this.setY(this.y - lh), lineDown: () => this.setY(this.y + lh), rewind: () => this.setY(0),
+      playIcon: live ? I.pause : I.play, playBg: live ? 'var(--live)' : '#e6e6e6', playFg: live ? '#fff' : '#1e1e1e',
+      onSpeedTv: e => { if (!this.state.speedLock) this.setState({ speedT: +e.target.value, autoRun: false }); }, speedLock: s.speedLock,
+      stampValue: (s.stampMode ? '−' : '') + this.fmt(s.stampMode ? total - pos : pos), toggleStamp: () => this.setState(x => ({ stampMode: 1 - x.stampMode })),
+      dlgOpen: !!s.dlg, dlgTitle: dlgMeta[0], dlgW: dlgMeta[1], closeDlg: () => this.setState({ dlg: null, capture: null }),
+      dlgPrefs: s.dlg === 'prefs', dlgFind: s.dlg === 'find', dlgRemote: s.dlg === 'remote', dlgAbout: s.dlg === 'about', dlgNovo: s.dlg === 'novo', dlgVersoes: s.dlg === 'versoes', dlgPerfis: s.dlg === 'perfis', dlgMonitor: s.dlg === 'monitor',
+      prefTabs: [['geral', 'Geral'], ['atalhos', 'Atalhos'], ['disp', 'Dispositivos'], ['integ', 'Integrações']].map(([id, l]) => ({ label: l, bg: s.prefTab === id ? 'var(--t-accent-soft)' : 'transparent', weight: s.prefTab === id ? 600 : 400, onClick: () => this.setState({ prefTab: id, capture: null }) })),
+      prefGeral: s.prefTab === 'geral', prefAtalhos: s.prefTab === 'atalhos', prefDisp: s.prefTab === 'disp', prefInteg: s.prefTab === 'integ',
+      themes: [['dark', 'Escuro'], ['light', 'Claro']].map(([v, l]) => ({ label: l, ...seg(s.theme === v), onClick: () => this.setState({ theme: v }) })),
+      prefChecks: [['lockOnPlay', 'Bloquear o editor ao iniciar o prompt'], ['countdownPref', 'Contagem regressiva de 3 s antes de rolar'], ['recWithPrompt', 'Gravar vídeo junto com o prompt']].map(([k, l]) => ({ label: l, ...ck(s[k]), onClick: () => this.setState(x => ({ [k]: !x[k] })) })),
+      shortcutHint: 'Shift + tecla = passo maior · 1–9 = velocidade predefinida · Backspace = início · Roda do mouse: rola (pausado) ou ajusta a velocidade (rodando) · Ctrl + roda = palavras por linha · Arrastar na tela do talento = rolar', shortcuts: ACTIONS.map(([a, l]) => ({ label: l, key: s.capture === a ? 'Pressione uma tecla…' : this.keyName(s.keymap[a]), bg: s.capture === a ? 'var(--sel)' : 'var(--field)', onClick: () => this.setState({ capture: a }) })),
+      resetKeys: () => this.setState({ keymap: { ...KEYMAP }, capture: null }),
+      devicesList: [['Teclado', 'Conectado'], ['Mouse e roda de rolagem', 'Conectado'], ['Clicker de apresentação', 'Usa Page Up / Page Down'], ['Pedal USB (HID)', 'Não detectado'], ['Contour ShuttleXpress', 'Não detectado'], ['App de controle remoto', 'Aguardando pareamento']].map(([n, st]) => ({ name: n, state: st })),
+      lastKeyBig: s.lastKey || '—',
+      findQ: s.findQ, replQ: s.replQ, findInfo: s.findInfo, onFindQ: e => { this.fi = -1; this.setState({ findQ: e.target.value, findInfo: '' }); }, onReplQ: e => this.setState({ replQ: e.target.value }),
+      findNext: () => this.findNext(), replaceAll: () => this.replaceAll(), onFindKey: e => { if (e.key === 'Enter') { e.preventDefault(); this.findNext(); } },
+      remoteCur: (s.bms[s.cur] || {}).name || '—', remoteSpeed: `${fu(lps)} ${u[0]}`,
+      rFaster: () => this.adjSpeed(0.05), rSlower: () => this.adjSpeed(-0.05), rNext: () => this.doAction('nextBm'), rPrev: () => this.doAction('prevBm'),
+      confirmNew: () => this.newDoc(),
+      ndiT: sw(s.ndiOn), toggleNdi: () => this.toggleNdi(), ndiDot: s.ndiOn ? (s.ndiPeer ? 'var(--t-ok)' : 'var(--t-accent)') : 'var(--t-faint)',
+      ndiStatus: !s.ndiOn ? 'Desligada' : (s.ndiPeer ? `Transmitindo · recebida por ${s.ndiPeer}` : 'Anunciando na rede…') + (s.ndiMirror ? ' · espelhada' : '') + (s.ndiAlpha ? ' · alpha' : ''), tallyOn: s.ndiOn && !!s.ndiPeer && s.ndiTally && live,
+      ndiName: s.ndiName, onNdiName: e => this.setState({ ndiName: e.target.value }), ndiFmt: s.ndiFmt, onNdiFmt: e => this.setState({ ndiFmt: e.target.value }),
+      ndiChecks: [['ndiMirror', 'Espelhar a saída NDI'], ['ndiAlpha', 'Fundo transparente (alpha) para sobrepor no vMix']].map(([k, l]) => ({ label: l, ...ck(s[k]), onClick: () => this.setState(x => ({ [k]: !x[k] })) })),
+      webT: sw(s.webOn), toggleWeb: () => this.toggleWeb(), webDot: s.webOn ? 'var(--t-ok)' : 'var(--t-faint)',
+      webStatus: !s.webOn ? 'Desligado' : `Ativo · ${s.webViewers} navegador(es) conectado(s)`, webUrl: 'http://192.168.0.24:8420/monitor',
+      copyUrl: () => { try { navigator.clipboard.writeText('http://192.168.0.24:8420/monitor'); } catch (e) {} this.setState({ copied: true }); setTimeout(() => this.setState({ copied: false }), 1500); }, copyLabel: s.copied ? 'Copiado' : 'Copiar',
+      webPass: s.webPass, onWebPass: e => this.setState({ webPass: e.target.value }),
+      webChecks: [['webCtrl', 'Permitir controlar o prompter pelo navegador']].map(([k, l]) => ({ label: l, ...ck(s[k]), onClick: () => this.setState(x => ({ [k]: !x[k] })) })),
+      openMonitor: () => { if (!this.state.webOn) this.toggleWeb(); this.setState({ dlg: 'monitor' }); }, webCtrl: s.webCtrl, webViewOnly: !s.webCtrl,
+      monTag: live ? 'NO AR' : 'AO VIVO · MONITOR', monPlayLabel: live ? 'Pausar' : 'Play',
+      mosSys: s.mosSys, onMosSys: e => this.setState({ mosSys: e.target.value }), mosHost: s.mosHost, onMosHost: e => this.setState({ mosHost: e.target.value }), mosId: s.mosId, onMosId: e => this.setState({ mosId: e.target.value }),
+      mosDot: s.mosOn ? 'var(--t-ok)' : s.mosBusy ? 'var(--t-accent)' : 'var(--t-faint)', mosStatus: s.mosOn ? `Conectado ao ${s.mosSys} · rundown sincronizado` : s.mosBusy ? 'Conectando…' : 'Desconectado', mosBtn: s.mosOn ? 'Desconectar' : 'Conectar',
+      toggleMos: () => { if (this.state.mosOn) return this.setState({ mosOn: false }); this.setState({ mosBusy: true }); setTimeout(() => this.setState({ mosBusy: false, mosOn: true }), 1200); },
+      integChecks: [['ccOut', 'Enviar o texto lido como legenda (closed caption)']].map(([k, l]) => ({ label: l, ...ck(s[k]), onClick: () => this.setState(x => ({ [k]: !x[k] })) })),
+      netLabel: [s.ndiOn ? 'NDI ●' : '', s.webOn ? `Web ${s.webViewers}` : '', s.mosOn ? 'MOS ●' : ''].filter(Boolean).join(' · ')
+    };
+  }
+}
+</script>
+</body>
+</html>

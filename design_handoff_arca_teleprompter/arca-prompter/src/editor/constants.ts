@@ -1,0 +1,20 @@
+// Constantes do protótipo: roteiro de exemplo, ícones (paths SVG 16×16), atalhos padrão.
+export const SCRIPT = `<p data-bm="1" contenteditable="false">Abertura</p><p>Boa noite. Começa agora o <b>Jornal da Noite</b>. Nesta edição, as chuvas que atingem o litoral, os novos números da economia e a decisão do campeonato.</p><p data-bm="1" contenteditable="false">Chuvas no litoral</p><p>A chuva forte das últimas vinte e quatro horas deixou cidades do litoral em estado de alerta.</p><p>A Defesa Civil registrou mais de cento e vinte milímetros em algumas regiões, e moradores de áreas de risco foram orientados a deixar suas casas.</p><p data-stop="1" contenteditable="false">Entra VT · 1 min 45 s</p><p>A previsão é de que o tempo melhore a partir de quinta-feira.</p><p data-bm="1" contenteditable="false">Economia</p><p>Na economia, a inflação de setembro ficou <span style="color:#ffd54a">abaixo do esperado</span> pelo mercado.</p><p>O resultado foi puxado principalmente pela queda no preço dos alimentos e dos combustíveis. Com isso, analistas já falam em novos cortes na taxa de juros até o fim do ano.</p><p data-bm="1" contenteditable="false">Esporte</p><p>No esporte, a rodada decisiva do campeonato reservou emoção até o último minuto. Com um gol nos acréscimos, o líder garantiu a vantagem para a reta final.</p><p data-bm="1" contenteditable="false">Encerramento</p><p>O Jornal da Noite fica por aqui. <u>Obrigado pela companhia</u> e até amanhã.</p>`;
+export const I = {
+  new: 'M4 1.5h5l3 3v10H4z M9 1.5v3h3', open: 'M1.5 3.5h4.5l1.5 1.5h7v8h-13z', save: 'M2.5 2.5h9l2 2v9h-11z M5 2.5v3h5v-3 M5 13.5v-4h6v4',
+  undo: 'M5 3.5L2 6.5l3 3 M2 6.5h8a3.5 3.5 0 0 1 0 7H7', redo: 'M11 3.5l3 3-3 3 M14 6.5H6a3.5 3.5 0 0 0 0 7h3',
+  find: 'M7 2.5a4.5 4.5 0 1 0 0 9 4.5 4.5 0 0 0 0-9z M10.5 10.5l3.5 3.5', bm: 'M4 1.5h8v13l-4-3-4 3z', stopMk: 'M2.5 2.5h11v11h-11z M6.5 5.5v5 M9.5 5.5v5',
+  lock: 'M3.5 7.5h9v7h-9z M5.5 7.5V5a2.5 2.5 0 0 1 5 0v2.5', unlock: 'M3.5 7.5h9v7h-9z M5.5 7.5V5a2.5 2.5 0 0 1 4.9-.7',
+  flipH: 'M8 1.5v13 M6 4.5L2 11.5h4z M10 4.5l4 7h-4z', flipV: 'M1.5 8h13 M4.5 6L11.5 2v4z M4.5 10l7 4v-4z',
+  alignL: 'M2 3.5h12 M2 6.5h8 M2 9.5h12 M2 12.5h7', alignC: 'M2 3.5h12 M4 6.5h8 M2 9.5h12 M4.5 12.5h7', alignR: 'M2 3.5h12 M6 6.5h8 M2 9.5h12 M6.5 12.5h7.5',
+  controls: 'M1.5 2.5h13v8h-13z M4 13.5h8', clock: 'M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13z M8 4.5V8l2.5 1.5',
+  fs: 'M2 6V2h4 M10 2h4v4 M14 10v4h-4 M6 14H2v-4', target: 'M8 1.5v3 M8 11.5v3 M1.5 8h3 M11.5 8h3 M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z',
+  play: 'M4 2.5l9.5 5.5L4 13.5z', pause: 'M3.5 2.5h3v11h-3z M9.5 2.5h3v11h-3z', stop: 'M3 3h10v10H3z',
+  rew: 'M3 3v10 M13 3L5.5 8 13 13z', back: 'M8 3.5v9L1.5 8z M14.5 3.5v9L8 8z', fwd: 'M8 3.5v9L14.5 8z M1.5 3.5v9L8 8z',
+  dir: 'M5 2.5v11 M2.5 5L5 2.5 7.5 5 M11 13.5v-11 M8.5 11l2.5 2.5 2.5-2.5', up: 'M3.5 10L8 5.5l4.5 4.5', down: 'M3.5 6L8 10.5 12.5 6',
+  edit: 'M10.5 2.5l3 3-8 8h-3v-3z', close: 'M3 3l10 10M13 3L3 13'
+};
+export const IMPROV = ['deixa', 'eu', 'só', 'fazer', 'um', 'comentário', 'rápido', 'aqui', 'antes'];
+export const KEYMAP: Record<string, string> = { play: ' ', faster: 'ArrowDown', slower: 'ArrowUp', faster2: 'w', slower2: 's', reverse: 'r', stop: '0', rewind: 'Home', toEnd: 'End', nextBm: 'PageDown', prevBm: 'PageUp', nextPara: ']', prevPara: '[', editHere: 'e', mirror: 'm' };
+export const ACTIONS = [['play', 'Play / pausa'], ['faster', 'Mais rápido (pausado: próxima linha)'], ['slower', 'Mais devagar (pausado: linha anterior)'], ['faster2', 'Mais rápido (alternativo)'], ['slower2', 'Mais devagar (alternativo)'], ['reverse', 'Inverter direção'], ['stop', 'Parar rolagem'], ['rewind', 'Voltar ao início'], ['toEnd', 'Ir para o fim'], ['nextBm', 'Próximo marcador'], ['prevBm', 'Marcador anterior'], ['nextPara', 'Próximo parágrafo'], ['prevPara', 'Parágrafo anterior'], ['editHere', 'Editar trecho atual'], ['mirror', 'Espelhar tela do prompter']];
+export const esc = (t: string) => t.replace(/&/g, '&amp;').replace(/</g, '&lt;');

@@ -1,0 +1,131 @@
+<UserControl Grid.IsSharedSizeScope="True" Typography.NumeralStyle="Lining" x:Class="Arca.App.Views.InspVoz"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:c="clr-namespace:Arca.App.Controls"
+             xmlns:vm="clr-namespace:Arca.App.ViewModels">
+  <UserControl.Resources><c:Is x:Key="Is"/><c:BoolVis x:Key="Vis"/><c:DbWidth x:Key="DbW"/></UserControl.Resources>
+  <StackPanel>
+    <TextBlock Text="ACOMPANHAMENTO POR VOZ" Style="{StaticResource Eyebrow}" Margin="16,8,16,10"/>
+    <StackPanel Margin="16,0,16,16">
+      <DockPanel Margin="0,0,0,10">
+        <Ellipse x:Name="StateDot" Width="8" Height="8" Fill="{DynamicResource Faint}" Margin="0,0,8,0" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding VoiceCode}" FontFamily="{StaticResource FNum}" FontSize="11" FontWeight="SemiBold" Margin="0,0,8,0" VerticalAlignment="Center"/>
+        <TextBlock Text="{Binding VoiceTitle}" Foreground="{DynamicResource Muted}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"/>
+      </DockPanel>
+      <Border Height="72" Padding="10,8" CornerRadius="6" Background="{DynamicResource Field}" BorderBrush="{DynamicResource Line}" BorderThickness="1" ClipToBounds="True">
+        <Grid>
+          <TextBlock x:Name="HeardEmpty" Text="As palavras reconhecidas aparecem aqui" Foreground="{DynamicResource Faint}" FontFamily="{StaticResource FNum}" FontSize="12" TextWrapping="Wrap"/>
+          <ItemsControl ItemsSource="{Binding Heard}" FontFamily="{StaticResource FNum}" FontSize="12">
+            <ItemsControl.ItemsPanel><ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate DataType="vm:HeardVM">
+                <TextBlock x:Name="w" Text="{Binding Word}" Margin="0,0,6,2" Foreground="{DynamicResource Live}" TextDecorations="Strikethrough"/>
+                <DataTemplate.Triggers>
+                  <DataTrigger Binding="{Binding Match}" Value="2"><Setter TargetName="w" Property="Foreground" Value="{DynamicResource Text}"/><Setter TargetName="w" Property="TextDecorations" Value="{x:Null}"/></DataTrigger>
+                  <DataTrigger Binding="{Binding Match}" Value="1"><Setter TargetName="w" Property="Foreground" Value="{DynamicResource Muted}"/><Setter TargetName="w" Property="TextDecorations" Value="{x:Null}"/></DataTrigger>
+                </DataTemplate.Triggers>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+        </Grid>
+      </Border>
+      <TextBlock Text="{Binding VoiceError}" Foreground="{DynamicResource Live}" FontSize="12" TextWrapping="Wrap" Margin="0,6,0,0" x:Name="ErrText"/>
+      <UniformGrid Columns="1" Margin="0,10,0,0">
+        <Button x:Name="MicBtn" Style="{StaticResource Primary}" Content="Usar microfone" Click="Mic_Click" Margin="0,0,0,3" Focusable="False"/>
+        <Button x:Name="SimBtn" Style="{StaticResource Pill}" Content="Simular leitura" Click="Sim_Click" Margin="0,3,0,0" Focusable="False" ToolTip="Testa o acompanhamento sem microfone (texto do roteiro com improvisos)"/>
+      </UniformGrid>
+      <Button Style="{StaticResource Ghost}" Height="26" FontSize="12" Content="Testar com um arquivo de áudio (WAV/MP3)…" Click="File_Click" Margin="0,6,0,0" Focusable="False"/>
+      <Button Style="{StaticResource Ghost}" Height="26" FontSize="12" Content="Gravar diagnóstico do microfone (15 s)" Click="Diag_Click" Margin="0,2,0,0" Focusable="False" ToolTip="Grava o áudio do microfone como ele chega, para analisar problemas de reconhecimento"/>
+    </StackPanel>
+    <Border Style="{StaticResource Divider}"/>
+
+    <TextBlock Text="ENTRADA DE ÁUDIO" Style="{StaticResource Eyebrow}" Margin="16,14,16,10"/>
+    <Grid Margin="16,0,16,16">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="38"/><RowDefinition Height="42"/><RowDefinition Height="Auto"/><RowDefinition Height="28"/><RowDefinition Height="34"/><RowDefinition Height="42"/><RowDefinition Height="34"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+      <TextBlock Text="Driver" Style="{StaticResource Label}"/>
+      <Border Grid.Column="1" Style="{StaticResource SegBox}" HorizontalAlignment="Left" VerticalAlignment="Center">
+        <StackPanel Orientation="Horizontal">
+          <RadioButton Style="{StaticResource Seg}" GroupName="drv" Content="WASAPI" Padding="14,0" IsChecked="{Binding App.AudioDriver, Mode=OneTime, Converter={StaticResource Is}, ConverterParameter=wasapi}" Checked="Driver_Checked" Tag="wasapi"/>
+          <RadioButton Style="{StaticResource Seg}" GroupName="drv" Content="ASIO" Padding="14,0" IsChecked="{Binding App.AudioDriver, Mode=OneTime, Converter={StaticResource Is}, ConverterParameter=asio}" Checked="Driver_Checked" Tag="asio"/>
+        </StackPanel>
+      </Border>
+      <TextBlock Grid.Row="1" Text="Dispositivo" Style="{StaticResource Label}"/>
+      <ComboBox Grid.Row="1" Grid.Column="1" x:Name="DeviceBox" SelectionChanged="Device_Changed"/>
+      <TextBlock Grid.Row="2" Text="Canal" Style="{StaticResource Label}" x:Name="ChLabel"/>
+      <ComboBox Grid.Row="2" Grid.Column="1" x:Name="ChannelBox" Width="140" HorizontalAlignment="Left" Margin="0,4" SelectionChanged="Channel_Changed" ToolTip="Canal físico da interface (ex.: microfone do apresentador no canal 5)"/>
+      <TextBlock Grid.Row="3" Text="Nível" Style="{StaticResource Label}"/>
+      <Grid Grid.Row="3" Grid.Column="1" Height="6" VerticalAlignment="Center" x:Name="Meter">
+        <Border CornerRadius="3" Background="{DynamicResource Sunk}"/>
+        <Border x:Name="LevelBar" CornerRadius="3" HorizontalAlignment="Left" Background="{DynamicResource Faint}" Width="0"/>
+        <Border x:Name="GateMark" Width="2" Margin="0,-3" HorizontalAlignment="Left" Background="{DynamicResource Muted}" CornerRadius="1"/>
+      </Grid>
+      <TextBlock Grid.Row="4" Text="Noise gate" Style="{StaticResource Label}"/>
+      <DockPanel Grid.Row="4" Grid.Column="1">
+        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Num}" Width="50" TextAlignment="Right"><Run Text="{Binding Value, ElementName=GateSlider, Mode=OneWay, StringFormat=0}"/><Run Text=" dB"/></TextBlock>
+        <Slider x:Name="GateSlider" Minimum="-70" Maximum="-20" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding App.NoiseGateDb}" ValueChanged="Gate_Changed"/>
+      </DockPanel>
+      <TextBlock Grid.Row="5" Text="Idioma" Style="{StaticResource Label}"/>
+      <ComboBox Grid.Row="5" Grid.Column="1" SelectedValuePath="Tag" SelectedValue="{Binding App.VoiceLanguage}" SelectionChanged="Lang_Changed">
+        <ComboBoxItem Tag="pt-BR" Content="Português (Brasil)"/>
+        <ComboBoxItem Tag="pt-PT" Content="Português (Portugal)"/>
+        <ComboBoxItem Tag="es-ES" Content="Español"/>
+        <ComboBoxItem Tag="en-US" Content="English (US)"/>
+      </ComboBox>
+      <TextBlock Grid.Row="6" Text="Volume" Style="{StaticResource Label}" ToolTip="Volume de entrada da voz (antes do ganho automático)"/>
+      <DockPanel Grid.Row="6" Grid.Column="1">
+        <TextBlock DockPanel.Dock="Right" Style="{StaticResource Num}" Width="50" TextAlignment="Right"><Run Text="{Binding Value, ElementName=GainSlider, Mode=OneWay, StringFormat=+0;-0;0}"/><Run Text=" dB"/></TextBlock>
+        <Slider x:Name="GainSlider" Minimum="-12" Maximum="24" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding App.VoiceGainDb}" ValueChanged="Gain_Changed" MouseDoubleClick="Gain_Reset" ToolTip="Duplo clique: 0 dB"/>
+      </DockPanel>
+      <CheckBox Grid.Row="7" Grid.Column="1" Content="Ganho automático (recomendado)" IsChecked="{Binding App.VoiceAgc}" Checked="Agc_Changed" Unchecked="Agc_Changed" VerticalAlignment="Center"/>
+    </Grid>
+    <StackPanel Margin="16,0,16,12">
+      <Grid Margin="0,0,0,8">
+        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/></Grid.ColumnDefinitions>
+        <Grid.RowDefinitions><RowDefinition Height="38"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <TextBlock Text="Motor" Style="{StaticResource Label}" ToolTip="Vosk: leve e imediato. Whisper: reconhece muito melhor microfones reais (sala, ruído, voz distante); usa mais processamento."/>
+        <Border Grid.Column="1" Style="{StaticResource SegBox}" HorizontalAlignment="Left" VerticalAlignment="Center">
+          <StackPanel Orientation="Horizontal">
+            <RadioButton Style="{StaticResource Seg}" GroupName="eng" Content="Vosk · rápido" Padding="12,0" IsChecked="{Binding App.VoiceEngine, Mode=OneTime, Converter={StaticResource Is}, ConverterParameter=vosk}" Checked="Engine_Checked" Tag="vosk"/>
+            <RadioButton Style="{StaticResource Seg}" GroupName="eng" Content="Whisper · preciso" Padding="12,0" IsChecked="{Binding App.VoiceEngine, Mode=OneTime, Converter={StaticResource Is}, ConverterParameter=whisper}" Checked="Engine_Checked" Tag="whisper"/>
+          </StackPanel>
+        </Border>
+        <TextBlock Grid.Row="1" Text="Modelo" Style="{StaticResource Label}" x:Name="WModelLabel"/>
+        <ComboBox Grid.Row="1" Grid.Column="1" x:Name="WModelBox" Margin="0,4" SelectedValuePath="Tag" SelectedValue="{Binding App.WhisperModel}" SelectionChanged="WModel_Changed"
+                  ToolTip="Base: atraso abaixo de 1 s. Small: reconhece um pouco melhor áudio muito ruim, mas atrasa mais (precisa de placa de vídeo forte)">
+          <ComboBoxItem Tag="base" Content="Base · 57 MB (recomendado)"/>
+          <ComboBoxItem Tag="small" Content="Small · 181 MB (mais preciso, mais lento)"/>
+        </ComboBox>
+      </Grid>
+      <DockPanel>
+        <Button DockPanel.Dock="Right" x:Name="ModelBtn" Style="{StaticResource Pill}" Height="26" FontSize="12" Content="Baixar modelo" Click="Model_Click" Focusable="False"/>
+        <TextBlock Text="{Binding ModelStatus}" FontSize="12" Foreground="{DynamicResource Muted}" TextWrapping="Wrap" VerticalAlignment="Center"/>
+      </DockPanel>
+      <ProgressBar Height="3" Margin="0,6,0,0" Maximum="1" Value="{Binding ModelProgress}" x:Name="ModelProgress" Visibility="Collapsed" Foreground="{DynamicResource Accent}" Background="{DynamicResource Sunk}" BorderThickness="0"/>
+      <CheckBox Content="Reconhecer só o vocabulário do roteiro (mais preciso)" IsChecked="{Binding UseScriptVocabulary}" Margin="0,10,0,0" ToolTip="Vosk: só as palavras do roteiro (o improviso aparece como desconhecido). Whisper: o trecho do roteiro serve de contexto. Desligue se o apresentador costuma trocar palavras."/>
+      <CheckBox x:Name="GpuBox" Content="Usar a placa de vídeo (GPU) no Whisper" IsChecked="{Binding App.WhisperGpu}" Checked="Gpu_Changed" Unchecked="Gpu_Changed" Margin="0,6,0,0" ToolTip="Vulkan: bem mais rápido em placas Intel, AMD e NVIDIA. Desligue se o reconhecimento der erro."/>
+    </StackPanel>
+    <Border Style="{StaticResource Divider}"/>
+
+    <TextBlock Text="SENSIBILIDADE" Style="{StaticResource Eyebrow}" Margin="16,14,16,10"/>
+    <Grid Margin="16,0">
+      <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/><ColumnDefinition Width="Auto" MinWidth="40" SharedSizeGroup="Val"/></Grid.ColumnDefinitions>
+      <Grid.RowDefinitions><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/><RowDefinition Height="30"/></Grid.RowDefinitions>
+      <TextBlock Grid.Row="3" Text="Suavidade" Style="{StaticResource Label}" ToolTip="Tempo para o texto alcançar a palavra ouvida. Maior = movimento mais suave; menor = resposta mais rápida."/>
+      <Slider Grid.Row="3" Grid.Column="1" Minimum="0.1" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="True" Value="{Binding App.VoiceSmooth}" ValueChanged="Sens_Changed"/>
+      <TextBlock Grid.Row="3" Grid.Column="2" Style="{StaticResource Num}" TextAlignment="Right" x:Name="SmoothLabel"/>
+      <TextBlock Grid.Row="4" Text="Exigência" Style="{StaticResource Label}" ToolTip="Quanto a palavra ouvida precisa parecer com a do roteiro. Menor = aceita pronúncias diferentes; maior = evita saltos errados."/>
+      <Slider Grid.Row="4" Grid.Column="1" Minimum="0.6" Maximum="0.9" TickFrequency="0.01" IsSnapToTickEnabled="True" Value="{Binding App.VoiceStrict}" ValueChanged="Sens_Changed"/>
+      <TextBlock Grid.Row="4" Grid.Column="2" Style="{StaticResource Num}" TextAlignment="Right" x:Name="StrictLabel"/>
+      <TextBlock Grid.Row="2" Text="Antecipação" Style="{StaticResource Label}" ToolTip="Quanto o texto sobe antes de terminar a linha. 1 = a linha lida fica uma linha acima da seta."/>
+      <Slider Grid.Row="2" Grid.Column="1" Minimum="0" Maximum="1" TickFrequency="0.05" IsSnapToTickEnabled="True" Value="{Binding App.VoiceLead}" ValueChanged="Sens_Changed"/>
+      <TextBlock Grid.Row="2" Grid.Column="2" Text="{Binding App.VoiceLead, StringFormat={}{0:0.00}}" Style="{StaticResource Num}" TextAlignment="Right" x:Name="LeadLabel"/>
+      <TextBlock Text="Busca à frente" Style="{StaticResource Label}"/>
+      <Slider Grid.Column="1" Minimum="8" Maximum="40" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding App.VoiceWindow}" ValueChanged="Sens_Changed"/>
+      <TextBlock Grid.Column="2" Text="{Binding App.VoiceWindow}" Style="{StaticResource Num}" TextAlignment="Right" x:Name="WinLabel"/>
+      <TextBlock Grid.Row="1" Text="Improviso após" Style="{StaticResource Label}"/>
+      <Slider Grid.Row="1" Grid.Column="1" Minimum="2" Maximum="6" TickFrequency="1" IsSnapToTickEnabled="True" Value="{Binding App.VoiceTolerance}" ValueChanged="Sens_Changed"/>
+      <TextBlock Grid.Row="1" Grid.Column="2" Text="{Binding App.VoiceTolerance}" Style="{StaticResource Num}" TextAlignment="Right" x:Name="TolLabel"/>
+    </Grid>
+  </StackPanel>
+</UserControl>

@@ -1,0 +1,78 @@
+{
+  "name": "arca-prompter",
+  "productName": "ARCA Teleprompter",
+  "version": "1.0.0",
+  "description": "ARCA Teleprompter — editor, prompter multi-tela e monitor web",
+  "author": "ARCA",
+  "private": true,
+  "main": "dist-electron/main.cjs",
+  "scripts": {
+    "convert": "node scripts/convert-template.mjs",
+    "dev": "vite",
+    "build:web": "vite build",
+    "preview": "vite preview",
+    "build:electron": "node scripts/build-electron.mjs",
+    "dev:electron": "node scripts/dev-electron.mjs",
+    "start": "npm run build:web && npm run build:electron && electron .",
+    "dist": "npm run build:web && npm run build:electron && electron-builder --win portable",
+    "typecheck": "tsc --noEmit",
+    "dist:dir": "npm run build:web && npm run build:electron && electron-builder --win dir"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.1",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/ws": "^8.5.13",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "esbuild": "^0.24.0",
+    "htmlparser2": "^9.1.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "ws": "^8.18.0",
+    "@fontsource/atkinson-hyperlegible": "^5.1.1",
+    "@fontsource/ibm-plex-mono": "^5.1.1",
+    "@fontsource/raleway": "^5.1.1",
+    "@fontsource/sora": "^5.1.1",
+    "@fontsource/source-sans-3": "^5.1.1",
+    "@fontsource/source-serif-4": "^5.1.1",
+    "mammoth": "^1.8.0",
+    "pdfjs-dist": "^4.10.38",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "allowScripts": {
+    "electron@33.2.1": true,
+    "esbuild@0.24.0": true,
+    "esbuild@0.21.5": true
+  },
+  "build": {
+    "appId": "com.arca.teleprompter",
+    "productName": "ARCA Teleprompter",
+    "copyright": "© 2026 ARCA",
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "build/icon.ico",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "icon": "build/icon.ico",
+      "target": [
+        "portable"
+      ],
+      "executableName": "ARCA Teleprompter"
+    },
+    "portable": {
+      "artifactName": "ARCA Teleprompter Setup ${version}.exe",
+      "requestExecutionLevel": "user",
+      "unpackDirName": "arca-teleprompter-setup"
+    }
+  }
+}

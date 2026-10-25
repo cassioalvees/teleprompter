@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0A0B0D">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Teleprompter">
+<title>ARCA Teleprompter</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/favicon.ico" sizes="16x16 32x32 48x48">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="stylesheet" href="app.css">
+</head>
+<body data-mode="controle">
+<!-- Área do prompter: espaço de 1000 unidades escalado para a largura da tela, igual ao app. -->
+<main id="stage">
+  <div id="flip">
+    <div id="readline" hidden></div>
+    <div id="text" data-script></div>
+    <div id="dimTop" class="dim"></div><div id="dimBottom" class="dim"></div><div id="hiLine" hidden></div>
+    <div id="indicator"></div>
+    <div id="hud" class="hud">
+      <div class="pill"><span id="lastBadge" class="badge" hidden>ÚLTIMO BLOCO</span><span id="hudBlock"></span><span id="hudLeft" class="num"></span></div>
+      <div class="pill num" id="hudClock"></div>
+    </div>
+    <div id="flash" class="flash" hidden><span id="flashSub" class="sub"></span><span id="flashText" class="num"></span></div>
+    <div id="count" class="count" hidden></div>
+  </div>
+  <div id="liveBorder"></div>
+</main>
+
+<!-- Barra superior: modos e ajustes (aparece ao tocar na tela). -->
+<header id="top" class="bar">
+  <span class="brand">ARCA</span><span class="sep"></span><span class="title">Teleprompter</span>
+  <span id="doc" class="muted"></span>
+  <span class="grow"></span>
+  <div class="seg" role="tablist" aria-label="Modo">
+    <button data-set-mode="limpa" role="tab">Limpa</button>
+    <button data-set-mode="controle" role="tab">Controle</button>
+  </div>
+  <button id="btnFs" class="icon" title="Tela cheia"><svg viewBox="0 0 16 16"><path d="M2 6V2h4 M10 2h4v4 M14 10v4h-4 M6 14H2v-4"/></svg></button>
+  <button id="btnSettings" class="icon" title="Ajustes"><svg viewBox="0 0 16 16"><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z M8 1.5v2 M8 12.5v2 M1.5 8h2 M12.5 8h2 M3.4 3.4l1.4 1.4 M11.2 11.2l1.4 1.4 M3.4 12.6l1.4-1.4 M11.2 4.8l1.4-1.4"/></svg></button>
+  <span id="conn" class="conn"><i></i><b>Conectando…</b></span>
+</header>
+
+<!-- Barra de controle flutuante: mesma ordem da janela do talento e das janelas de prompter do app. -->
+<nav id="ctrl" class="ctrl">
+  <button data-cmd="prevPara" title="Parágrafo anterior"><svg viewBox="0 0 16 16"><path d="M3.5 8L8 3.5 12.5 8 M3.5 12.5L8 8 12.5 12.5"/></svg></button>
+  <button data-cmd="lineUp" title="Linha anterior"><svg viewBox="0 0 16 16"><path d="M3.5 10L8 5.5l4.5 4.5"/></svg></button>
+  <button data-cmd="lineDown" title="Próxima linha"><svg viewBox="0 0 16 16"><path d="M3.5 6L8 10.5 12.5 6"/></svg></button>
+  <button data-cmd="nextPara" title="Próximo parágrafo"><svg viewBox="0 0 16 16"><path d="M3.5 3.5L8 8 12.5 3.5 M3.5 8L8 12.5 12.5 8"/></svg></button>
+  <button data-cmd="togglePlay" id="play" class="play" title="Play / pausa"><svg viewBox="0 0 16 16" class="fill"><path id="playIcon" d="M4 2.5l9.5 5.5L4 13.5z"/></svg></button>
+  <button data-cmd="rewind" title="Voltar ao início"><svg viewBox="0 0 16 16"><path d="M3 3v10 M13 3L5.5 8 13 13z"/></svg></button>
+  <button data-cmd="reverse" id="rev" title="Inverter direção (R)"><svg viewBox="0 0 16 16"><path d="M5 2.5v11 M2.5 5L5 2.5 7.5 5 M11 13.5v-11 M8.5 11l2.5 2.5 2.5-2.5"/></svg></button>
+  <span class="div"></span>
+  <button data-cmd="slower" class="small" title="Mais devagar">−</button>
+  <input id="speed" type="range" min="0" max="1" step="0.01" aria-label="Velocidade">
+  <button data-cmd="faster" class="small" title="Mais rápido">+</button>
+  <span id="speedLabel" class="num speed"></span>
+  <span id="ro" class="ro" hidden>Somente visualização</span>
+</nav>
+
+<!-- Ajustes deste aparelho (ficam salvos só nele). -->
+<dialog id="settings">
+  <form method="dialog">
+    <header><b>Ajustes deste aparelho</b><button class="icon" value="close" title="Fechar"><svg viewBox="0 0 16 16"><path d="M3 3l10 10M13 3L3 13"/></svg></button></header>
+    <section>
+      <span class="eyebrow">Tela</span>
+      <label class="ck"><input type="checkbox" id="optFlipH"> Espelhar na horizontal (iPad sob o vidro do teleprompter)</label>
+      <label class="ck"><input type="checkbox" id="optFlipV"> Espelhar na vertical</label>
+      <div class="ck">Girar o texto
+        <div class="seg rot" id="optRot" role="radiogroup" aria-label="Girar">
+          <button type="button" data-rot="0">0°</button><button type="button" data-rot="90">90°</button><button type="button" data-rot="180">180°</button><button type="button" data-rot="270">270°</button>
+        </div>
+      </div>
+      <label class="ck"><input type="checkbox" id="optHud" checked> Mostrar bloco, tempo e relógio</label>
+      <label class="ck"><input type="checkbox" id="optWake" checked> Manter a tela sempre ligada</label>
+      <label class="ck"><input type="checkbox" id="optSwipe" checked> Arrastar o texto com o dedo quando pausado</label>
+    </section>
+    <section>
+      <span class="eyebrow">Tela cheia</span>
+      <p class="muted">Tela cheia sem bordas (como o F11), nesta tela ou em outro monitor ligado a este computador. Atalho: tecla <b>F</b>.</p>
+      <div class="row wrap" id="screens"><button type="button" id="btnFsHere">Nesta tela</button><button type="button" id="btnScreens">Outro monitor…</button></div>
+      <p id="scrMsg" class="muted" hidden></p>
+    </section>
+    <section>
+      <span class="eyebrow">Acesso</span>
+      <div class="row"><input id="pass" type="password" placeholder="Senha do monitor (se houver)" autocomplete="current-password"><button id="btnPass" value="">Entrar</button></div>
+      <p id="authMsg" class="muted"></p>
+    </section>
+    <section class="help">
+      <span class="eyebrow">Usar como app no iPad</span>
+      <p>No Safari: <b>Compartilhar → Adicionar à Tela de Início</b>. O ARCA abre em tela cheia, como um app. Para o modo offline completo, acesse pelo endereço <b>https</b> mostrado no app (porta 8421) depois de instalar o certificado.</p>
+    </section>
+  </form>
+</dialog>
+
+<div id="login" class="login" hidden>
+  <form id="loginForm">
+    <img src="icons/apple-touch-icon.png" alt="" width="56" height="56">
+    <b>Senha do monitor</b>
+    <input id="loginPass" type="password" autocomplete="current-password">
+    <span id="loginErr" class="err" hidden>Senha incorreta.</span>
+    <button type="submit">Entrar</button>
+  </form>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>

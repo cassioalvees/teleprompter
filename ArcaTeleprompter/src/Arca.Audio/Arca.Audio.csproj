@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio" Version="2.2.1" />
+    <PackageReference Include="Vosk" Version="0.3.38" />
+    <PackageReference Include="Whisper.net" Version="1.9.1" />
+    <PackageReference Include="Whisper.net.Runtime" Version="1.9.1" />
+    <PackageReference Include="Whisper.net.Runtime.Vulkan" Version="1.9.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Arca.Core\Arca.Core.csproj" />
+  </ItemGroup>
+
+  <!-- Whisper.net copia as bibliotecas nativas de todas as plataformas (Linux, macOS, Android…): fica só com win-x64
+       (CPU em runtimes\win-x64, placa de vídeo em runtimes\vulkan\win-x64). -->
+  <Target Name="ArcaSoWhisperWinX64" BeforeTargets="AssignTargetPaths;GetCopyToOutputDirectoryItems">
+    <ItemGroup>
+      <_ArcaOutraPlataforma Include="@(None)" Condition="$([System.String]::new('%(None.TargetPath)').StartsWith('runtimes')) And !$([System.String]::new('%(None.TargetPath)').Contains('win-x64'))" />
+      <None Remove="@(_ArcaOutraPlataforma)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

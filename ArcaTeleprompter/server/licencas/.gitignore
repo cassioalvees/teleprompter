@@ -1,0 +1,5 @@
+# Segredos e estado local — nunca no repositório (ele é público).
+.dev.vars
+*.pem
+.wrangler/
+node_modules/

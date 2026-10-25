@@ -1,0 +1,18 @@
+# Servidor de licenças do ARCA Teleprompter (Cloudflare Workers + D1).
+# Segredos (nunca no repositório): LICENSE_PRIVATE_KEY e ADMIN_TOKEN
+#   local:      arquivo .dev.vars (gerado por: node tools/gen-keys.mjs)
+#   publicado:  npx wrangler secret put LICENSE_PRIVATE_KEY  /  npx wrangler secret put ADMIN_TOKEN
+name = "arca-licencas"
+main = "src/index.js"
+compatibility_date = "2025-06-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "arca-licencas"
+# Banco criado com "npx wrangler d1 create arca-licencas" (região ENAM).
+database_id = "a5e628cc-cb80-415d-b01f-475c9df181a0"
+
+# Site (public/index.html + imagens), servido antes do Worker; /api, /admin e /download caem no Worker.
+[assets]
+directory = "./public"
+binding = "ASSETS"

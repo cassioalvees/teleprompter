@@ -1,0 +1,526 @@
+<Window x:Class="Arca.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:c="clr-namespace:Arca.App.Controls"
+        xmlns:vm="clr-namespace:Arca.App.ViewModels"
+        Title="ARCA Teleprompter" Width="1440" Height="900" MinWidth="1024" MinHeight="640"
+        WindowStartupLocation="Manual" Background="{DynamicResource Bg}" Foreground="{DynamicResource Text}"
+        FontFamily="{StaticResource FSans}" FontSize="13" FontWeight="Medium" UseLayoutRounding="True"
+        TextOptions.TextFormattingMode="Display" Typography.NumeralStyle="Lining" Icon="pack://application:,,,/Assets/icon.ico">
+  <WindowChrome.WindowChrome>
+    <WindowChrome CaptionHeight="36" ResizeBorderThickness="6" GlassFrameThickness="0" CornerRadius="0" UseAeroCaptionButtons="False"/>
+  </WindowChrome.WindowChrome>
+  <Window.Resources>
+    <c:BoolVis x:Key="Vis"/>
+    <c:Not x:Key="Not"/>
+    <c:Is x:Key="Is"/>
+    <c:IsVis x:Key="IsVis"/>
+    <c:HexBrush x:Key="Hex"/>
+    <c:ResBrush x:Key="Res"/>
+    <c:Fmt x:Key="Fmt"/>
+    <c:DbWidth x:Key="DbW"/>
+  </Window.Resources>
+
+  <Grid x:Name="Root">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="36"/>
+      <RowDefinition Height="32"/>
+      <RowDefinition Height="50"/>
+      <RowDefinition Height="*"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="24"/>
+    </Grid.RowDefinitions>
+
+    <!-- ═══ Barra de título ═══ -->
+    <Border Grid.Row="0" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Hair}" BorderThickness="0,0,0,1">
+      <DockPanel>
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+          <Button Style="{StaticResource WinBtn}" Click="WinMin_Click" ToolTip="Minimizar"><Border Width="10" Height="1" Background="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></Button>
+          <Button Style="{StaticResource WinBtn}" Click="WinMax_Click" ToolTip="Maximizar"><Border Width="9" Height="9" BorderThickness="1" CornerRadius="2" BorderBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></Button>
+          <Button Style="{StaticResource WinClose}" Click="WinClose_Click" ToolTip="Fechar"><c:Icon Data="M2 2l12 12M14 2L2 14" Size="10" StrokeWidth="1.4"/></Button>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Margin="14,0" VerticalAlignment="Center">
+          <Image Source="pack://application:,,,/Assets/icon-64.png" Width="18" Height="18" Margin="0,0,10,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+          <TextBlock Text="ARCA" FontFamily="{StaticResource FBrand}" FontSize="15" VerticalAlignment="Center">
+            <TextBlock.LayoutTransform><ScaleTransform/></TextBlock.LayoutTransform>
+          </TextBlock>
+          <Border Width="1" Height="16" Background="{DynamicResource Line}" Margin="12,0"/>
+          <TextBlock Text="Teleprompter" FontWeight="SemiBold" FontSize="12.5" VerticalAlignment="Center"/>
+          <TextBlock Text="{Binding DocTitle}" FontSize="12" Foreground="{DynamicResource Muted}" Margin="12,0,0,0" VerticalAlignment="Center" TextTrimming="CharacterEllipsis"/>
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <!-- ═══ Menu ═══ -->
+    <Border Grid.Row="1" Background="{DynamicResource Ui}" Panel.ZIndex="75">
+      <Menu x:Name="MainMenu" Margin="8,0" VerticalAlignment="Center" FontSize="13">
+        <MenuItem Header="Arquivo">
+          <MenuItem Header="Novo" InputGestureText="Ctrl+N" Click="New_Click"/>
+          <MenuItem Header="Abrir…" InputGestureText="Ctrl+O" Click="Open_Click"/>
+          <MenuItem Header="Salvar" InputGestureText="Ctrl+S" Click="Save_Click"/>
+          <MenuItem Header="Salvar como…" InputGestureText="Ctrl+Shift+S" Click="SaveAs_Click"/>
+          <Separator/>
+          <MenuItem Header="Importar Word, PDF, RTF, texto ou HTML…" Click="Open_Click"/>
+          <MenuItem Header="Histórico de versões…" Click="Versions_Click"/>
+          <MenuItem Header="Fechar roteiro" InputGestureText="Ctrl+W" Click="CloseTab_Click"/>
+          <MenuItem Header="Exportar como .txt" Click="ExportTxt_Click"/>
+          <MenuItem Header="Imprimir…" InputGestureText="Ctrl+P" Click="Print_Click"/>
+          <MenuItem Header="Exportar PDF…" InputGestureText="Ctrl+Shift+P" Click="Pdf_Click"/>
+          <Separator/>
+          <MenuItem Header="Perfis de apresentador…" Click="Profiles_Click"/>
+          <Separator/>
+          <MenuItem Header="Preferências…" InputGestureText="Ctrl+," Click="Prefs_Click"/>
+          <Separator/>
+          <MenuItem Header="Sair" InputGestureText="Alt+F4" Click="WinClose_Click"/>
+        </MenuItem>
+        <MenuItem Header="Editar">
+          <MenuItem Header="Desfazer" InputGestureText="Ctrl+Z" Click="Undo_Click"/>
+          <MenuItem Header="Refazer" InputGestureText="Ctrl+Y" Click="Redo_Click"/>
+          <Separator/>
+          <MenuItem Header="Recortar" InputGestureText="Ctrl+X" Command="ApplicationCommands.Cut" CommandTarget="{Binding ElementName=Editor}"/>
+          <MenuItem Header="Copiar" InputGestureText="Ctrl+C" Command="ApplicationCommands.Copy" CommandTarget="{Binding ElementName=Editor}"/>
+          <MenuItem Header="Colar" InputGestureText="Ctrl+V" Command="ApplicationCommands.Paste" CommandTarget="{Binding ElementName=Editor}"/>
+          <MenuItem Header="Selecionar tudo" InputGestureText="Ctrl+A" Command="ApplicationCommands.SelectAll" CommandTarget="{Binding ElementName=Editor}"/>
+          <MenuItem Header="Localizar e substituir…" InputGestureText="Ctrl+F" Click="Find_Click"/>
+          <Separator/>
+          <MenuItem Header="Bloquear editor" InputGestureText="Ctrl+E" IsCheckable="False" IsChecked="{Binding Locked, Mode=OneWay}" Click="Lock_Click"/>
+        </MenuItem>
+        <MenuItem x:Name="FormatMenu" Header="Formatar" SubmenuOpened="FormatMenu_Opened"><Separator/></MenuItem>
+        <MenuItem x:Name="MarksMenu" Header="Marcadores" SubmenuOpened="MarksMenu_Opened"><Separator/></MenuItem>
+        <MenuItem x:Name="PrompterMenu" Header="Prompter" SubmenuOpened="PrompterMenu_Opened"><Separator/></MenuItem>
+        <MenuItem Header="Exibir">
+          <MenuItem Header="Informações na tela do talento" IsChecked="{Binding TalentHud, Mode=OneWay}" Click="ToggleHud_Click"/>
+          <Separator/>
+          <MenuItem Header="Tema escuro" IsChecked="{Binding Theme, Mode=OneWay, Converter={StaticResource Is}, ConverterParameter=dark}" Click="ThemeDark_Click"/>
+          <MenuItem Header="Tema claro" IsChecked="{Binding Theme, Mode=OneWay, Converter={StaticResource Is}, ConverterParameter=light}" Click="ThemeLight_Click"/>
+          <Separator/>
+          <MenuItem Header="Marcadores" IsChecked="{Binding ShowBookmarks, Mode=OneWay}" Click="ToggleBm_Click"/>
+          <MenuItem Header="Inspetor" IsChecked="{Binding ShowInspector, Mode=OneWay}" Click="ToggleInsp_Click"/>
+          <Separator/>
+          <MenuItem Header="Tela cheia" InputGestureText="F11" Click="Fullscreen_Click"/>
+        </MenuItem>
+        <MenuItem Header="Janela">
+          <MenuItem Header="Controle remoto…" Click="Remote_Click"/>
+          <MenuItem Header="Monitor web e iPad…" Click="Monitor_Click"/>
+          <MenuItem Header="Saída NDI" IsChecked="{Binding NdiOn, Mode=OneWay}" Click="ToggleNdi_Click"/>
+          <Separator/>
+          <MenuItem Header="Telas conectadas" Click="TabTelas_Click"/>
+          <MenuItem Header="Gravação de vídeo" Click="TabVideo_Click"/>
+          <MenuItem Header="Registro de eventos…" Click="Log_Click"/>
+        </MenuItem>
+        <MenuItem Header="Ajuda">
+          <MenuItem Header="Boas-vindas…" Click="Welcome_Click"/>
+          <MenuItem Header="Licença…" Click="License_Click"/>
+          <MenuItem Header="Procurar atualizações…" Click="CheckUpdates_Click"/>
+          <MenuItem Header="Atalhos de teclado…" Click="Shortcuts_Click"/>
+          <MenuItem Header="Manual do operador" Click="Manual_Click"/>
+          <MenuItem Header="Sobre o ARCA Teleprompter" Click="About_Click"/>
+        </MenuItem>
+      </Menu>
+    </Border>
+
+    <!-- ═══ Barra de ferramentas ═══ -->
+    <Border Grid.Row="2" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,0,1" Panel.ZIndex="5" Effect="{DynamicResource Sh1}">
+      <DockPanel Margin="12,0" LastChildFill="True">
+        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button x:Name="PresBtn" Style="{StaticResource Pill}" Click="PresMenu_Click" ToolTip="Apresentador do trecho (Alt+1…8)" Padding="12,0,10,0" FontSize="12" Margin="0,0,8,0" Focusable="False">
+            <StackPanel Orientation="Horizontal">
+              <Ellipse Width="10" Height="10" Fill="{Binding CurPresColor, Converter={StaticResource Hex}}" Stroke="#99808080" StrokeThickness="1" Margin="0,0,7,0"/>
+              <TextBlock Text="{Binding CurPresName}"/>
+              <c:Icon Data="{x:Static c:Icons.Chevron}" Size="10" StrokeWidth="1.6" Margin="7,0,0,0"/>
+            </StackPanel>
+          </Button>
+          <Popup x:Name="PresPopup" PlacementTarget="{Binding ElementName=PresBtn}" Placement="Bottom" HorizontalOffset="-60" VerticalOffset="6" StaysOpen="False" AllowsTransparency="True">
+            <Border Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="1" CornerRadius="12" Padding="6" Margin="0,0,10,10" MinWidth="220" Effect="{DynamicResource Sh2}">
+              <StackPanel x:Name="PresList"/>
+            </Border>
+          </Popup>
+          <Button Click="Lock_Click" ToolTip="Bloquear / editar (Ctrl+E)" Margin="0,0,8,0" Focusable="False">
+            <Button.Style>
+              <Style TargetType="Button" BasedOn="{StaticResource Pill}">
+                <Style.Triggers><DataTrigger Binding="{Binding Locked}" Value="True"><Setter Property="Background" Value="{DynamicResource Sunk}"/></DataTrigger></Style.Triggers>
+              </Style>
+            </Button.Style>
+            <StackPanel Orientation="Horizontal">
+              <c:Icon x:Name="LockIcon" Data="{x:Static c:Icons.Unlock}" Size="14" StrokeWidth="1.6" Margin="0,0,7,0"/>
+              <TextBlock x:Name="LockLabel" Text="Editável"/>
+            </StackPanel>
+          </Button>
+          <Button Style="{StaticResource Pill}" Click="Talent_Click" ToolTip="Janela do talento (F5)" Margin="0,0,8,0" Focusable="False">
+            <StackPanel Orientation="Horizontal"><c:Icon Data="{x:Static c:Icons.Monitor}" Size="14" StrokeWidth="1.6" Margin="0,0,7,0"/><TextBlock Text="Talento"/></StackPanel>
+          </Button>
+          <Button x:Name="PromptBtn" Click="Play_Click" ToolTip="Iniciar / parar prompt (Ctrl+Enter)" MinWidth="100" Padding="14,0" Focusable="False">
+            <Button.Style>
+              <Style TargetType="Button" BasedOn="{StaticResource Primary}">
+                <Style.Triggers><DataTrigger Binding="{Binding Live}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoft}"/><Setter Property="Foreground" Value="{DynamicResource Accent}"/></DataTrigger></Style.Triggers>
+              </Style>
+            </Button.Style>
+            <StackPanel Orientation="Horizontal">
+              <c:Icon x:Name="PromptIcon" Data="{x:Static c:Icons.Play}" Size="11" Filled="True" Margin="0,0,8,0"/>
+              <TextBlock x:Name="PromptLabel" Text="Prompt"/>
+            </StackPanel>
+          </Button>
+        </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled" VerticalAlignment="Center" Margin="0,0,8,0">
+          <StackPanel Orientation="Horizontal" x:Name="Tools">
+            <Button Style="{StaticResource IconBtn}" ToolTip="Novo (Ctrl+N)" Click="New_Click" Focusable="False"><c:Icon Data="{x:Static c:Icons.New}"/></Button>
+            <Button Style="{StaticResource IconBtn}" ToolTip="Abrir (Ctrl+O)" Click="Open_Click" Focusable="False"><c:Icon Data="{x:Static c:Icons.Open}"/></Button>
+            <Button Style="{StaticResource IconBtn}" ToolTip="Salvar (Ctrl+S)" Click="Save_Click" Focusable="False"><c:Icon Data="{x:Static c:Icons.Save}"/></Button>
+            <Border Width="1" Height="18" Background="{DynamicResource Line}" Margin="6,0"/>
+            <Button Style="{StaticResource IconBtn}" ToolTip="Desfazer (Ctrl+Z)" Click="Undo_Click" Focusable="False"><c:Icon Data="{x:Static c:Icons.Undo}"/></Button>
+            <Button Style="{StaticResource IconBtn}" ToolTip="Refazer (Ctrl+Y)" Click="Redo_Click" Focusable="False"><c:Icon Data="{x:Static c:Icons.Redo}"/></Button>
+            <Button Style="{StaticResource IconBtn}" ToolTip="Localizar (Ctrl+F)" Click="Find_Click" Focusable="False"><c:Icon Data="{x:Static c:Icons.Find}"/></Button>
+            <Border Width="1" Height="18" Background="{DynamicResource Line}" Margin="6,0"/>
+            <Button Style="{StaticResource IconBtn}" ToolTip="Negrito (Ctrl+B)" Click="Bold_Click" Focusable="False"><TextBlock Text="B" FontWeight="Bold" FontSize="14"/></Button>
+            <Button Style="{StaticResource IconBtn}" ToolTip="Itálico (Ctrl+I)" Click="Italic_Click" Focusable="False"><TextBlock Text="I" FontStyle="Italic" FontSize="15" FontFamily="pack://application:,,,/Fonts/#Source Serif 4"/></Button>
+            <Button Style="{StaticResource IconBtn}" ToolTip="Sublinhado (Ctrl+U)" Click="Underline_Click" Focusable="False"><TextBlock Text="U" TextDecorations="Underline" FontSize="14"/></Button>
+            <StackPanel x:Name="ColorTools" Orientation="Horizontal"/>
+            <Border Width="1" Height="18" Background="{DynamicResource Line}" Margin="6,0"/>
+            <Button Style="{StaticResource IconBtn}" ToolTip="Inserir marcador (Ctrl+K)" Click="InsertBm_Click" Focusable="False"><c:Icon Data="{x:Static c:Icons.Bookmark}"/></Button>
+            <Button Style="{StaticResource IconBtn}" ToolTip="Inserir ponto de pausa" Click="InsertStop_Click" Focusable="False"><c:Icon Data="{x:Static c:Icons.StopMark}"/></Button>
+          </StackPanel>
+        </ScrollViewer>
+      </DockPanel>
+    </Border>
+
+    <!-- ═══ Corpo ═══ -->
+    <Grid Grid.Row="3" x:Name="Body">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition x:Name="ColBm" Width="0.2*" MinWidth="176" MaxWidth="230"/>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition x:Name="ColInsp" Width="0.3*" MinWidth="316" MaxWidth="360"/>
+      </Grid.ColumnDefinitions>
+
+      <!-- ── Marcadores / rundown ── -->
+      <Border Grid.Column="0" x:Name="BmPanel" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,1,0">
+        <DockPanel>
+          <DockPanel DockPanel.Dock="Top" Height="40" Margin="14,0,8,0">
+            <Button DockPanel.Dock="Right" Style="{StaticResource TinyBtn}" Width="26" Height="26" ToolTip="Inserir marcador (Ctrl+K)" Click="InsertBm_Click" Focusable="False"><c:Icon Data="{x:Static c:Icons.Plus}" Size="12"/></Button>
+            <TextBlock Text="MARCADORES" Style="{StaticResource Eyebrow}" VerticalAlignment="Center"/>
+          </DockPanel>
+          <Border DockPanel.Dock="Bottom" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="10,8,10,10">
+            <StackPanel TextElement.FontSize="11">
+              <DockPanel Margin="0,0,0,6">
+                <TextBlock Text="Programa" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                <TextBox x:Name="ProgBox" Style="{StaticResource FieldSmall}" Width="60" TextAlignment="Right" Text="{Binding ProgramInput, UpdateSourceTrigger=PropertyChanged}" LostFocus="Prog_LostFocus" KeyDown="Prog_KeyDown" ToolTip="Duração do programa (mm:ss)"/>
+                <TextBlock Text="{Binding OverLabel}" ToolTip="{Binding OverTitle}" FontFamily="{StaticResource FNum}" FontWeight="SemiBold" HorizontalAlignment="Right" VerticalAlignment="Center">
+                  <TextBlock.Style>
+                    <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource Ok}"/>
+                      <Style.Triggers><DataTrigger Binding="{Binding Over}" Value="True"><Setter Property="Foreground" Value="#E5484D"/></DataTrigger></Style.Triggers>
+                    </Style>
+                  </TextBlock.Style>
+                </TextBlock>
+              </DockPanel>
+              <DockPanel Margin="0,0,0,6">
+                <Button DockPanel.Dock="Right" Style="{StaticResource Ghost}" Height="18" Padding="4,0" Foreground="{DynamicResource Accent}" Content="Zerar" Click="ClearReh_Click" Visibility="{Binding HasRehearsal, Converter={StaticResource Vis}}" Focusable="False"/>
+                <CheckBox Content="Modo ensaio" IsChecked="{Binding Rehearse}" ToolTip="Mede o tempo real de leitura de cada bloco" Focusable="False"/>
+              </DockPanel>
+              <DockPanel>
+                <TextBlock DockPanel.Dock="Right" FontFamily="{StaticResource FNum}" Foreground="{DynamicResource Faint}"><Run Text="est. "/><Run Text="{Binding RundownTotal, Mode=OneWay}"/></TextBlock>
+                <TextBlock Foreground="{DynamicResource Faint}"><Run Text="{Binding Words, Mode=OneWay}"/><Run Text=" palavras"/></TextBlock>
+              </DockPanel>
+            </StackPanel>
+          </Border>
+          <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="6,0">
+            <StackPanel>
+              <ItemsControl x:Name="BmList" ItemsSource="{Binding Bookmarks}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="vm:BookmarkVM">
+                    <Border x:Name="row" MinHeight="38" CornerRadius="9" Padding="8,3,2,3" Margin="0,0,0,1" Background="Transparent" BorderThickness="0,2,0,0" BorderBrush="Transparent"
+                            AllowDrop="True" Cursor="Hand" ToolTip="Arraste para reordenar · Duplo clique: ir · Botão direito: excluir"
+                            MouseLeftButtonDown="Bm_MouseDown" MouseMove="Bm_MouseMove" Drop="Bm_Drop" DragOver="Bm_DragOver" DragLeave="Bm_DragLeave" MouseRightButtonUp="Bm_RightClick" Tag="{Binding}">
+                      <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="14"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <TextBlock x:Name="key" Text="{Binding Key}" FontFamily="{StaticResource FNum}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource Faint}" VerticalAlignment="Center"/>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="2,0">
+                          <TextBlock x:Name="name" Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}"/>
+                          <TextBlock Text="{Binding Sub}" FontFamily="{StaticResource FNum}" FontSize="10" Foreground="{DynamicResource Faint}" TextTrimming="CharacterEllipsis"/>
+                        </StackPanel>
+                        <Button x:Name="skipBtn" Visibility="Collapsed" Width="22" Grid.Column="2" Style="{StaticResource TinyBtn}" Click="BmSkip_Click" Tag="{Binding}" Focusable="False" ToolTip="Pular este bloco (não vai ao ar)">
+                          <c:Icon x:Name="eye" Data="{x:Static c:Icons.Eye}" Size="12"/>
+                        </Button>
+                        <Button x:Name="delBtn" Visibility="Collapsed" Width="22" Grid.Column="3" Style="{StaticResource TinyBtn}" Click="BmRemove_Click" Tag="{Binding}" Focusable="False" ToolTip="Excluir marcador"><c:Icon Data="{x:Static c:Icons.X}" Size="10" StrokeWidth="1.7"/></Button>
+                      </Grid>
+                    </Border>
+                    <DataTemplate.Triggers>
+                      <DataTrigger Binding="{Binding Current}" Value="True">
+                        <Setter TargetName="row" Property="Background" Value="{DynamicResource AccentSoft}"/>
+                        <Setter TargetName="key" Property="Foreground" Value="{DynamicResource Accent}"/>
+                        <Setter TargetName="name" Property="FontWeight" Value="SemiBold"/>
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding Skip}" Value="True">
+                        <Setter TargetName="row" Property="Opacity" Value="0.55"/>
+                        <Setter TargetName="name" Property="TextDecorations" Value="Strikethrough"/>
+                        <Setter TargetName="eye" Property="Data" Value="{x:Static c:Icons.EyeOff}"/>
+                        <Setter TargetName="eye" Property="Foreground" Value="{DynamicResource Accent}"/>
+                        <Setter TargetName="skipBtn" Property="Visibility" Value="Visible"/>
+                      </DataTrigger>
+                      <DataTrigger Binding="{Binding DropTarget}" Value="True"><Setter TargetName="row" Property="BorderBrush" Value="{DynamicResource Accent}"/></DataTrigger>
+                      <Trigger SourceName="row" Property="IsMouseOver" Value="True">
+                        <Setter TargetName="row" Property="Background" Value="{DynamicResource Hover}"/>
+                        <Setter TargetName="skipBtn" Property="Visibility" Value="Visible"/>
+                        <Setter TargetName="delBtn" Property="Visibility" Value="Visible"/>
+                      </Trigger>
+                    </DataTemplate.Triggers>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <TextBlock Text="PAUSAS" Style="{StaticResource Eyebrow}" Margin="8,12,0,4" Visibility="Collapsed" x:Name="StopsHeader"/>
+              <ItemsControl ItemsSource="{Binding Stops}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="vm:StopVM">
+                    <Border x:Name="row" Height="32" CornerRadius="9" Padding="8,0,2,0" Background="Transparent" Cursor="Hand" MouseLeftButtonDown="Stop_MouseDown" Tag="{Binding}" ToolTip="Duplo clique: ir">
+                      <Grid>
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="14"/><ColumnDefinition/><ColumnDefinition Width="Auto"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                        <c:Icon Data="{x:Static c:Icons.PauseMark}" Size="10" Filled="True" Foreground="{DynamicResource Faint}" VerticalAlignment="Center"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Name}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center" Margin="4,0" ToolTip="{Binding Name}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding Time}" FontFamily="{StaticResource FNum}" FontSize="11" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <Button x:Name="delBtn" Visibility="Collapsed" Width="22" Grid.Column="3" Style="{StaticResource TinyBtn}" Click="StopRemove_Click" Tag="{Binding}" Focusable="False" ToolTip="Excluir pausa"><c:Icon Data="{x:Static c:Icons.X}" Size="10" StrokeWidth="1.7"/></Button>
+                      </Grid>
+                    </Border>
+                    <DataTemplate.Triggers>
+                      <Trigger SourceName="row" Property="IsMouseOver" Value="True">
+                        <Setter TargetName="row" Property="Background" Value="{DynamicResource Hover}"/>
+                        <Setter TargetName="delBtn" Property="Visibility" Value="Visible"/>
+                      </Trigger>
+                    </DataTemplate.Triggers>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </StackPanel>
+          </ScrollViewer>
+        </DockPanel>
+      </Border>
+
+      <!-- ── Centro: abas + editor ── -->
+      <DockPanel Grid.Column="1">
+        <Border DockPanel.Dock="Top" Height="38" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,0,1" Padding="6,0">
+          <ScrollViewer HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+              <ItemsControl ItemsSource="{Binding Tabs}">
+                <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="vm:DocTabVM">
+                    <Border x:Name="tab" Height="28" MaxWidth="220" CornerRadius="8" Padding="12,0,4,0" Margin="0,0,2,0" Background="Transparent" Cursor="Hand" MouseLeftButtonUp="Tab_Click" Tag="{Binding}" ToolTip="{Binding Name}">
+                      <StackPanel Orientation="Horizontal">
+                        <TextBlock x:Name="lbl" Text="{Binding Name}" FontSize="12" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" TextTrimming="CharacterEllipsis" MaxWidth="160"/>
+                        <Ellipse Width="6" Height="6" Fill="{DynamicResource Accent}" Margin="6,0,0,0" Visibility="{Binding Dirty, Converter={StaticResource Vis}}" VerticalAlignment="Center"/>
+                        <Button Style="{StaticResource TinyBtn}" Width="20" Height="20" Margin="4,0,0,0" Click="TabClose_Click" Tag="{Binding}" Focusable="False" ToolTip="Fechar"><c:Icon Data="{x:Static c:Icons.X}" Size="9" StrokeWidth="1.8"/></Button>
+                      </StackPanel>
+                    </Border>
+                    <DataTemplate.Triggers>
+                      <DataTrigger Binding="{Binding Active}" Value="True">
+                        <Setter TargetName="tab" Property="Background" Value="{DynamicResource Sunk}"/>
+                        <Setter TargetName="lbl" Property="Foreground" Value="{DynamicResource Text}"/>
+                        <Setter TargetName="lbl" Property="FontWeight" Value="SemiBold"/>
+                      </DataTrigger>
+                      <Trigger SourceName="tab" Property="IsMouseOver" Value="True"><Setter TargetName="lbl" Property="Foreground" Value="{DynamicResource Text}"/></Trigger>
+                    </DataTemplate.Triggers>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+              <Button Style="{StaticResource TinyBtn}" Width="28" Height="28" Click="NewTab_Click" ToolTip="Novo roteiro (Ctrl+N)" Focusable="False"><c:Icon Data="{x:Static c:Icons.Plus}" Size="12"/></Button>
+            </StackPanel>
+          </ScrollViewer>
+        </Border>
+        <Grid x:Name="EdHost" ClipToBounds="True" TextOptions.TextFormattingMode="Ideal" TextOptions.TextRenderingMode="Grayscale">
+          <Border x:Name="EdBg" Background="{Binding Background, Converter={StaticResource Hex}}"/>
+          <Border x:Name="EdBgImage" IsHitTestVisible="False"/>
+          <ScrollViewer x:Name="EdScroll" UseLayoutRounding="False" VerticalScrollBarVisibility="Visible" HorizontalScrollBarVisibility="Disabled" ScrollChanged="EdScroll_ScrollChanged" PreviewMouseWheel="EdScroll_Wheel" Focusable="False">
+            <Grid x:Name="EdSizer" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
+              <Grid.LayoutTransform><ScaleTransform x:Name="EdScale"/></Grid.LayoutTransform>
+              <RichTextBox x:Name="Editor" Width="1000" BorderThickness="0" Background="Transparent" Padding="0" AcceptsTab="False" SpellCheck.IsEnabled="False"
+                           VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Disabled" TextChanged="Editor_TextChanged" SelectionChanged="Editor_SelectionChanged"
+                           PreviewKeyDown="Editor_PreviewKeyDown" FocusVisualStyle="{x:Null}" AutoWordSelection="False" IsDocumentEnabled="True">
+                <RichTextBox.Resources>
+                  <Style TargetType="Paragraph"><Setter Property="Margin" Value="0"/></Style>
+                </RichTextBox.Resources>
+              </RichTextBox>
+              <Canvas x:Name="EdNames" IsHitTestVisible="False"/>
+              <!-- Cursor próprio: o do RichTextBox tem 1 px e some com a escala do editor e o fundo escuro. -->
+              <Canvas x:Name="EdCaretLayer" IsHitTestVisible="False">
+                <Rectangle x:Name="EdCaret" Fill="{DynamicResource Accent}" RadiusX="1" RadiusY="1" Visibility="Collapsed"/>
+              </Canvas>
+            </Grid>
+          </ScrollViewer>
+          <c:PrompterOverlay x:Name="EdOverlay" RightInset="10"/>
+          <!-- Aviso "editor bloqueado durante a reprodução" -->
+          <Border x:Name="EdBar" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,10,0,0" Padding="12,4,4,4" CornerRadius="8" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="1" Visibility="Collapsed" Effect="{DynamicResource Sh2}">
+            <StackPanel Orientation="Horizontal">
+              <TextBlock Text="Editor bloqueado durante a reprodução — pause para editar" Foreground="{DynamicResource Muted}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+              <Button x:Name="CursorToPrompterBtn" Style="{StaticResource Pill}" Height="26" Content="Prompter no cursor" Click="CursorToPrompter_Click" Margin="0,0,6,0" Visibility="Collapsed" Focusable="False"/>
+              <Button Style="{StaticResource Primary}" Height="26" FontSize="12" Content="Pausar e editar" Click="PauseEdit_Click" Focusable="False"/>
+            </StackPanel>
+          </Border>
+          <c:FlashToast x:Name="EdFlash"/>
+          <Border VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,14,20,0" Width="56" Height="56" CornerRadius="28" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="1" Visibility="Collapsed" x:Name="EdCount">
+            <TextBlock Text="{Binding Count}" FontFamily="{StaticResource FNum}" FontSize="26" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+          </Border>
+          <!-- Superfície invisível usada para medir o layout do prompter (posições dos blocos). -->
+          <Canvas x:Name="MeasureHost" Width="1000" Height="10" Visibility="Hidden" IsHitTestVisible="False" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        </Grid>
+      </DockPanel>
+
+      <!-- ── Inspetor ── -->
+      <Border Grid.Column="2" x:Name="InspPanel" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="1,0,0,0">
+        <DockPanel>
+          <Border DockPanel.Dock="Top" Margin="12,10" Style="{StaticResource SegBox}">
+            <UniformGrid Rows="1">
+              <RadioButton Style="{StaticResource Seg}" Content="Roteiro" IsChecked="{Binding Tab, Converter={StaticResource Is}, ConverterParameter=roteiro}" GroupName="insp" Padding="0"/>
+              <RadioButton Style="{StaticResource Seg}" Content="Overlay" IsChecked="{Binding Tab, Converter={StaticResource Is}, ConverterParameter=overlay}" GroupName="insp" Padding="0"/>
+              <RadioButton Style="{StaticResource Seg}" Content="Telas" IsChecked="{Binding Tab, Converter={StaticResource Is}, ConverterParameter=telas}" GroupName="insp" Padding="0"/>
+              <RadioButton Style="{StaticResource Seg}" Content="Voz" IsChecked="{Binding Tab, Converter={StaticResource Is}, ConverterParameter=voz}" GroupName="insp" Padding="0"/>
+              <RadioButton Style="{StaticResource Seg}" Content="Vídeo" IsChecked="{Binding Tab, Converter={StaticResource Is}, ConverterParameter=video}" GroupName="insp" Padding="0"/>
+            </UniformGrid>
+          </Border>
+          <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Padding="0,0,0,12">
+            <Grid>
+              <ContentControl x:Name="InspRoteiro" Visibility="{Binding Tab, Converter={StaticResource IsVis}, ConverterParameter=roteiro}"/>
+              <ContentControl x:Name="InspOverlay" Visibility="{Binding Tab, Converter={StaticResource IsVis}, ConverterParameter=overlay}"/>
+              <ContentControl x:Name="InspTelas" Visibility="{Binding Tab, Converter={StaticResource IsVis}, ConverterParameter=telas}"/>
+              <ContentControl x:Name="InspVoz" Visibility="{Binding Tab, Converter={StaticResource IsVis}, ConverterParameter=voz}"/>
+              <ContentControl x:Name="InspVideo" Visibility="{Binding Tab, Converter={StaticResource IsVis}, ConverterParameter=video}"/>
+            </Grid>
+          </ScrollViewer>
+        </DockPanel>
+      </Border>
+    </Grid>
+
+    <!-- ═══ Transporte e leituras ═══ -->
+    <Border Grid.Row="4" MinHeight="60" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="18,8">
+      <Grid>
+        <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+        <ItemsControl ItemsSource="{Binding Readouts}" VerticalAlignment="Center">
+          <ItemsControl.ItemsPanel><ItemsPanelTemplate><StackPanel Orientation="Horizontal"/></ItemsPanelTemplate></ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate DataType="vm:ReadoutVM">
+              <StackPanel Margin="0,0,22,0" Background="Transparent" MouseLeftButtonUp="Readout_Click" Cursor="Hand">
+                <TextBlock Text="{Binding Label}" FontFamily="{StaticResource FNum}" FontSize="9.5" Foreground="{DynamicResource Faint}"/>
+                <TextBlock Text="{Binding Value}" FontFamily="{StaticResource FNum}" FontSize="17" FontWeight="SemiBold"/>
+              </StackPanel>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <!-- Mesma barra de controle do talento, das janelas de prompter e do navegador (mesma ordem). -->
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+          <Button Style="{StaticResource Pill}" Width="38" Height="34" Padding="0" Margin="2,0" Click="Cmd_Click" Tag="prevPara" ToolTip="Parágrafo anterior ([)" Focusable="False"><c:Icon Data="{x:Static c:Icons.ParaUp}" Size="14" StrokeWidth="1.6"/></Button>
+          <Button Style="{StaticResource Pill}" Width="38" Height="34" Padding="0" Margin="2,0" Click="Cmd_Click" Tag="lineUp" ToolTip="Linha anterior (↑ parado)" Focusable="False"><c:Icon Data="{x:Static c:Icons.Up}" Size="14" StrokeWidth="1.6"/></Button>
+          <Button Style="{StaticResource Pill}" Width="38" Height="34" Padding="0" Margin="2,0" Click="Cmd_Click" Tag="lineDown" ToolTip="Próxima linha (↓ parado)" Focusable="False"><c:Icon Data="{x:Static c:Icons.Down}" Size="14" StrokeWidth="1.6"/></Button>
+          <Button Style="{StaticResource Pill}" Width="38" Height="34" Padding="0" Margin="2,0" Click="Cmd_Click" Tag="nextPara" ToolTip="Próximo parágrafo (])" Focusable="False"><c:Icon Data="{x:Static c:Icons.ParaDown}" Size="14" StrokeWidth="1.6"/></Button>
+          <Button Width="52" Height="34" Padding="0" Margin="2,0" Click="Play_Click" ToolTip="Play / pausa (Espaço)" Focusable="False">
+            <Button.Style>
+              <Style TargetType="Button" BasedOn="{StaticResource Primary}">
+                <Style.Triggers><DataTrigger Binding="{Binding Live}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoft}"/><Setter Property="Foreground" Value="{DynamicResource Accent}"/></DataTrigger></Style.Triggers>
+              </Style>
+            </Button.Style>
+            <c:Icon x:Name="TransportPlayIcon" Data="{x:Static c:Icons.Play}" Size="14" Filled="True"/>
+          </Button>
+          <Button Style="{StaticResource Pill}" Width="38" Height="34" Padding="0" Margin="2,0" Click="Cmd_Click" Tag="rewind" ToolTip="Voltar ao início (Home)" Focusable="False"><c:Icon Data="{x:Static c:Icons.Rewind}" Size="14" StrokeWidth="1.6"/></Button>
+          <Button Width="38" Height="34" Padding="0" Margin="2,0" Click="Reverse_Click" ToolTip="Inverter direção (R)" Focusable="False">
+            <Button.Style>
+              <Style TargetType="Button" BasedOn="{StaticResource Pill}">
+                <Style.Triggers><DataTrigger Binding="{Binding Reverse}" Value="True"><Setter Property="Background" Value="{DynamicResource AccentSoft}"/><Setter Property="Foreground" Value="{DynamicResource Accent}"/></DataTrigger></Style.Triggers>
+              </Style>
+            </Button.Style>
+            <c:Icon Data="{x:Static c:Icons.Direction}" Size="14" StrokeWidth="1.6"/>
+          </Button>
+        </StackPanel>
+        <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+          <Button Style="{StaticResource Pill}" Width="30" Height="30" Padding="0" Margin="0,0,4,0" Click="Cmd_Click" Tag="slower" ToolTip="Mais devagar (S)" Focusable="False" Content="−" FontSize="17" FontWeight="SemiBold"/>
+          <Slider Width="170" Minimum="0" Maximum="1" Value="{Binding SpeedT}" SmallChange="0.01" LargeChange="0.05" Focusable="False" VerticalAlignment="Center"/>
+          <Button Style="{StaticResource Pill}" Width="30" Height="30" Padding="0" Margin="4,0,0,0" Click="Cmd_Click" Tag="faster" ToolTip="Mais rápido (W)" Focusable="False" Content="+" FontSize="17" FontWeight="SemiBold"/>
+          <TextBlock Text="{Binding SpeedValue}" FontFamily="{StaticResource FNum}" FontSize="14" MinWidth="44" TextAlignment="Right" Margin="10,0" VerticalAlignment="Center">
+            <TextBlock.Style>
+              <Style TargetType="TextBlock"><Setter Property="Foreground" Value="{DynamicResource Text}"/>
+                <Style.Triggers><DataTrigger Binding="{Binding Reverse}" Value="True"><Setter Property="Foreground" Value="{DynamicResource Live}"/></DataTrigger></Style.Triggers>
+              </Style>
+            </TextBlock.Style>
+          </TextBlock>
+          <ComboBox Width="130" SelectedIndex="{Binding SpeedUnit}" Focusable="False">
+            <ComboBoxItem Content="linhas/s"/><ComboBoxItem Content="linhas/min"/><ComboBoxItem Content="palavras/s"/><ComboBoxItem Content="palavras/min"/>
+          </ComboBox>
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <!-- ═══ Barra de status ═══ -->
+    <Border Grid.Row="5" BorderBrush="{DynamicResource Line}" BorderThickness="0,1,0,0" Padding="14,0" Background="{DynamicResource Bg}">
+      <DockPanel TextElement.FontSize="12" TextElement.Foreground="{DynamicResource Muted}">
+        <TextBlock DockPanel.Dock="Right" Text="{Binding LastKey}" VerticalAlignment="Center"/>
+        <TextBlock x:Name="LicenseStatus" DockPanel.Dock="Right" VerticalAlignment="Center" Margin="0,0,18,0" Cursor="Hand" FontWeight="SemiBold" MouseLeftButtonUp="LicenseStatus_Click"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+          <Ellipse x:Name="StatusDot" Width="7" Height="7" Fill="{DynamicResource Faint}" Margin="0,0,6,0"/>
+          <TextBlock Text="{Binding StatusLabel}" Margin="0,0,16,0"/>
+          <TextBlock Text="{Binding ScreensLabel}" Margin="0,0,16,0"/>
+          <TextBlock Margin="0,0,16,0"><Run Text="Voz: "/><Run Text="{Binding VoiceShort, Mode=OneWay}"/></TextBlock>
+          <TextBlock Text="{Binding NetLabel}" Margin="0,0,16,0"/>
+          <TextBlock Text="{Binding SavedAt}"/>
+        </StackPanel>
+      </DockPanel>
+    </Border>
+
+    <!-- ═══ Janela do talento (sobre tudo) ═══ -->
+    <Grid x:Name="TalentLayer" Grid.RowSpan="6" Visibility="Collapsed" Background="Black" Panel.ZIndex="80" MouseMove="Talent_MouseMove">
+      <c:PrompterSurface x:Name="TalentSurface" MouseWheel="Talent_Wheel" MouseLeftButtonDown="Talent_MouseDown" MouseLeftButtonUp="Talent_MouseUp" MouseMove="Talent_DragMove"/>
+      <Border x:Name="TalentBar" MouseLeftButtonDown="TalentBar_MouseDown" ToolTip="Arraste para mover · duplo clique: maximizar" ToolTipService.InitialShowDelay="1500" VerticalAlignment="Top" Height="46" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,0,1" Padding="10,0">
+        <DockPanel>
+          <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+            <Button Style="{StaticResource Primary}" FontSize="12" Click="EditHere_Click" ToolTip="Abrir o editor neste trecho (E)" Margin="0,0,6,0" Focusable="False">
+              <StackPanel Orientation="Horizontal"><c:Icon Data="{x:Static c:Icons.Edit}" Size="13" StrokeWidth="1.4" Margin="0,0,7,0"/><TextBlock Text="Editar trecho"/></StackPanel>
+            </Button>
+            <Button Style="{StaticResource IconBtn}" Click="TalentMin_Click" ToolTip="Minimizar" Focusable="False"><Border Width="10" Height="1" Background="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></Button>
+            <Button Style="{StaticResource IconBtn}" Click="TalentMax_Click" ToolTip="Maximizar / restaurar" Focusable="False"><Border Width="9" Height="9" BorderThickness="1" CornerRadius="2" BorderBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=Button}}"/></Button>
+            <Button Style="{StaticResource IconBtn}" Click="Talent_Click" ToolTip="Fechar (Esc)" Focusable="False"><c:Icon Data="{x:Static c:Icons.Close}" Size="11" StrokeWidth="1.4"/></Button>
+          </StackPanel>
+          <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+            <TextBlock x:Name="TalentTitle" Text="Janela do operador · leitura normal" FontSize="12" Foreground="{DynamicResource Muted}" Margin="8,0" VerticalAlignment="Center"/>
+            <Border Width="1" Height="18" Background="{DynamicResource Line}" Margin="6,0"/>
+            <StackPanel x:Name="TalentTools" Orientation="Horizontal"/>
+            <TextBlock Text="Opacidade" FontSize="12" Foreground="{DynamicResource Muted}" Margin="10,0,8,0" VerticalAlignment="Center"/>
+            <Slider x:Name="CtrlOpacity" Width="90" Minimum="0.2" Maximum="1" Value="0.9" Focusable="False"/>
+          </StackPanel>
+        </DockPanel>
+      </Border>
+      <!-- Barra de controle flutuante: ⇈ ↑ ↓ ⇊ play ⏮ | velocidade -->
+      <!-- Barra de controle: a mesma da janela de prompter e do navegador (Controls/PrompterControlBar.cs). -->
+      <c:PrompterControlBar x:Name="TalentCtrl" Opacity="{Binding Value, ElementName=CtrlOpacity}"/>
+      <Border x:Name="TalentStamp" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,20,28" Padding="10,4" CornerRadius="6" Background="#8C000000" Cursor="Hand" MouseLeftButtonUp="Readout_Click">
+        <TextBlock x:Name="TalentStampText" FontFamily="{StaticResource FNum}" FontSize="22" Foreground="White"/>
+      </Border>
+      <Border x:Name="TalentVoice" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="20,0,0,28" Padding="12,6" CornerRadius="6" Background="#99000000" Visibility="Collapsed">
+        <StackPanel Orientation="Horizontal"><Ellipse x:Name="TalentVoiceDot" Width="7" Height="7" Fill="White" Margin="0,0,8,0"/><TextBlock Text="{Binding VoiceCode}" FontFamily="{StaticResource FNum}" FontSize="11" FontWeight="SemiBold" Foreground="White"/></StackPanel>
+      </Border>
+      <!-- Edição rápida do trecho atual, sem sair do prompter (duplo clique, pausado). -->
+      <Border x:Name="InlineEdit" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,58,0,0" Padding="12" CornerRadius="10" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="1" Visibility="Collapsed" Width="640" Effect="{DynamicResource Sh3}">
+        <StackPanel>
+          <TextBlock Text="Editando no prompter — posição mantida" Foreground="{DynamicResource Muted}" Margin="0,0,0,8"/>
+          <TextBox x:Name="InlineText" Style="{StaticResource Input}" Height="Auto" MinHeight="80" TextWrapping="Wrap" AcceptsReturn="False" VerticalContentAlignment="Top" Padding="8,6" FontSize="15" KeyDown="InlineText_KeyDown"/>
+          <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+            <Button Style="{StaticResource Pill}" Content="Cancelar · Esc" Click="InlineCancel_Click" Margin="0,0,6,0"/>
+            <Button Style="{StaticResource Primary}" Content="Concluir · Enter" Click="InlineDone_Click"/>
+          </StackPanel>
+        </StackPanel>
+      </Border>
+    </Grid>
+
+    <!-- ═══ Diálogos ═══ -->
+    <Grid x:Name="DialogLayer" Grid.RowSpan="6" Background="#59000000" Visibility="Collapsed" Panel.ZIndex="90" MouseLeftButtonDown="DialogLayer_MouseDown">
+      <Border x:Name="DialogCard" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="20" CornerRadius="14" Background="{DynamicResource Ui}" BorderBrush="{DynamicResource Line}" BorderThickness="1" Effect="{DynamicResource Sh3}" MouseLeftButtonDown="DialogCard_MouseDown">
+        <DockPanel>
+          <Border DockPanel.Dock="Top" Height="40" BorderBrush="{DynamicResource Line}" BorderThickness="0,0,0,1" Padding="16,0,6,0">
+            <DockPanel>
+              <Button DockPanel.Dock="Right" Style="{StaticResource IconBtn}" Width="30" Height="28" Click="DialogClose_Click" ToolTip="Fechar (Esc)" Focusable="False"><c:Icon Data="{x:Static c:Icons.Close}" Size="11" StrokeWidth="1.4"/></Button>
+              <TextBlock x:Name="DialogTitle" FontWeight="SemiBold" VerticalAlignment="Center"/>
+            </DockPanel>
+          </Border>
+          <ContentControl x:Name="DialogContent"/>
+        </DockPanel>
+      </Border>
+    </Grid>
+
+    <!-- Aviso rápido (fora do prompter) -->
+    <Border x:Name="Toast" Grid.RowSpan="6" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="0,0,0,110" Padding="14,8" c:Capsule.On="True" Background="#E6141416" Visibility="Collapsed" IsHitTestVisible="False" Panel.ZIndex="100">
+      <TextBlock x:Name="ToastText" Foreground="White" FontFamily="{StaticResource FNum}" FontSize="13" FontWeight="SemiBold"/>
+    </Border>
+  </Grid>
+</Window>

@@ -1,0 +1,35 @@
+ARCA Teleprompter 2.8.0 — novidades
+
+Atualização: roteiros, preferências e modelos de voz são mantidos.
+
+- Licença gratuita e vitalícia: crie sua conta no site e ative o app com o código que fica em Minha conta › Licenças. A ativação usa a internet uma vez; depois o app funciona offline.
+- Trocar de computador: em Minha conta › Licenças, "Remover deste computador" e ative no novo com o mesmo código (ou Ajuda › Licença › Desativar este computador).
+- Sem licença, o app funciona em modo demonstração: 10 minutos de prompter por dia, um roteiro e uma tela de prompter.
+- Instalação mais segura: se outro programa estiver usando um arquivo, o instalador espera, diz qual programa é e oferece "Tentar de novo"; se falhar, a instalação anterior volta inteira.
+
+Também nesta atualização (2.7.0):
+- Atualização automática: o app avisa quando há versão nova; "Atualizar agora" baixa e instala sozinho e reabre o app. "Lembrar depois" pergunta de novo na próxima vez.
+- Editor acompanha a janela ao maximizar e restaurar (antes não preenchia a tela cheia e o texto ficava enorme ao voltar).
+- Acelerar e frear sem tranco no talento, nas telas, no NDI e no navegador (antes só o editor ficava liso).
+- NDI sem quadros perdidos; NDI e navegador não recuam mais ao pausar.
+- Linha anterior/próxima desliza suave em todas as telas, inclusive no NDI.
+- Seletor de cor mais compacto.
+- Novo seletor de cor no visual do app (cores prontas, últimas usadas, HEX e RGB) — e uma bolinha colorida na barra de formatação para escolher qualquer cor para o texto.
+- A voz começa a ouvir mais rápido: o motor de voz é preparado ao abrir o app.
+- Nome do apresentador volta a ficar junto da própria fala (não mais colado no texto de cima).
+- Marcador e nome do apresentador seguem o alinhamento do texto em todas as telas (centralizado, à esquerda ou à direita).
+- Janela do talento com botões de minimizar e maximizar.
+- Barra de controle igual em todas as telas, inclusive na janela principal: parágrafo, linha, play, início, ré, − e + na mesma ordem.
+- Page Down (próximo marcador) e ] (próximo parágrafo) voltam a funcionar pelo teclado.
+- Todos os atalhos conferidos; a ré é só pela tecla R ou pelo botão — frear nunca vira ré.
+
+Também nas atualizações anteriores (2.4.0):
+- Voz: novo motor de reconhecimento "Whisper · preciso" (inspetor › Voz › Motor), que entende bem melhor microfones reais — sala com eco, ruído, voz longe do microfone. O "Vosk · rápido" continua disponível e é o padrão.
+- O modelo do Whisper é baixado na primeira vez (Base 57 MB, recomendado; Small 181 MB, mais preciso e mais lento).
+- O Whisper usa a placa de vídeo quando houver (Intel, AMD, NVIDIA); dá para desligar em "Usar a placa de vídeo".
+- Se o Whisper estiver lento no computador, o app avisa e sugere o modelo Base.
+- Barra de controle igual em todas as telas (talento, janelas de prompter e navegador), agora com ré e botões − e + de velocidade. Nas janelas de prompter ela aparece ao mexer o mouse.
+- Navegador: girar o texto (0°, 90°, 180°, 270°) e tela cheia sem bordas nesta tela ou em outro monitor (⚙ › Tela cheia; tecla F).
+- A seta não para mais em linha em branco.
+
+Histórico completo: docs\CHANGELOG.md na pasta do programa.

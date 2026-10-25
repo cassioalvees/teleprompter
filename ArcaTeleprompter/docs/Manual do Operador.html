@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manual do Operador — ARCA Teleprompter</title>
+<style>
+  :root { --bg:#f6f5f2; --ui:#ffffff; --text:#1d1c1a; --muted:#6b6862; --line:#e4e1da; --accent:#d4561f; --soft:#fbeee7; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#151514; --ui:#1e1e1c; --text:#ecebe8; --muted:#a29f98; --line:#33312d; --accent:#ff7a3d; --soft:#2b1f18; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 "Segoe UI", system-ui, sans-serif; }
+  header { background:var(--ui); border-bottom:1px solid var(--line); padding:28px 16px; }
+  header div, main { max-width:880px; margin:0 auto; }
+  h1 { margin:0; font-size:28px; letter-spacing:-.01em; } h1 span { color:var(--accent); }
+  header p { margin:4px 0 0; color:var(--muted); }
+  main { padding:8px 16px 64px; }
+  nav { background:var(--ui); border:1px solid var(--line); border-radius:10px; padding:12px 20px; margin:24px 0; columns:2; }
+  nav a { display:block; color:var(--text); text-decoration:none; padding:2px 0; } nav a:hover { color:var(--accent); }
+  h2 { margin:40px 0 8px; font-size:21px; padding-top:8px; border-top:1px solid var(--line); }
+  h3 { margin:20px 0 4px; font-size:16px; }
+  table { width:100%; border-collapse:collapse; background:var(--ui); border:1px solid var(--line); border-radius:8px; overflow:hidden; font-size:15px; }
+  th, td { text-align:left; padding:7px 12px; border-bottom:1px solid var(--line); vertical-align:top; } th { background:var(--soft); font-weight:600; }
+  kbd { font:13px Consolas, monospace; background:var(--ui); border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:1px 6px; white-space:nowrap; }
+  .tip { background:var(--soft); border-left:3px solid var(--accent); padding:10px 14px; border-radius:6px; margin:12px 0; }
+  ol li, ul li { margin:3px 0; }
+  @media (max-width:640px) { nav { columns:1; } h1 { font-size:23px; } table { font-size:14px; } }
+  @media print { nav { display:none; } h2 { break-after:avoid; } body { background:#fff; } }
+</style>
+</head>
+<body>
+<header><div><h1>ARCA <span>Teleprompter</span></h1><p>Manual do Operador — versão 2.0</p></div></header>
+<main>
+<nav>
+  <a href="#inicio">1. Primeiros passos</a>
+  <a href="#editor">2. Editor de roteiro</a>
+  <a href="#rodar">3. Rodar o prompter</a>
+  <a href="#leituras">4. Leituras e tempos</a>
+  <a href="#telas">5. Telas e espelhamento</a>
+  <a href="#talento">6. Modo talento</a>
+  <a href="#web">7. iPad, tablet e navegador</a>
+  <a href="#ndi">8. Saída NDI</a>
+  <a href="#voz">9. Acompanhamento por voz</a>
+  <a href="#mos">10. Redação (MOS) e legendas</a>
+  <a href="#atalhos">11. Atalhos</a>
+  <a href="#problemas">12. Solução de problemas</a>
+</nav>
+
+<h2 id="inicio">1. Primeiros passos</h2>
+<p>Na primeira execução (e depois de uma instalação nova) o ARCA abre limpo, com um roteiro vazio, <b>Sem título.tps</b>, e a tela de <b>boas-vindas</b> (também em Ajuda › Boas-vindas). Depois de uma atualização, a mesma tela mostra as novidades. Nas seguintes, ele restaura as abas da última sessão, inclusive alterações não salvas.</p>
+<p>Roteiros de exemplo ficam em <b>Documentos\ARCA Teleprompter\Exemplos</b>. Use <kbd>Ctrl</kbd>+<kbd>O</kbd> para abri-los.</p>
+<h3>Licença</h3>
+<p>O ARCA é gratuito com uma conta no site. Sem licença ele funciona em <b>modo demonstração</b>: 10 minutos de prompter por dia, um roteiro e uma tela de prompter (NDI, monitor web/iPad, voz, redação, câmera e impressão pedem a licença). Para ativar: crie sua conta no site, copie o código em <b>Minha conta › Licenças</b> e cole em <b>Ajuda › Licença</b> (ou na tela que aparece ao abrir). A ativação usa a internet uma vez; depois o app funciona offline. Cada licença fica ativa em um computador por vez: para trocar, use <b>Remover deste computador</b> em Minha conta › Licenças (ou Ajuda › Licença › Desativar este computador) e ative no novo com o mesmo código. A barra de status mostra a situação (Licenciado, ou os minutos de demonstração que restam hoje).</p>
+<h3>Atualizações</h3>
+<p>Ao abrir, o ARCA procura versão nova pela internet. Se houver, aparece <b>"ARCA Teleprompter X disponível"</b> com as novidades: <b>Atualizar agora</b> baixa a versão (com progresso e conferência do arquivo), fecha o app e instala sozinho, e o app reabre na versão nova. <b>Lembrar depois</b> pergunta de novo na próxima vez que o app abrir. O aviso nunca aparece com o prompt rodando ou a voz ligada. Roteiros, preferências e modelos de voz são mantidos. Para procurar na hora: Ajuda › Procurar atualizações; para desligar: Preferências › Geral.</p>
+<p>A janela tem quatro áreas: a <b>lista de marcadores</b> (esquerda), o <b>editor</b>, que já mostra o texto como no prompter (centro), o <b>inspetor</b> com Roteiro, Overlay, Telas, Voz e Vídeo (direita), e o <b>transporte</b> (embaixo), com a mesma barra de controle da janela do talento, das janelas de prompter e do navegador: parágrafo ↑, linha ↑, linha ↓, parágrafo ↓, play, início, ré, − velocidade +.</p>
+
+<h2 id="editor">2. Editor de roteiro</h2>
+<ul>
+  <li><b>Novo / abrir / salvar:</b> <kbd>Ctrl</kbd>+<kbd>N</kbd>, <kbd>Ctrl</kbd>+<kbd>O</kbd>, <kbd>Ctrl</kbd>+<kbd>S</kbd>. Cada roteiro abre numa aba. Um roteiro novo não herda marcadores do anterior.</li>
+  <li><b>Importar:</b> abra DOCX, PDF, RTF, HTML ou TXT diretamente. Negrito, itálico, sublinhado e cores são mantidos.</li>
+  <li><b>Marcador:</b> escreva <kbd>*Título</kbd> no começo de um parágrafo, ou use a barra de ferramentas. Dê dois cliques no marcador para renomear. Para reordenar blocos, arraste-os na lista lateral.</li>
+  <li><b>Pausa:</b> insira pela barra de ferramentas ou escreva <kbd>[PAUSA]</kbd> num texto importado. A rolagem para nesse ponto.</li>
+  <li><b>Apresentadores:</b> selecione o trecho (pode ser parte de um parágrafo — ele vira uma fala separada) e escolha o apresentador. O nome e a cor aparecem no prompter. No inspetor › Roteiro você pode destacar só um apresentador.</li>
+  <li><b>Pular trecho:</b> o trecho continua no roteiro mas não aparece no ar.</li>
+  <li><b>Versões:</b> o app guarda uma versão automática a cada 2 minutos de edição e ao fechar. Para restaurar, use Arquivo › Histórico de versões.</li>
+  <li><b>Bloquear editor</b> (<kbd>Ctrl</kbd>+<kbd>E</kbd>) evita edições acidentais durante o programa.</li>
+</ul>
+
+<h2 id="rodar">3. Rodar o prompter</h2>
+<ol>
+  <li>Posicione o texto (clique no editor ou use <kbd>Home</kbd>).</li>
+  <li>Pressione <kbd>Espaço</kbd>. Se a contagem regressiva estiver ligada, ela aparece antes da rolagem.</li>
+  <li>Ajuste a velocidade com <kbd>↓</kbd>/<kbd>↑</kbd>, <kbd>W</kbd>/<kbd>S</kbd> ou a roda do mouse. Continuar reduzindo abaixo de zero inverte a direção.</li>
+  <li>Para navegar, use <kbd>Page Down</kbd>/<kbd>Page Up</kbd> entre marcadores, <kbd>]</kbd>/<kbd>[</kbd> entre parágrafos e <kbd>Ctrl</kbd>+<kbd>1…9</kbd> para ir a um marcador.</li>
+  <li>Pausado, <kbd>↓</kbd>/<kbd>↑</kbd> movem linha a linha. A seta só para em linhas de texto: título de marcador, nome do apresentador e aviso de pausa são pulados. Ir a um marcador também leva à primeira linha de texto do bloco.</li>
+</ol>
+<div class="tip">A <b>linha de leitura</b> (inspetor › Roteiro) define a altura em que o apresentador lê. A seta e o overlay ficam alinhados a ela.</div>
+
+<h2 id="leituras">4. Leituras e tempos</h2>
+<table>
+  <tr><th>Leitura</th><th>Significado</th></tr>
+  <tr><td>Posição / Restante</td><td>Tempo lido até aqui ou o que falta, na velocidade atual. Clique para alternar.</td></tr>
+  <tr><td>Duração</td><td>Tempo total do roteiro na velocidade atual.</td></tr>
+  <tr><td>Relógio</td><td>Hora atual.</td></tr>
+  <tr><td>Fim previsto</td><td>Hora em que o roteiro termina se a rolagem continuar. Só é calculado <b>durante a rolagem</b>; parado aparece <b>--:--:--</b>.</td></tr>
+  <tr><td>Linha</td><td>Linha atual / total de linhas.</td></tr>
+</table>
+<p>Para terminar no tempo do programa, informe a <b>duração-alvo</b> no inspetor › Roteiro. O app calcula a velocidade necessária.</p>
+
+<h2 id="telas">5. Telas e espelhamento</h2>
+<p><b>Informações na tela</b> (inspetor › Telas): escolha o que aparece para o apresentador — bloco atual, tempo do bloco e relógio — e se fica embaixo ou em cima. O aviso de velocidade aparece só para o operador.</p>
+<p>No inspetor › Telas, ligue cada monitor. Monitores externos já vêm <b>espelhados na horizontal</b>, como num prompter com vidro. A tela do operador pede confirmação antes de ficar em tela cheia. Use <i>Janela</i> para uma saída redimensionável.</p>
+
+<h2 id="talento">6. Modo talento</h2>
+<p><kbd>F5</kbd> abre a <b>janela do talento</b> — uma janela separada (o editor continua aberto) que pode ir para outro monitor; <kbd>F11</kbd> ou o botão da barra a colocam em tela cheia. Ela mostra a visão do apresentador, com uma barra de controle (parágrafo, linha, play, voltar, velocidade). <kbd>E</kbd> edita o trecho atual sem sair do modo; <kbd>Enter</kbd> confirma e <kbd>Esc</kbd> cancela. <kbd>F5</kbd> ou <kbd>Esc</kbd> volta ao editor.</p>
+
+<h2 id="web">7. iPad, tablet e navegador</h2>
+<ol>
+  <li>No inspetor › Telas, ligue <b>Monitor web</b> e abra <i>Monitor web…</i> para ver o QR code e os endereços.</li>
+  <li>No iPad (mesma rede), leia o QR code. O endereço <b>https://…:8421</b> permite instalar como app.</li>
+  <li>Na primeira vez, baixe o certificado no link indicado na página e instale-o em Ajustes › Geral › VPN e Gerenciamento de Dispositivos. Depois ative-o em Ajustes › Geral › Sobre › Ajustes de Confiança de Certificados.</li>
+  <li>No Safari, toque em Compartilhar › <b>Adicionar à Tela de Início</b>. O prompter abre em tela cheia e a tela fica acesa.</li>
+  <li><b>Girar o texto</b> (monitor de pé ou invertido): ⚙ › Tela › Girar o texto — ou acrescente <code>?girar=90</code> ao endereço.</li>
+  <li><b>Tela cheia sem bordas</b> (como o F11): ⚙ › Tela cheia › <i>Nesta tela</i> ou <i>Outro monitor…</i> (Chrome ou Edge; o navegador pede permissão para "gerenciar janelas"). A tecla <kbd>F</kbd> liga e desliga.</li>
+  <li>Para <b>OBS ou vMix</b>, use o endereço com <code>?obs</code> (ex.: <code>http://IP:8420/?obs</code>): só o texto, sem barra nem controles; acrescente <code>&amp;fundo=transparente</code> para sobrepor ao vídeo.</li>
+  <li>No menu ⚙ da página escolha o modo:
+    <ul><li><b>Limpo</b> mostra só o texto, sem contadores. É o modo para o vidro do prompter.</li>
+        <li><b>Controle</b> mostra a barra igual à do talento. Ela só comanda o app se o operador liberar <i>Controle remoto</i>.</li></ul></li>
+  <li>Espelhamento horizontal e vertical, HUD e senha são guardados em cada aparelho.</li>
+</ol>
+<div class="tip">Em redes compartilhadas, defina uma <b>senha</b> e mantenha o controle remoto desligado quando não precisar dele.</div>
+
+<h2 id="ndi">8. Saída NDI</h2>
+<p>Instale o <b>NDI Runtime 6</b> (há um link no app). No inspetor › Telas › NDI, escolha o formato (1080p 29,97/59,94/25 ou 720p) e o fundo: opaco, ou transparente para sobrepor ao vídeo. A fonte aparece no mixer como <b>MÁQUINA (ARCA Teleprompter)</b>. O app mostra quantos receptores estão conectados e o tally.</p>
+
+<h2 id="voz">9. Acompanhamento por voz</h2>
+<ol>
+  <li>No inspetor › Voz, escolha a entrada:
+    <ul><li><b>WASAPI</b> para microfones e placas comuns.</li>
+        <li><b>ASIO</b> para interfaces profissionais. Escolha o <b>canal</b> do microfone do apresentador.</li></ul></li>
+  <li>Confira o medidor de nível. O modelo de voz pt-BR já vem instalado; outros idiomas podem ser baixados.</li>
+  <li>Escolha o <b>Motor</b>: <b>Vosk · rápido</b> (leve, já instalado) ou <b>Whisper · preciso</b>, que entende bem melhor microfones reais — sala com eco, ruído, apresentador longe do microfone. Na primeira vez, clique em <b>Baixar modelo</b> (Base, 57 MB, recomendado; Small, 181 MB, um pouco mais preciso em áudio muito ruim, porém mais lento). O Whisper usa a placa de vídeo quando houver; se der erro, desligue <b>Usar a placa de vídeo</b>.</li>
+  <li>Clique em <b>Usar microfone</b>. A rolagem acompanha a fala e mantém a palavra dita na linha de leitura.</li>
+  <li>Se o apresentador improvisar, a rolagem para e aparece <b>IMPROVISO</b>. Quando ele volta ao texto, o app ressincroniza sozinho.</li>
+  <li>A rolagem é contínua: o texto sobe conforme a linha vai sendo lida, e no fim de um parágrafo o próximo já chega à seta. Em <b>Sensibilidade › Antecipação</b> você controla quanto o texto se adianta (1 = a linha lida fica uma linha acima da seta).</li>
+  <li><b>Suavidade</b> controla o tempo para o texto alcançar a palavra dita; <b>Exigência</b>, o quanto a palavra precisa parecer com a do roteiro (menor aceita pronúncias diferentes; maior evita saltos). O texto só anda para a frente: palavras repetidas não o fazem subir e descer.</li>
+  <li><b>Comandos falados</b>: diga "comando voltar" (parágrafo anterior), "comando próximo", "comando início" ou "comando parar".</li>
+  <li>Para voltar a um trecho com a voz ligada, role o texto, use um marcador ou volte ao início: o acompanhamento recomeça dali.</li>
+  <li><b>Volume</b> ajusta a entrada do microfone; o <b>ganho automático</b> pode ser desligado se a mesa já entrega nível certo.</li>
+  <li>O motor de voz é preparado ao abrir o app, então a voz começa a ouvir logo ao ligar. A tecla <kbd>V</kbd> liga e desliga a voz (também como atalho global e pelo controle web).</li>
+  <li>O app ajusta sozinho o volume do microfone (ganho automático) e atenua o ruído de fundo. O <b>limiar</b> no medidor só precisa ser mexido em ambientes muito barulhentos.</li>
+</ol>
+<p>Se o reconhecimento estiver ruim, use <b>Gravar diagnóstico do microfone (15 s)</b> lendo o roteiro em voz alta: o áudio fica nos registros (Ajuda › Registro de eventos) para análise. No notebook, o app usa automaticamente o canal do microfone com mais voz.</p>
+<p>Para ensaiar sem microfone, use <b>Simular</b> ou <b>Arquivo</b> (WAV/MP3). O áudio é processado só neste computador.</p>
+
+<h2 id="mos">10. Redação (MOS) e legendas</h2>
+<p>Em Preferências › Integrações, ligue o <b>MOS</b> (portas 10540/10541) e cadastre o ARCA no sistema de redação como dispositivo de prompter. Os espelhos recebidos aparecem na lista; aplique um ao roteiro ativo.</p>
+<p>A <b>legenda</b> envia a linha atual para o vMix (função SetText) ou para um servidor TCP enquanto o texto rola.</p>
+
+<h2 id="atalhos">11. Atalhos</h2>
+<table>
+  <tr><th>Ação</th><th>Tecla</th></tr>
+  <tr><td>Play / pausa</td><td><kbd>Espaço</kbd></td></tr>
+  <tr><td>Mais rápido / mais devagar (pausado: linha)</td><td><kbd>↓</kbd> / <kbd>↑</kbd>, <kbd>W</kbd> / <kbd>S</kbd></td></tr>
+  <tr><td>Velocidade predefinida 1…9</td><td><kbd>1</kbd> … <kbd>9</kbd></td></tr>
+  <tr><td>Inverter direção (ré) · parar — frear nunca vira ré</td><td><kbd>R</kbd> · <kbd>0</kbd></td></tr>
+  <tr><td>Voltar ao início</td><td><kbd>Home</kbd> ou <kbd>Backspace</kbd></td></tr>
+  <tr><td>Início · fim</td><td><kbd>Home</kbd> · <kbd>End</kbd></td></tr>
+  <tr><td>Marcador seguinte / anterior</td><td><kbd>Page Down</kbd> / <kbd>Page Up</kbd></td></tr>
+  <tr><td>Parágrafo seguinte / anterior</td><td><kbd>]</kbd> / <kbd>[</kbd></td></tr>
+  <tr><td>Ir ao marcador 1…9</td><td><kbd>Ctrl</kbd>+<kbd>1…9</kbd></td></tr>
+  <tr><td>Editar trecho atual · espelhar</td><td><kbd>E</kbd> · <kbd>M</kbd></td></tr>
+  <tr><td>Ligar / desligar a voz (microfone)</td><td><kbd>V</kbd></td></tr>
+  <tr><td>Modo talento · tela cheia</td><td><kbd>F5</kbd> · <kbd>F11</kbd></td></tr>
+  <tr><td>Novo · abrir · salvar · salvar como</td><td><kbd>Ctrl</kbd>+<kbd>N</kbd> · <kbd>Ctrl</kbd>+<kbd>O</kbd> · <kbd>Ctrl</kbd>+<kbd>S</kbd> · <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd></td></tr>
+  <tr><td>Localizar e substituir · bloquear editor</td><td><kbd>Ctrl</kbd>+<kbd>F</kbd> · <kbd>Ctrl</kbd>+<kbd>E</kbd></td></tr>
+  <tr><td>Imprimir · exportar PDF · preferências</td><td><kbd>Ctrl</kbd>+<kbd>P</kbd> · <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> · <kbd>Ctrl</kbd>+<kbd>,</kbd></td></tr>
+  <tr><td>Palavras por linha</td><td><kbd>Ctrl</kbd>+roda do mouse</td></tr>
+  <tr><td>Rolar o texto (parado) · velocidade (rodando)</td><td>roda do mouse ou trackpad — sensibilidade e sentido em Preferências › Geral</td></tr>
+</table>
+<p>Todos os atalhos do prompter podem ser trocados em Preferências › Atalhos. Os <b>atalhos globais</b> funcionam mesmo com outra janela em foco.</p>
+<h3>Automação (Stream Deck, scripts)</h3>
+<p>Com o app aberto, rodar <code>ArcaTeleprompter.exe --cmd=play</code> envia um comando à janela aberta. Comandos: play, pause, togglePlay, faster, slower, reverse, rewind, toEnd, nextBm, prevBm, nextPara, prevPara, lineUp, lineDown, <code>gotoBm:N</code>, <code>speed:0.5</code>. <code>--talent</code> abre/fecha o modo talento e <code>--snap=arquivo.png</code> salva uma imagem da janela (útil para suporte).</p>
+
+<h2 id="problemas">12. Solução de problemas</h2>
+<table>
+  <tr><th>Sintoma</th><th>O que fazer</th></tr>
+  <tr><td>O iPad não abre a página</td><td>Confirme que está na mesma rede e libere as portas 8420/8421 no firewall. O instalador cria essa regra quando instalado para todos os usuários.</td></tr>
+  <tr><td>"Adicionar à Tela de Início" abre só o site</td><td>Use o endereço https e instale e ative o certificado (seção 7).</td></tr>
+  <tr><td>NDI indisponível</td><td>Instale o NDI Runtime 6 e reinicie o app.</td></tr>
+  <tr><td>A voz não acompanha</td><td>Confira o nível no medidor, o canal ASIO e se o texto do roteiro corresponde ao que está sendo lido. Se o nível está bom e mesmo assim as palavras não aparecem, troque o motor para <b>Whisper · preciso</b>.</td></tr>
+  <tr><td>Algo estranho aconteceu</td><td>Veja Ajuda › Registro de eventos. Os arquivos ficam em %LOCALAPPDATA%\ARCA Teleprompter\logs.</td></tr>
+</table>
+</main>
+</body>
+</html>
