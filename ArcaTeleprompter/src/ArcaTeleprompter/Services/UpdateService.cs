@@ -54,7 +54,9 @@ public sealed class UpdateService
         var info = JsonSerializer.Deserialize<UpdateInfo>(await resp.Content.ReadAsStringAsync(ct));
         if (info == null || !System.Version.TryParse(info.Version, out _) || string.IsNullOrWhiteSpace(info.Url) || info.Sha256.Length != 64) return null;
         // O GitHub redireciona "latest/download" para a versão: endereços relativos valem a partir do endereço final.
-        var baseUri = resp.RequestMessage?.RequestUri ?? new Uri(Url);
+        // Nome relativo: monta a partir do endereço ORIGINAL do latest.json. O endereço final do redirecionamento
+        // do GitHub é temporário e assinado (?jwt=…); montar a partir dele perdia a assinatura (erro 618).
+        var baseUri = new Uri(Url);
         info.DownloadUri = new Uri(baseUri, info.Url);
         return info;
     }

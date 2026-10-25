@@ -3,6 +3,11 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [Não publicado]
+
+### Corrigido
+- **Atualização falhava no download com "Response status code does not indicate success: 618 (jwt:jwt-not-provided)"**: o GitHub entrega o latest.json por um endereço temporário assinado, e o app montava o endereço do instalador a partir dele, perdendo a assinatura. Agora monta a partir do endereço original. Para as versões já instaladas, `publish-release.ps1` passou a publicar o latest.json com o endereço completo do instalador (corrigido também na v2.8.1 já publicada, com `-SoLatestJson`).
+
 ## [2.8.1] — 2026-10-24
 
 Correções que chegaram depois das primeiras cópias da 2.8.0 — com número novo para a atualização automática entregar a quem já tem a 2.8.0.

@@ -3,7 +3,8 @@
 #   2. $env:GITHUB_TOKEN = "<token>"    → token do GitHub com permissão "Contents: Read and write" neste repositório
 #   3. .\publish-release.ps1            → cria a versão v<versão> e anexa o instalador e o latest.json
 # O app consulta https://github.com/cassioalvees/teleprompter/releases/latest/download/latest.json ao abrir.
-param([string]$Repo = "cassioalvees/teleprompter", [switch]$Draft)
+#   -SoLatestJson                      → só reenvia o latest.json (corrigir uma versão já publicada)
+param([string]$Repo = "cassioalvees/teleprompter", [switch]$Draft, [switch]$SoLatestJson)
 $ErrorActionPreference = "Stop"
 $root = $PSScriptRoot
 $version = ([xml](Get-Content "$root\Directory.Build.props")).Project.PropertyGroup.Version | Where-Object { $_ } | Select-Object -First 1
@@ -35,7 +36,13 @@ function Upload($file, $name, $type) {
   Write-Host ("Enviando {0} ({1:N0} MB)…" -f $name, ((Get-Item $file).Length / 1MB))
   Invoke-RestMethod -Method Post -Headers $h -ContentType $type -InFile $file "https://uploads.github.com/repos/$Repo/releases/$($rel.id)/assets?name=$name" | Out-Null
 }
-Upload $setup $info.file "application/octet-stream"
-Upload $latest "latest.json" "application/json"
+if (-not $SoLatestJson) { Upload $setup $info.file "application/octet-stream" }
+# No GitHub, o latest.json leva o endereço COMPLETO do instalador: o app baixa o latest.json por um endereço
+# temporário assinado (release-assets…?jwt=…) e, com um nome relativo, montava o endereço sem a assinatura (erro 618).
+$info.url = "https://github.com/$Repo/releases/download/$tag/$($info.file)"
+$pub = Join-Path ([IO.Path]::GetTempPath()) "latest.json"
+[IO.File]::WriteAllText($pub, ($info | ConvertTo-Json), (New-Object Text.UTF8Encoding $false))
+Upload $pub "latest.json" "application/json"
+Remove-Item $pub
 Write-Host "`nPronto: $($rel.html_url)" -ForegroundColor Green
 Write-Host "O app encontra esta versão em: https://github.com/$Repo/releases/latest/download/latest.json"
