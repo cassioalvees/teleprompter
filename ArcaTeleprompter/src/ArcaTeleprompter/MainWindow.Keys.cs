@@ -120,7 +120,16 @@ public partial class MainWindow
         }
     }
 
-    private void Nudge(double dy) { Engine.Nudge(dy); Vm.Follow = true; _forceSync = true; }
+    /// <summary>
+    /// Rolagem vinda do monitor web (dedo no iPad, roda do mouse no navegador). Parado: desliza pela mesma mola da roda
+    /// do mouse — o arrasto chega aos poucos (a cada ~40 ms) e o app, as telas e o NDI acompanham o dedo sem pular.
+    /// </summary>
+    private void Nudge(double dy)
+    {
+        if (Engine.Live) Engine.Nudge(dy);
+        else _scrollTarget = Math.Clamp((_scrollTarget ?? Engine.Y) + dy, 0, Math.Max(0, Engine.EndY));
+        Vm.Follow = true; _forceSync = true;
+    }
 
     /// <summary>
     /// Linha anterior/próxima: a linha de leitura cai exatamente sobre uma linha de <b>texto</b> — título de

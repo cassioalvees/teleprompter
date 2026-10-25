@@ -3,6 +3,11 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.8.6] — 2026-10-25
+
+### Corrigido
+- **Arrastar o texto no iPad (parado): o NDI, as telas e o app só mexiam ao soltar o dedo**, e pulavam de uma vez ("como se fosse quadro"). O monitor web mandava o arrasto inteiro ao app só no fim. Agora manda aos poucos (a cada ~40 ms) enquanto o dedo anda, e o app aplica pela mesma mola suave da roda do mouse: app, telas e NDI deslizam junto com o dedo. A tela do próprio iPad segue o dedo na hora e, ao soltar, espera o app terminar de deslizar (~0,45 s) em vez de recuar. A roda do mouse no navegador também passou a deslizar no app em vez de pular. Cache do app web v14.
+
 ## [2.8.5] — 2026-10-25
 
 ### Alterado

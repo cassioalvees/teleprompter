@@ -17,6 +17,7 @@ let state = null;           // PrompterSnapshot
 // Usar o deslocamento (e não uma fração) mantém a linha de leitura sobre uma linha do texto mesmo que a
 // altura total do parágrafo varie um pouco entre o app e o navegador.
 let feed = { y: 0, v: 0, b: -1, o: 0, at: performance.now() };
+let dragHoldUntil = 0;
 let clockOff = null;          // performance.now() − relógio do servidor (atraso mínimo)
 let shown = null, lastFrame = performance.now(), localV = 0;
 let ws = null, authed = false, retry = 0;
@@ -55,6 +56,9 @@ function onMessage(m) {
       clockOff = clockOff === null || est < clockOff ? est : clockOff + (est - clockOff) * 0.002;
       at = m.ts + clockOff;
     }
+    // Logo depois de soltar o dedo o app ainda está deslizando até o ponto (mola de ~0,3 s): esta tela fica onde o dedo
+    // soltou em vez de voltar um pouco atrás com ele. Arrastando, as posições do app também não mexem nesta tela.
+    if (now < dragHoldUntil || (touch && touch.moved && !touch.live)) return;
     feed = { y: m.y, v: m.v || 0, b: m.b ?? -1, o: m.o || 0, f: m.f ?? -1, bh: m.bh || 0, at };
     return;
   }
@@ -129,6 +133,11 @@ function measure() {
   layoutDirty = false;
 }
 function currentY() {
+  // Arrastando parado: esta tela segue o dedo a partir de onde o texto estava ao tocar.
+  if (touch && touch.moved && !touch.live && touch.base != null) {
+    const last = tops[tops.length - 1], end = last ? last.top + last.h : 1e9;
+    return Math.max(0, Math.min(end, touch.base + dragY));
+  }
   const dt = Math.min(0.25, (performance.now() - feed.at) / 1000);
   let y = feed.y, v = feed.v;
   if (feed.b >= 0) {
@@ -225,8 +234,18 @@ document.addEventListener('webkitfullscreenchange', poke);
 stage.addEventListener('pointerdown', e => {
   if (e.pointerType === 'mouse') showCtrl(); else poke();
   if (!prefs.swipe || !state || !state.webCtrl) return;
-  touch = { y: along(e), k: stage.clientWidth / 1000, moved: false, live: !!state.live, acc: 0 };
+  // base: onde o texto estava ao tocar — durante o arrasto esta tela segue só o dedo (as posições que chegam do app
+  // ficam para trás do dedo); sent: quanto do arrasto já foi mandado ao app.
+  touch = { y: along(e), k: stage.clientWidth / 1000, moved: false, live: !!state.live, acc: 0, base: currentY(), sent: 0, sentAt: 0 };
 });
+// Parado: manda o arrasto ao app aos poucos (a cada ~40 ms) — o app, as outras telas e o NDI deslizam junto com o
+// dedo. Antes ia tudo de uma vez ao soltar, e as outras telas ficavam paradas e pulavam no fim.
+function sendDrag(force) {
+  if (!touch || touch.live) return;
+  const now = performance.now(), d = dragY - touch.sent;
+  if (Math.abs(d) < 0.5 || (!force && now - touch.sentAt < 40)) return;
+  cmd('nudge', d); touch.sent += d; touch.sentAt = now;
+}
 addEventListener('pointermove', e => {
   if (!touch) return;
   const dy = (along(e) - touch.y) / touch.k * (prefs.flipV ? -1 : 1);
@@ -236,7 +255,7 @@ addEventListener('pointermove', e => {
     // Rodando: arrastar para cima acelera, para baixo freia (um passo a cada ~40 px).
     const steps = Math.trunc((touch.y - along(e)) / 40) - touch.acc;
     if (steps) { touch.acc += steps; for (let i = 0; i < Math.abs(steps); i++) cmd(steps > 0 ? 'faster' : 'slower'); }
-  } else dragY = -dy;
+  } else { dragY = -dy; sendDrag(false); }
 });
 // Roda do mouse / trackpad: rodando muda a velocidade; parado rola o texto.
 let wheelAcc = 0;
@@ -250,9 +269,10 @@ addEventListener('wheel', e => {
 }, { passive: false });
 addEventListener('pointerup', () => {
   if (touch && touch.moved && dragY && !touch.live) {
-    // Mantém o texto onde o dedo soltou até o app confirmar a nova posição.
-    const y = currentY(); cmd('nudge', dragY);
+    // Manda o resto do arrasto e mantém o texto onde o dedo soltou até o app confirmar a nova posição.
+    const y = currentY(); sendDrag(true);
     feed = { y, v: 0, b: -1, o: 0, at: performance.now() };
+    dragHoldUntil = performance.now() + 450;
   }
   dragY = 0; touch = null;
 });

@@ -61,6 +61,18 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.8.6) — arrastar pelo iPad com o NDI acompanhando
+
+App licenciado com NDI ligado (nome próprio "ARCA-TESTE-ARRASTO") e monitor web na porta 8430; arrasto de dedo simulado no navegador (toque, parado): 3 s subindo ~130 px/s, ~60 movimentos por segundo. Receptor NDI independente (`tools/NdiProbe --movimento 300`), 300 quadros a 30 qps:
+
+| Janela | NDI |
+|---|---|
+| 5,0–7,5 s (durante o arrasto) | 238–248 px/s em todas as meias-janelas; 0 quadros parados |
+| fim | 195 px/s → 4 px/s: para junto com o dedo, sem salto |
+| total | 3,3 s em movimento, 735 px; 0 quadros para trás; maior salto de velocidade entre quadros 60 px/s; tremor p95 0,74 px |
+
+Antes: o app só recebia o arrasto ao soltar o dedo (um único "nudge"), e o NDI ficava parado e pulava de uma vez. Não medido: a tela do próprio iPad (o painel do navegador de testes estava escondido e não desenhava); não testado num iPad físico.
+
 ## Resultados (versão 2.8.5) — tela cheia no iPad
 
 Regra que reconhece iPad/iPhone conferida com os textos reais dos navegadores: iPad com iPadOS 17 (que se apresenta como Mac, com toque), iPad antigo e iPhone → iPad/iPhone; Mac de verdade, Windows/Chrome e Android → outro. No monitor web (porta de teste 8430, 820×1180): no computador, botão de tela cheia e "Outro monitor…" continuam; no modo iPad, "Outro monitor…" some e aparece o texto da Tela de Início; aberto como app, o botão de tela cheia some; o aviso "Tela cheia no iPad" abre com os 3 passos. Não testado num iPad físico.
