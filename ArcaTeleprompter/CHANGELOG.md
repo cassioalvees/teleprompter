@@ -14,6 +14,9 @@ Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); 
 
 ### Corrigido
 - **Instalação falhava com "The process cannot access the file because it is being used by another process"** (relatado em `WinRT.Runtime.dll`, em Arquivos de Programas): quando outro programa segura um arquivo da pasta por um instante (antivírus, indexador, o app terminando de fechar), o instalador agora espera e tenta de novo por até ~10 s. Se continuar preso, diz **qual programa** está com o arquivo e oferece **Tentar de novo**.
+- **Monitor web: a barra de cima não sumia em tela cheia** com o mouse parado em cima dela — ao começar a sumir, o navegador mandava um movimento "falso" do mouse (mesma posição), que a mostrava de novo. Agora só movimento de verdade mostra a barra; ao entrar ou sair da tela cheia ela volta a contar para sumir.
+- **Monitor web: rolagem dos Ajustes** com a barra branca do navegador e o título rolando junto. Agora o título fica fixo e a barra de rolagem é fina, no visual do app (cache do app web v11).
+- **Diálogos cortavam botões**: com três botões longos (ex.: Licença › Fechar · Minha conta · Desativar este computador) o primeiro ficava para fora. A janela agora cresce para caber todos.
 - **"As alterações foram desfeitas" não era verdade numa reinstalação ou atualização**: os arquivos já sobrescritos ficavam na versão nova. Agora cada arquivo existente é guardado antes de ser trocado; se algo falhar, a pasta volta exatamente como estava, e os novos são apagados.
 
 ### Alterado

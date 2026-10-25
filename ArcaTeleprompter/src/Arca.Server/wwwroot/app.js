@@ -203,8 +203,17 @@ function poke() {
   body.classList.remove('hidebar', 'idle'); clearTimeout(idleT);
   idleT = setTimeout(() => { body.classList.add('idle', 'hidebar'); }, prefs.mode === 'limpa' ? 1500 : 4000);
 }
-let lastMove = 0;
-addEventListener('mousemove', () => { const n = performance.now(); if (n - lastMove > 120) { lastMove = n; poke(); } });
+// Só movimento de verdade: quando a barra some debaixo de um cursor parado, o navegador manda um mousemove
+// "falso" (mesma posição), que mostrava a barra de novo — em tela cheia ela nunca sumia.
+let lastMove = 0, lastX = -1, lastY = -1;
+addEventListener('mousemove', e => {
+  if (e.screenX === lastX && e.screenY === lastY) return;
+  lastX = e.screenX; lastY = e.screenY;
+  const n = performance.now(); if (n - lastMove > 120) { lastMove = n; poke(); }
+});
+// Ao entrar ou sair da tela cheia, a barra começa a contar para sumir de novo.
+document.addEventListener('fullscreenchange', poke);
+document.addEventListener('webkitfullscreenchange', poke);
 stage.addEventListener('pointerdown', e => {
   poke();
   if (!prefs.swipe || !state || !state.webCtrl) return;

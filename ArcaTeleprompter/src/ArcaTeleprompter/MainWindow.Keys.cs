@@ -189,6 +189,7 @@ public partial class MainWindow
             case "voice": DoAction("voice"); break;
             case "newWindow": Outputs.AddWindow(); break;   // só pela linha de comando (o monitor web não envia este)
             case "ndi": ToggleNdi(); break;   // idem
+            case "licenca": _ = ShowLicense(); break;   // idem (testes da tela de licença)
             case "gotoBm": if (value is { } i) JumpBookmark((int)i); break;
             default: DoAction(name); break;
         }

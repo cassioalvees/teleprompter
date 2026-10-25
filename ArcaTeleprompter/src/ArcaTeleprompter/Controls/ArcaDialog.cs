@@ -59,6 +59,10 @@ public sealed class ArcaDialog : Window
         };
         card.MouseLeftButtonDown += (_, e) => { if (e.OriginalSource is not TextBox) try { DragMove(); } catch { } };
         Content = card;
+        // Botões nunca cortados: se não couberem na largura padrão, a janela cresce (até 90% da tela).
+        bar.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+        var need = Math.Ceiling(bar.DesiredSize.Width + sp.Margin.Left + sp.Margin.Right + card.Margin.Left + card.Margin.Right + 2);
+        if (need > Width) Width = Math.Min(need, SystemParameters.WorkArea.Width * 0.9);
         PreviewKeyDown += (_, e) => { if (e.Key == Key.Escape) { _result = _cancel; Close(); e.Handled = true; } };
         Loaded += (_, _) => (extra as Control ?? (bar.Children[primary] as Control))?.Focus();
     }

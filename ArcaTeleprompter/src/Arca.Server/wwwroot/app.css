@@ -104,7 +104,13 @@ body.readonly .ctrl button,body.readonly .ctrl input{opacity:.35;pointer-events:
 /* ——— Diálogos ——— */
 dialog{border:none;padding:0;border-radius:14px;background:var(--ui);color:var(--text);width:min(460px,calc(100vw - 24px));box-shadow:0 18px 50px rgba(0,0,0,.6)}
 dialog::backdrop{background:rgba(0,0,0,.45)}
-dialog header{display:flex;align-items:center;justify-content:space-between;height:46px;padding:0 6px 0 16px;border-bottom:1px solid var(--border)}
+/* Conteúdo rola dentro do cartão (título fixo), com barra de rolagem fina no visual do app. */
+dialog{max-height:calc(100dvh - 24px);overflow:hidden}
+dialog form{max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;scrollbar-width:thin;scrollbar-color:var(--faint) transparent}
+dialog form::-webkit-scrollbar{width:10px}
+dialog form::-webkit-scrollbar-track{background:transparent}
+dialog form::-webkit-scrollbar-thumb{background:var(--faint);border-radius:10px;border:3px solid var(--ui)}
+dialog header{position:sticky;top:0;z-index:1;background:var(--ui);display:flex;align-items:center;justify-content:space-between;height:46px;padding:0 6px 0 16px;border-bottom:1px solid var(--border)}
 dialog section{display:flex;flex-direction:column;gap:12px;padding:14px 16px}
 .eyebrow{font-family:var(--f-num);font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--faint)}
 .ck{display:flex;align-items:center;gap:10px;min-height:28px;line-height:1.35}

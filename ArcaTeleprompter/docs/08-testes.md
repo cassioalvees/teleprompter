@@ -69,7 +69,9 @@ Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-v
 
 **Instalador** (`tools/SetupTest`, 452 arquivos): arquivo preso por outro processo o tempo todo → espera 11 s, falha com "O arquivo WinRT.Runtime.dll está aberto em: Windows PowerShell…" e a pasta volta idêntica (SHA-256 de todos os arquivos, sem sobras); preso por 2 s → instala depois de esperar, arquivo novo no lugar, sem sobras.
 
-**No servidor publicado** (https://arca-licencas.cassiosantos-csa.workers.dev, 24/10): as mesmas 31 verificações, todas OK; segredos conferidos como `secret_text`; o app (sem endereço de teste) ativou com `--ativar`, a conta mostrou WORKSTATION01 · 2.8.0, e depois de **Remover deste computador** o app aberto de novo apagou a licença. Contas de teste apagadas do banco depois.
+**No servidor publicado** (https://arca-licencas.cassiosantos-csa.workers.dev, 24/10): as mesmas 31 verificações, todas OK; segredos conferidos como `secret_text`; o app (sem endereço de teste) ativou com `--ativar`, a conta mostrou WORKSTATION01 · 2.8.0, e depois de **Remover deste computador** o app aberto de novo apagou a licença. Contas de teste apagadas do banco depois. Tela Ajuda › Licença já ativada (`--cmd=licenca`): os três botões cabem (janela 487 px; antes, 460 px cortava o "Fechar").
+
+**Monitor web** (app licenciado, porta de teste 8430): 6 s de mousemove na mesma posição (o que o navegador manda quando a barra some debaixo do cursor) → a barra some mesmo assim; movimento de verdade → volta. Ajustes numa janela de 560 px de altura: título fixo, conteúdo rola com barra fina.
 
 Não testado aqui: o download automático depois de criar a conta (sem versão publicada no GitHub, a página só mostra "Conta criada").
 

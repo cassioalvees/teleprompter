@@ -1,6 +1,6 @@
 // Service worker: guarda a "casca" do app para abrir instantaneamente (e mostrar "Reconectando…"
 // sem rede). O conteúdo do roteiro sempre vem ao vivo pelo WebSocket.
-const CACHE = 'arca-web-v10';
+const CACHE = 'arca-web-v11';
 const SHELL = ['./', 'index.html', 'app.css', 'app.js', 'manifest.webmanifest', 'icons/apple-touch-icon.png', 'icons/icon-512.png', 'icons/icon.svg',
   'fonts/AtkinsonHyperlegible-400.ttf', 'fonts/AtkinsonHyperlegible-700.ttf', 'fonts/Sora-400.ttf', 'fonts/Sora-600.ttf', 'fonts/Raleway-500.ttf', 'fonts/Raleway-600.ttf'];
 
