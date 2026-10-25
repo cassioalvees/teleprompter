@@ -18,7 +18,8 @@ if (-not $env:GITHUB_TOKEN) { throw "Defina `$env:GITHUB_TOKEN com um token do G
 
 $h = @{ Authorization = "Bearer $env:GITHUB_TOKEN"; Accept = "application/vnd.github+json"; "X-GitHub-Api-Version" = "2022-11-28" }
 $tag = "v$version"
-$notes = (Get-Content "$root\docs\NOVIDADES.txt" -Raw -Encoding UTF8)
+# Texto puro: no Windows PowerShell, Get-Content -Raw traz propriedades extras (PSPath…) que o ConvertTo-Json enviaria junto.
+$notes = [IO.File]::ReadAllText("$root\docs\NOVIDADES.txt", [Text.Encoding]::UTF8)
 Write-Host "Publicando ARCA Teleprompter $version em $Repo ($tag)…" -ForegroundColor Yellow
 
 try { $rel = Invoke-RestMethod -Headers $h "https://api.github.com/repos/$Repo/releases/tags/$tag" }
