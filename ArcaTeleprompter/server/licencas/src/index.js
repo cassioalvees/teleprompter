@@ -169,8 +169,9 @@ async function account(req, env, url, ip) {
   // Remover a licença do computador atual: o código fica livre para ativar em outro.
   if (url.pathname === '/api/account/release') {
     const code = fmtCode(normCode(b.code) || 'XXXXXXXXXXXX');
-    const lic = await env.DB.prepare('SELECT machine, machine_name FROM licenses WHERE code = ? AND user_id = ?').bind(code, user.id).first();
+    const lic = await env.DB.prepare('SELECT machine, machine_name, kind FROM licenses WHERE code = ? AND user_id = ?').bind(code, user.id).first();
     if (!lic) return fail(404, 'Licença não encontrada nesta conta.');
+    if (lic.kind === 'ilimitada') return json({ ok: true });
     if (lic.machine) {
       await env.DB.prepare('UPDATE licenses SET machine = NULL, machine_name = NULL, activated_at = NULL WHERE code = ?').bind(code).run();
       await log(env, code, 'conta-remover', lic.machine, lic.machine_name, ip);
@@ -179,7 +180,7 @@ async function account(req, env, url, ip) {
   }
   // Gerar código: uma licença gratuita por conta.
   if (url.pathname === '/api/account/license') {
-    const has = await env.DB.prepare('SELECT COUNT(*) AS n FROM licenses WHERE user_id = ?').bind(user.id).first();
+    const has = await env.DB.prepare("SELECT COUNT(*) AS n FROM licenses WHERE user_id = ? AND kind <> 'ilimitada'").bind(user.id).first();
     if (has && has.n > 0) return fail(409, 'Sua conta já tem uma licença.');
     return json({ ok: true, code: await createLicense(env, user, ip) });
   }
@@ -215,11 +216,17 @@ async function activate(req, env, ip) {
   const lic = await env.DB.prepare('SELECT * FROM licenses WHERE code = ?').bind(code).first();
   if (!lic) { await log(env, code, 'ativacao-recusada', machine, 'código não existe', ip); return fail(404, 'Código não encontrado. Confira as letras e números.'); }
   if (lic.status !== 'ativa') { await log(env, code, 'ativacao-recusada', machine, 'bloqueada', ip); return fail(403, 'Esta licença está bloqueada. Fale com o suporte.'); }
+  const t = now();
+  // Licença ilimitada (do dono e dos testes): ativa em quantos computadores quiser; guarda só o último usado.
+  if (lic.kind === 'ilimitada') {
+    await env.DB.prepare('UPDATE licenses SET machine_name = ?, activated_at = COALESCE(activated_at, ?), last_seen = ?, app_version = ? WHERE code = ?').bind(machineName, t, t, version, code).run();
+    await log(env, code, 'ativacao', machine, machineName + ' ' + version, ip);
+    return json({ ok: true, license: await sign(env, { v: 1, product: 'ARCA Teleprompter', code, name: lic.name, company: lic.company, email: lic.email, kind: lic.kind, machine, issued: t }) });
+  }
   if (lic.machine && lic.machine !== machine) {
     await log(env, code, 'ativacao-recusada', machine, 'outro computador: ' + (lic.machine_name || ''), ip);
     return fail(409, `Este código já está ativado em outro computador${lic.machine_name ? ` (${lic.machine_name})` : ''}. Remova-o de lá em Minha conta › Licenças, no site, e ative aqui de novo.`);
   }
-  const t = now();
   if (!lic.machine) await env.DB.prepare('UPDATE licenses SET machine = ?, machine_name = ?, activated_at = ?, last_seen = ?, app_version = ? WHERE code = ?').bind(machine, machineName, t, t, version, code).run();
   else await env.DB.prepare('UPDATE licenses SET machine_name = ?, last_seen = ?, app_version = ? WHERE code = ?').bind(machineName, t, version, code).run();
   await log(env, code, lic.machine ? 'reativacao' : 'ativacao', machine, machineName + ' ' + version, ip);
@@ -231,8 +238,9 @@ async function activate(req, env, ip) {
 async function deactivate(req, env, ip) {
   const b = await body(req);
   const code = fmtCode(normCode(b.code) || 'XXXXXXXXXXXX'), machine = clean(b.machine, 64).toLowerCase();
-  const lic = await env.DB.prepare('SELECT machine FROM licenses WHERE code = ?').bind(code).first();
+  const lic = await env.DB.prepare('SELECT machine, kind FROM licenses WHERE code = ?').bind(code).first();
   if (!lic) return fail(404, 'Código não encontrado.');
+  if (lic.kind === 'ilimitada') { await log(env, code, 'desativacao', machine, null, ip); return json({ ok: true }); }
   if (lic.machine && lic.machine !== machine) return fail(409, 'Esta licença está ativada em outro computador.');
   await env.DB.prepare('UPDATE licenses SET machine = NULL, machine_name = NULL, activated_at = NULL WHERE code = ?').bind(code).run();
   await log(env, code, 'desativacao', machine, null, ip);
@@ -243,11 +251,11 @@ async function deactivate(req, env, ip) {
 async function check(req, env) {
   const b = await body(req);
   const code = fmtCode(normCode(b.code) || 'XXXXXXXXXXXX'), machine = clean(b.machine, 64).toLowerCase();
-  const lic = await env.DB.prepare('SELECT status, machine FROM licenses WHERE code = ?').bind(code).first();
+  const lic = await env.DB.prepare('SELECT status, machine, kind FROM licenses WHERE code = ?').bind(code).first();
   if (!lic) return json({ ok: true, valid: false, reason: 'Licença não encontrada.' });
   if (lic.status !== 'ativa') return json({ ok: true, valid: false, reason: 'Licença bloqueada.' });
-  if (!lic.machine) return json({ ok: true, valid: false, reason: 'A licença foi removida deste computador pela sua conta no site.' });
-  if (lic.machine !== machine) return json({ ok: true, valid: false, reason: 'Licença ativada em outro computador.' });
+  if (lic.kind !== 'ilimitada' && !lic.machine) return json({ ok: true, valid: false, reason: 'A licença foi removida deste computador pela sua conta no site.' });
+  if (lic.kind !== 'ilimitada' && lic.machine !== machine) return json({ ok: true, valid: false, reason: 'Licença ativada em outro computador.' });
   await env.DB.prepare('UPDATE licenses SET last_seen = ?, app_version = ? WHERE code = ?').bind(now(), clean(b.version, 20), code).run();
   return json({ ok: true, valid: true });
 }
@@ -265,6 +273,16 @@ async function admin(req, env, url, ip) {
   if (url.pathname === '/api/admin/reset') {
     await env.DB.prepare('UPDATE licenses SET machine = NULL, machine_name = NULL, activated_at = NULL WHERE code = ?').bind(code).run();
     await log(env, code, 'admin-liberar', null, null, ip); return json({ ok: true });
+  }
+  // Licença ilimitada (dono, equipe, testes): ativa em qualquer computador. Fica na conta do e-mail informado.
+  if (url.pathname === '/api/admin/unlimited') {
+    const email = clean(b.email, 160).toLowerCase();
+    const user = await env.DB.prepare('SELECT * FROM users WHERE email = ?').bind(email).first();
+    if (!user) return fail(404, 'Não há conta com este e-mail.');
+    const nc = await createLicense(env, user, ip);
+    await env.DB.prepare("UPDATE licenses SET kind = 'ilimitada' WHERE code = ?").bind(nc).run();
+    await log(env, nc, 'admin-ilimitada', null, email, ip);
+    return json({ ok: true, code: nc });
   }
   // Senha esquecida (ainda sem e-mail): o administrador gera uma senha provisória e passa para a pessoa.
   if (url.pathname === '/api/admin/password') {

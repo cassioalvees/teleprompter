@@ -183,7 +183,9 @@ public partial class MainWindow
     {
         var i = License.Info!;
         var r = ArcaDialog.Ask(this, "Licença", "ARCA Teleprompter licenciado",
-            $"{i.Name}{(i.Company.Length > 0 ? " · " + i.Company : "")}\n{i.Email}\nCódigo {i.Code} · licença vitalícia\nComputador {LicenseService.MachineCode}\n\nPara usar em outro computador, desative aqui (ou remova em Minha conta › Licenças, no site) e ative lá com o mesmo código.",
+            $"{i.Name}{(i.Company.Length > 0 ? " · " + i.Company : "")}\n{i.Email}\nCódigo {i.Code} · " + (i.Kind == "ilimitada"
+                ? $"licença ilimitada\nComputador {LicenseService.MachineCode}\n\nEsta licença ativa em quantos computadores você quiser, com o mesmo código."
+                : $"licença vitalícia\nComputador {LicenseService.MachineCode}\n\nPara usar em outro computador, desative aqui (ou remova em Minha conta › Licenças, no site) e ative lá com o mesmo código."),
             new[] { "Fechar", "Minha conta", "Desativar este computador" }, 0, 0);
         if (r == 1) OpenAccount();
         if (r != 2) return;

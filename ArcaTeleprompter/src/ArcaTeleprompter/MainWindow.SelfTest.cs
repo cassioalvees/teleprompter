@@ -94,6 +94,36 @@ public partial class MainWindow
             }
             else Check("Seta pula a linha em branco", false, "medida do layout indisponível");
 
+            // Linha a linha atravessa a linha em branco (antes parava no fim do parágrafo: "Última linha").
+            GoTo(0, textLine: true); await Wait(300);
+            double Pos() => _scrollTarget ?? Engine.Y;
+            int down = 0; while (down < 40 && _measure.AnchorAt(Pos() + 1).Block != 2) { LineStep(1); down++; }
+            var reached2 = _measure.AnchorAt(Pos() + 1).Block == 2;
+            int up = 0; while (up < 40 && _measure.AnchorAt(Pos() + 1).Block != 0) { LineStep(-1); up++; }
+            var back0 = _measure.AnchorAt(Pos() + 1).Block == 0;
+            var lastOf0 = _measure.LastLineTopOf(0);
+            Check("Próxima linha passa para o parágrafo seguinte", reached2, $"{down} passos, bloco {_measure.AnchorAt(Pos() + 1).Block}");
+            Check("Linha anterior volta para o parágrafo de cima (última linha dele)", back0 && Math.Abs(Pos() - lastOf0) < 2, $"{up} passo(s), Y={Pos():0.0}, última linha={lastOf0:0.0}");
+            await Wait(600);
+
+            // Editor e telas de prompter na mesma linha: cada bloco (texto, marcador, pausa) começa e mede igual nos dois.
+            LoadEditor(new ScriptDocument { Blocks = {
+                ScriptBlock.Paragraph(string.Join(" ", Enumerable.Repeat("Texto antes do marcador.", 5))), ScriptBlock.Mark("Chuvas no litoral"),
+                ScriptBlock.Paragraph(string.Join(" ", Enumerable.Repeat("Texto do bloco.", 6))), ScriptBlock.Pause("Entra VT"),
+                ScriptBlock.Paragraph(string.Join(" ", Enumerable.Repeat("Texto depois da pausa.", 5))) } });
+            await Wait(900);
+            BuildEditorMap();
+            var worst = 0.0; var where = "";
+            foreach (var m in _measure.Map)
+            {
+                var e = _edMap.FirstOrDefault(x => x.Block == m.Block);
+                if (e.Height == 0) { worst = 999; where = $"bloco {m.Block} sem posição no editor"; break; }
+                var d = Math.Max(Math.Abs(e.Top - m.Top), Math.Abs(e.Height - m.Height));
+                if (d > worst) { worst = d; where = $"bloco {m.Block} ({Doc.Blocks[m.Block].Kind}): editor {e.Top:0.0}+{e.Height:0.0}, telas {m.Top:0.0}+{m.Height:0.0}"; }
+            }
+            Check("Editor e telas de prompter com os mesmos blocos (marcador e pausa)", worst < 2, $"maior diferença {worst:0.0} px — {where}"
+                + (worst < 2 ? "" : " | " + string.Join("; ", _measure.Map.Select(m => { var e = _edMap.FirstOrDefault(x => x.Block == m.Block); return $"{m.Block}:{e.Top:0.0}+{e.Height:0.0}/{m.Top:0.0}+{m.Height:0.0}"; }))));
+
             // 5) Controle de velocidade (o mesmo valor do slider da barra de baixo) e pausa sem salto.
             LoadEditor(new ScriptDocument { Blocks = Enumerable.Range(1, 40).Select(i => ScriptBlock.Paragraph($"Parágrafo {i}: texto para medir a rolagem do prompter com calma.")).ToList() });
             await Wait(800);

@@ -61,6 +61,19 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.8.3) — linha a linha e editor na mesma linha das telas
+
+| Verificação | Antes | Depois |
+|---|---|---|
+| Próxima linha a partir do 1º parágrafo, com linha em branco no meio (autoteste) | 40 toques sem sair do 1º parágrafo ("Última linha") | 8 toques até o 2º parágrafo; 1 toque volta à última linha do 1º |
+| Editor × telas de prompter, bloco a bloco (texto, marcador, texto, pausa, texto) | até 19,8 px de diferença (parágrafo antes do marcador 18 px mais alto no editor) | maior diferença 1,4 px |
+| Captura parada logo após o marcador "Chuvas no litoral" (Jornal da Noite) | editor com a seta no título do marcador; tela e navegador já na 1ª linha do texto | editor e tela com a seta no mesmo ponto |
+| No meio de um parágrafo | editor, tela e navegador iguais (mesmas quebras de linha e espaços) | iguais |
+
+Autoteste completo: TUDO OK (rodado com a licença ilimitada de testes, sem telas de ativação).
+
+**Licença ilimitada** (servidor publicado): criada pelo admin numa conta de teste; ativou em dois computadores, os dois continuam valendo na conferência; a conta mostra a gratuita + a ilimitada (último computador); "remover" pela conta não a derruba; não abre vaga para outra gratuita; bloqueada pelo admin deixa de valer. Testes de conta (31) repetidos depois da mudança: TUDO OK.
+
 ## Resultados (versão 2.8.2) — barra do monitor web com mouse
 
 App licenciado, monitor web na porta de teste 8430, eventos de mouse e teclado simulados na página:

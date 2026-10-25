@@ -3,6 +3,16 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.8.3] — 2026-10-24
+
+### Corrigido
+- **Próxima linha / linha anterior paravam no fim do parágrafo** dizendo "Última linha" (ou "Primeira linha"): com uma linha em branco entre parágrafos, o editor de texto não informa a linha seguinte a partir dela. Agora pula direto para o parágrafo com texto mais perto, nos dois sentidos (subindo, cai na última linha do parágrafo de cima).
+- **Editor fora de passo das telas de prompter e do navegador perto de marcadores e pausas**: no editor o espaço acima do marcador somava com o do parágrafo anterior (nas telas, vale o maior dos dois) e o bloco do marcador começava antes da linha divisória; a pausa também tinha espaço diferente embaixo. Com o prompt rodando, a seta do editor apontava para o título do marcador enquanto as telas já estavam na primeira linha do texto. Agora marcador e pausa têm as mesmas medidas em todos os lugares (diferença medida: de ~20 px para 1,4 px).
+
+### Adicionado
+- **Licença ilimitada** (servidor): ativa em quantos computadores quiser com o mesmo código, para o dono e para os testes. Criada pelo administrador (`/api/admin/unlimited`) numa conta; aparece em Minha conta › Licenças como "Vários computadores" e no app como "licença ilimitada". Bloquear pelo /admin continua valendo.
+- Autotestes: próxima/anterior atravessando a linha em branco; editor e telas de prompter com os mesmos blocos (texto, marcador e pausa).
+
 ## [2.8.2] — 2026-10-24
 
 ### Alterado

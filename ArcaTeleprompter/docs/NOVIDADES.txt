@@ -1,7 +1,11 @@
-ARCA Teleprompter 2.8.2 — novidades
+ARCA Teleprompter 2.8.3 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- Próxima linha e linha anterior passam de um parágrafo para o outro (antes paravam no fim do parágrafo dizendo "Última linha").
+- Editor, telas de prompter e navegador na mesma linha também perto de marcadores e pausas.
+
+Também nesta atualização (2.8.2):
 - Monitor web: a barra de cima só aparece levando o mouse ao topo da tela. Mexer o mouse para mudar a velocidade nos controles de baixo não a traz mais de volta.
 - Atualização automática: corrigido o erro 618 ao baixar a versão nova pelo GitHub.
 

@@ -103,6 +103,14 @@ public partial class MainWindow
         return double.NaN;
     }
 
+    /// <summary>Topo da última linha do bloco com texto anterior a <paramref name="block"/>.</summary>
+    private double PrevReadableLastTop(int block)
+    {
+        for (var k = block - 1; k >= 0; k--)
+            if (IsReadable(k) && _measure.LastLineTopOf(k) is var top && !double.IsNaN(top)) return top;
+        return double.NaN;
+    }
+
     // ═══ Desfazer / refazer (histórico do roteiro, não das formatações internas do editor) ═══
 
     private readonly Stack<(ScriptDocument Doc, CaretAnchor Caret)> _undo = new(), _redo = new();

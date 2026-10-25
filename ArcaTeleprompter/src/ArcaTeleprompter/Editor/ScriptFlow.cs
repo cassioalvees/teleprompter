@@ -199,7 +199,7 @@ public static class ScriptFlow
         {
             if (block is BlockUIContainer { Child: MarkChip chip })
             {
-                chip.Apply(fs, fg);
+                chip.Apply(fs, fg, Spacing.After(s, l));
                 if (chip.Kind == BlockKind.Bookmark) skip = chip.Skip;
                 prevWho = 0;
                 continue;

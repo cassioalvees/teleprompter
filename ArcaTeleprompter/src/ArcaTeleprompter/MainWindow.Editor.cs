@@ -72,7 +72,9 @@ public partial class MainWindow
             double top = double.NaN;
             if (b is BlockUIContainer { Child: FrameworkElement chip } && chip.IsVisible)
             {
-                try { top = chip.TranslatePoint(new Point(0, 0), Editor).Y - chip.Margin.Top; } catch { }
+                // Topo da caixa (sem a margem de cima), como nas telas de prompter: o espaço acima da linha divisória
+                // pertence ao bloco anterior em todas as telas — senão o editor ficava até ¼ de linha fora de passo.
+                try { top = chip.TranslatePoint(new Point(0, 0), Editor).Y; } catch { }
             }
             else
             {
@@ -412,6 +414,7 @@ public partial class MainWindow
         if (string.IsNullOrWhiteSpace(name)) name = "Novo marcador";
         var chip = new BlockUIContainer(new MarkChip { Kind = kind, Text = name });
         if (at != null) fd.Blocks.InsertBefore(at, chip); else fd.Blocks.Add(chip);
+        ScriptFlow.ApplyPresentation(fd, Vm.S, _layout);   // tamanho e espaços iguais aos das telas de prompter
         MarkDirty(); CommitEdits();
         Flash(kind == BlockKind.Bookmark ? "Marcador inserido · duplo clique para renomear" : "Pausa inserida");
     }

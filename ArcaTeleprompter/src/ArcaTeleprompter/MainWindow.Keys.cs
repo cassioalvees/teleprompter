@@ -137,7 +137,14 @@ public partial class MainWindow
             for (var guard = 0; guard < 8; guard++)
             {
                 t = _measure.LineTop(at, dir);
-                if (double.IsNaN(t) || Math.Abs(t - at) < 0.5) { t = double.NaN; break; }
+                // Linha em branco (parágrafo vazio) não tem linha anterior/próxima para o RichTextBox: vai direto ao
+                // bloco com texto mais perto. Antes parava no fim do parágrafo dizendo "Última linha"/"Primeira linha".
+                if (double.IsNaN(t) || Math.Abs(t - at) < 0.5 || (dir > 0 ? t < at : t > at))
+                {
+                    var block = _measure.AnchorAt(at + 1).Block;
+                    t = dir > 0 ? NextReadableTop(block) : PrevReadableLastTop(block);
+                    break;
+                }
                 if (IsTextLine(t)) break;
                 at = t;
             }

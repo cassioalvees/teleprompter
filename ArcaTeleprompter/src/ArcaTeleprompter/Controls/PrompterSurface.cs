@@ -205,6 +205,17 @@ public sealed class PrompterSurface : Grid
 
     public double TopOf(int block) => Map.FirstOrDefault(x => x.Block == block) is { Height: > 0 } b ? b.Top : double.NaN;
 
+    /// <summary>Topo da última linha do bloco (linha anterior atravessando uma linha em branco).</summary>
+    public double LastLineTopOf(int block)
+    {
+        var para = _text.Document?.Blocks.OfType<Paragraph>().FirstOrDefault(p => p.Tag is int i && i == block);
+        if (para == null) return double.NaN;
+        var end = para.ContentEnd.GetInsertionPosition(LogicalDirection.Backward);
+        var start = end.GetLineStartPosition(0) ?? end;
+        var r = start.GetCharacterRect(LogicalDirection.Forward);
+        return r.IsEmpty ? double.NaN : r.Top;
+    }
+
     /// <summary>Y da palavra (bloco + posição do caractere), para o acompanhamento por voz.</summary>
     public double WordY(int block, int charIndex)
     {

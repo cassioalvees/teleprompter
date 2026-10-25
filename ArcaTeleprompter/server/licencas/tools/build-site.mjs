@@ -575,12 +575,14 @@ ${signupFields}
       return;
     }
     box.innerHTML = me.licenses.map((l, i) => {
-      const blocked = l.status !== 'ativa';
-      const state = blocked ? '<span class="state off"><i></i>Bloqueada</span>' : l.active ? '<span class="state on"><i></i>Ativa em 1 computador</span>' : '<span class="state free"><i></i>Livre para ativar</span>';
-      const machine = l.active
+      const blocked = l.status !== 'ativa', unlimited = l.kind === 'ilimitada';
+      const state = unlimited && !blocked ? '<span class="state on"><i></i>Vários computadores</span>' : blocked ? '<span class="state off"><i></i>Bloqueada</span>' : l.active ? '<span class="state on"><i></i>Ativa em 1 computador</span>' : '<span class="state free"><i></i>Livre para ativar</span>';
+      const machine = unlimited
+        ? '<div class="machine"><span class="ico">' + ${JSON.stringify(monitor)} + '</span><div><b>Ativa em quantos computadores quiser</b><small>' + (l.machine_name ? 'Último usado: ' + esc(l.machine_name) + (l.app_version ? ' · versão ' + esc(l.app_version) : '') + (l.last_seen ? ' · ' + ago(l.last_seen) : '') : 'Ainda não ativada em nenhum computador.') + '</small></div></div>'
+        : l.active
         ? '<div class="machine"><span class="ico">' + ${JSON.stringify(monitor)} + '</span><div><b>' + esc(l.machine_name || 'Computador sem nome') + '</b><small>Ativada em ' + day(l.activated_at) + (l.app_version ? ' · versão ' + esc(l.app_version) : '') + (l.last_seen ? ' · último contato ' + ago(l.last_seen) : '') + '</small></div><button type="button" class="danger" data-release="' + i + '">Remover deste computador</button></div>'
         : '<div class="machine"><span class="ico">' + ${JSON.stringify(monitor)} + '</span><div><b>Nenhum computador</b><small>' + (blocked ? 'Esta licença está bloqueada. Fale com o suporte.' : 'Abra o ARCA no computador onde vai usar e cole o código.') + '</small></div>' + (blocked ? '' : '<a class="ghost" href="/download" style="display:inline-flex;align-items:center;gap:8px">${dl}Baixar instalador</a>') + '</div>';
-      return '<article class="lic-card"><div class="lic-top"><div style="flex:1 1 300px;min-width:0"><span class="eyebrow">Licença ' + (l.kind === 'vitalicia' ? 'vitalícia' : esc(l.kind)) + ' · desde ' + day(l.created_at) + '</span>'
+      return '<article class="lic-card"><div class="lic-top"><div style="flex:1 1 300px;min-width:0"><span class="eyebrow">Licença ' + (l.kind === 'vitalicia' ? 'vitalícia' : l.kind === 'ilimitada' ? 'ilimitada' : esc(l.kind)) + ' · desde ' + day(l.created_at) + '</span>'
         + '<div class="code"><span>' + esc(l.code) + '</span><button type="button" class="copy" data-copy="' + esc(l.code) + '">Copiar</button></div></div>' + state + '</div>' + machine
         + '<div class="how"><span class="eyebrow" style="color:var(--faint)">Como ativar</span><ol><li>Instale e abra o ARCA Teleprompter.</li><li>Na tela de ativação (ou em <b>Ajuda › Licença</b>), cole o código e clique em <b>Ativar</b>.</li><li>Para trocar de computador, clique em <b>Remover deste computador</b> aqui e ative no novo.</li></ol></div></article>';
     }).join('');

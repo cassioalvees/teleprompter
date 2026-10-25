@@ -34,9 +34,11 @@ public sealed class MarkChip : Grid
         Refresh();
     }
 
-    private double _fs = 60; private Color _fg = Colors.White;
+    private double _fs = 60, _after = 19.5; private Color _fg = Colors.White;
 
-    public void Apply(double fs, Color fg) { _fs = fs; _fg = fg; Refresh(); }
+    /// <summary>Mesmas medidas do marcador e da pausa nas telas de prompter (ScriptFlow.BuildPrompter): com alturas
+    /// iguais, a linha de leitura do editor cai no mesmo ponto das telas e do navegador.</summary>
+    public void Apply(double fs, Color fg, double after) { _fs = fs; _fg = fg; _after = after; Refresh(); }
 
     private void Refresh()
     {
@@ -44,6 +46,8 @@ public sealed class MarkChip : Grid
         _label.FontFamily = FontCatalog.Family("mono");
         // Mínimo legível no editor mesmo com fonte de prompter pequena.
         _label.FontSize = Math.Max(fs * 0.3, 13);
+        _label.LineStackingStrategy = LineStackingStrategy.BlockLineHeight;
+        _label.LineHeight = fs * 0.3 * 1.4;
         var a = Kind == BlockKind.Stop ? 0.65 : 0.55;
         _label.Foreground = ScriptFlow.WithAlpha(_fg, a);
         var name = (Kind == BlockKind.Stop ? "PAUSA · " : "") + Text.ToUpperInvariant() + (Kind == BlockKind.Bookmark && Skip ? " · PULADO" : "");
@@ -52,18 +56,30 @@ public sealed class MarkChip : Grid
         {
             _top.Visibility = Visibility.Visible; _box.Visibility = Visibility.Collapsed;
             _top.BorderBrush = ScriptFlow.WithAlpha(_fg, 0.55);
-            Margin = new Thickness(0, fs * 0.36, 0, fs * 0.24);
-            _label.Margin = new Thickness(0, fs * 0.21, 0, fs * 0.06);
+            SetSpace(new Thickness(0, fs * 0.36, 0, fs * 0.24));
+            _label.Margin = new Thickness(0, fs * 0.21 + 1, 0, fs * 0.06);   // + 1 da linha divisória (borda nas telas)
             HorizontalAlignment = HorizontalAlignment.Stretch;
         }
         else
         {
             _top.Visibility = Visibility.Collapsed; _box.Visibility = Visibility.Visible;
             _box.Stroke = ScriptFlow.WithAlpha(_fg, 0.6);
-            Margin = new Thickness(0, 0, 0, fs * 0.5);
-            _label.Margin = new Thickness(fs * 0.27, fs * 0.12, fs * 0.27, fs * 0.12);
+            SetSpace(new Thickness(0, 0, 0, _after));
+            _label.Margin = new Thickness(fs * 0.27 + 1, fs * 0.12 + 1, fs * 0.27 + 1, fs * 0.12 + 1);   // + 1 da borda
             HorizontalAlignment = HorizontalAlignment.Left;
         }
         Opacity = Kind == BlockKind.Bookmark && Skip ? 0.6 : 1;
+    }
+
+    /// <summary>
+    /// O espaço acima e abaixo vai no bloco do documento (BlockUIContainer), não no cartão: assim ele se sobrepõe ao
+    /// espaço do parágrafo vizinho (vale o maior), como nas telas de prompter e no navegador. Dentro do cartão os
+    /// dois se somavam e o editor ficava fora de passo perto de marcadores.
+    /// </summary>
+    private void SetSpace(Thickness t)
+    {
+        Margin = new Thickness(0);
+        // Só fora do desenho do documento: o bloco já existe quando o editor monta ou reaplica a aparência (Apply).
+        if (Parent is System.Windows.Documents.BlockUIContainer c && c.Margin != t) c.Margin = t;
     }
 }
