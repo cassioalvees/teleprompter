@@ -38,7 +38,8 @@ public partial class MainWindow
         {
             if (DialogLayer.Visibility == Visibility.Visible) { CloseDialog(); e.Handled = true; return; }
             if (InlineEdit.Visibility == Visibility.Visible) { FinishInline(false); e.Handled = true; return; }
-            if (TalentLayer.Visibility == Visibility.Visible) { if (_talentFull) ToggleTalentFullscreen(); else ToggleTalent(); e.Handled = true; return; }
+            // Esc fecha a tela do talento (que abre em tela cheia); sair só da tela cheia: botão □ ou F11.
+            if (TalentLayer.Visibility == Visibility.Visible) { ToggleTalent(); e.Handled = true; return; }
             if (_fullscreen) { ToggleFullscreen(); e.Handled = true; return; }
             return;
         }
@@ -262,6 +263,9 @@ public partial class MainWindow
         _talentWin.Content = TalentLayer;
         _talentWin.Show();
         _talentWin.Activate();
+        // A tela do talento é para ler: abre em tela cheia de verdade (cobre a barra de tarefas do Windows) no monitor
+        // em que abriu. Esc ou o botão da barra voltam para janela.
+        if (!_talentFull) ToggleTalentFullscreen();
     }
 
     /// <summary>A barra do talento é a barra de título: arrastar move a janela; duplo clique maximiza/restaura.</summary>
@@ -269,18 +273,15 @@ public partial class MainWindow
     {
         if (_talentWin == null || e.OriginalSource is DependencyObject d && FindParent<System.Windows.Controls.Primitives.ButtonBase>(d) != null) return;
         if (FindParent<Slider>(e.OriginalSource as DependencyObject) != null) return;
-        if (e.ClickCount == 2) { _talentWin.WindowState = _talentWin.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized; return; }
+        if (e.ClickCount == 2) { ToggleTalentFullscreen(); return; }
+        if (_talentFull) return;   // em tela cheia a janela não se arrasta
         try { _talentWin.DragMove(); } catch { /* botão já solto */ }
     }
 
     // Minimizar e maximizar a janela do talento (ela não tem a barra do Windows).
     private void TalentMin_Click(object s, RoutedEventArgs e) { if (_talentWin != null) _talentWin.WindowState = WindowState.Minimized; }
-    private void TalentMax_Click(object s, RoutedEventArgs e)
-    {
-        if (_talentWin == null) return;
-        if (_talentFull) { ToggleTalentFullscreen(); return; }
-        _talentWin.WindowState = _talentWin.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-    }
+    // Maximizar = tela cheia de verdade: o "maximizado" do Windows deixa a barra de tarefas por cima do texto.
+    private void TalentMax_Click(object s, RoutedEventArgs e) { if (_talentWin != null) ToggleTalentFullscreen(); }
 
     private static T? FindParent<T>(DependencyObject? d) where T : DependencyObject
     {
@@ -340,9 +341,7 @@ public partial class MainWindow
         var al = new Button { Style = (Style)FindResource("IconBtn"), ToolTip = "Alinhamento desta janela", Focusable = false, Content = new Icon { Data = Icons.AlignL, Size = 15 } };
         al.Click += (_, _) => { _talentAlign = _talentAlign == "center" ? "left" : "center"; ((Icon)al.Content).Data = _talentAlign == "center" ? Icons.AlignC : Icons.AlignL; Rebuild(TalentSurface, _talentAlign); };
         TalentTools.Children.Add(al);
-        var fs = new Button { Style = (Style)FindResource("IconBtn"), ToolTip = "Tela cheia (F11)", Focusable = false, Content = new Icon { Data = Icons.Fullscreen, Size = 15 } };
-        fs.Click += (_, _) => ToggleTalentFullscreen();
-        TalentTools.Children.Add(fs);
+        // Tela cheia: botão de maximizar da barra (□), duplo clique na barra ou F11 — sem botão repetido aqui.
     }
 
     private void Talent_MouseMove(object sender, MouseEventArgs e)

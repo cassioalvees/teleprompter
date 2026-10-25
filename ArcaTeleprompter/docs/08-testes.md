@@ -61,6 +61,10 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.8.4) — janela do talento em tela cheia
+
+Monitor 1366×768 (área útil 1366×720, barra de tarefas de 48 px). Jornal da Noite aberto, `--talent`: a janela do talento abriu com **1366×768** (cobre a barra de tarefas), barra do talento no topo e controles embaixo. Autoteste completo: TUDO OK (F5 abre e fecha; Esc fecha mesmo em tela cheia).
+
 ## Resultados (versão 2.8.3) — linha a linha e editor na mesma linha das telas
 
 | Verificação | Antes | Depois |

@@ -1,7 +1,10 @@
-ARCA Teleprompter 2.8.3 — novidades
+ARCA Teleprompter 2.8.4 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- A janela do talento já abre em tela cheia, cobrindo a barra do Windows. O botão □ (ou F11) volta para janela; Esc fecha.
+
+Também nesta atualização (2.8.3):
 - Próxima linha e linha anterior passam de um parágrafo para o outro (antes paravam no fim do parágrafo dizendo "Última linha").
 - Editor, telas de prompter e navegador na mesma linha também perto de marcadores e pausas.
 

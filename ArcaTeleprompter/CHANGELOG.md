@@ -3,6 +3,11 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.8.4] — 2026-10-25
+
+### Alterado
+- **Janela do talento abre em tela cheia** no monitor em que abre, cobrindo a barra de tarefas do Windows (antes abria como janela no centro; o "maximizar" do Windows deixava a barra de tarefas por cima do texto). O botão □ da barra, o duplo clique na barra e o F11 alternam entre tela cheia e janela; o botão de tela cheia repetido na barra de ferramentas saiu. **Esc fecha a janela do talento** de uma vez, também em tela cheia.
+
 ## [2.8.3] — 2026-10-24
 
 ### Corrigido
