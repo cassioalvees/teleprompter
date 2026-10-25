@@ -83,8 +83,9 @@
     </section>
     <section>
       <span class="eyebrow">Tela cheia</span>
-      <p class="muted">Tela cheia sem bordas (como o F11), nesta tela ou em outro monitor ligado a este computador. Atalho: tecla <b>F</b>.</p>
-      <div class="row wrap" id="screens"><button type="button" id="btnFsHere">Nesta tela</button><button type="button" id="btnScreens">Outro monitor…</button></div>
+      <p class="muted not-ios">Tela cheia sem bordas (como o F11), nesta tela ou em outro monitor ligado a este computador. Atalho: tecla <b>F</b>.</p>
+      <p class="muted only-ios">No iPad, abra o ARCA pela <b>Tela de Início</b> para ter tela cheia: a do Safari sai quando você arrasta para baixo, o mesmo gesto que freia e rola o texto.</p>
+      <div class="row wrap" id="screens"><button type="button" id="btnFsHere">Nesta tela</button><button type="button" id="btnScreens" class="not-ios">Outro monitor…</button></div>
       <p id="scrMsg" class="muted" hidden></p>
     </section>
     <section>
@@ -95,6 +96,19 @@
     <section class="help">
       <span class="eyebrow">Usar como app no iPad</span>
       <p>No Safari: <b>Compartilhar → Adicionar à Tela de Início</b>. O ARCA abre em tela cheia, como um app. Para o modo offline completo, acesse pelo endereço <b>https</b> mostrado no app (porta 8421) depois de instalar o certificado.</p>
+    </section>
+  </form>
+</dialog>
+
+<!-- iPad/iPhone: tela cheia é pela Tela de Início (a do Safari sai ao arrastar para baixo). -->
+<dialog id="iosFs">
+  <form method="dialog">
+    <header><b>Tela cheia no iPad</b><button class="icon" value="close" title="Fechar"><svg viewBox="0 0 16 16"><path d="M3 3l10 10M13 3L3 13"/></svg></button></header>
+    <section class="help">
+      <p>A tela cheia do Safari sai quando você arrasta para baixo — o mesmo gesto que, no ARCA, freia o texto (rodando) e rola o texto (parado).</p>
+      <p>Para ler em tela cheia sem esse problema, abra o ARCA como app:</p>
+      <ol><li>No Safari, toque em <b>Compartilhar</b> (o quadrado com a seta para cima).</li><li>Toque em <b>Adicionar à Tela de Início</b> e depois em <b>Adicionar</b>.</li><li>Abra o <b>Teleprompter</b> pelo ícone na Tela de Início: ele abre em tela cheia, sem a barra do Safari.</li></ol>
+      <button value="close">Entendi</button>
     </section>
   </form>
 </dialog>

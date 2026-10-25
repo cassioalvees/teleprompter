@@ -1,7 +1,10 @@
-ARCA Teleprompter 2.8.4 — novidades
+ARCA Teleprompter 2.8.5 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- iPad: a tela cheia agora é pela Tela de Início (Safari › Compartilhar › Adicionar à Tela de Início). A do Safari saía ao arrastar para baixo — o mesmo gesto que freia e rola o texto. O botão de tela cheia no iPad explica o passo a passo.
+
+Também nesta atualização (2.8.4):
 - A janela do talento já abre em tela cheia, cobrindo a barra do Windows. O botão □ (ou F11) volta para janela; Esc fecha.
 
 Também nesta atualização (2.8.3):

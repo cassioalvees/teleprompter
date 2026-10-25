@@ -3,6 +3,11 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.8.5] — 2026-10-25
+
+### Alterado
+- **Monitor web no iPad/iPhone: tela cheia pela Tela de Início.** A tela cheia do Safari mostra "arraste para baixo para sair" e sai com esse gesto — o mesmo que no ARCA freia o texto (rodando) e rola o texto (parado). No iPad/iPhone, o botão de tela cheia (e a tecla F) agora mostra como abrir o ARCA pela Tela de Início (abre como app, em tela cheia, sem esse gesto) em vez de usar a tela cheia do Safari; aberto pela Tela de Início, o botão some. Em Ajustes, "Outro monitor…" não aparece no iPad. No computador nada muda. Cache do app web v13.
+
 ## [2.8.4] — 2026-10-25
 
 ### Alterado

@@ -61,6 +61,10 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.8.5) — tela cheia no iPad
+
+Regra que reconhece iPad/iPhone conferida com os textos reais dos navegadores: iPad com iPadOS 17 (que se apresenta como Mac, com toque), iPad antigo e iPhone → iPad/iPhone; Mac de verdade, Windows/Chrome e Android → outro. No monitor web (porta de teste 8430, 820×1180): no computador, botão de tela cheia e "Outro monitor…" continuam; no modo iPad, "Outro monitor…" some e aparece o texto da Tela de Início; aberto como app, o botão de tela cheia some; o aviso "Tela cheia no iPad" abre com os 3 passos. Não testado num iPad físico.
+
 ## Resultados (versão 2.8.4) — janela do talento em tela cheia
 
 Monitor 1366×768 (área útil 1366×720, barra de tarefas de 48 px). Jornal da Noite aberto, `--talent`: a janela do talento abriu com **1366×768** (cobre a barra de tarefas), barra do talento no topo e controles embaixo. Autoteste completo: TUDO OK (F5 abre e fecha; Esc fecha mesmo em tela cheia).

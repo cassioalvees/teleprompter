@@ -261,7 +261,16 @@ addEventListener('pointerup', () => {
 function along(e) { return { 90: -e.clientX, 180: -e.clientY, 270: e.clientX }[prefs.rot] ?? e.clientY; }
 
 // ——— Tela cheia (sem bordas, como o F11), nesta tela ou em outro monitor ———
+// iPad/iPhone: a tela cheia do Safari sai quando se arrasta para baixo — o mesmo gesto que aqui freia e rola o texto.
+// Lá o certo é abrir pela Tela de Início: abre como app, já em tela cheia, sem esse gesto. O botão explica como.
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const asApp = navigator.standalone === true || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches;
+if (isIOS) {
+  body.classList.add('ios');
+  if (asApp) body.classList.add('app');   // aberto pela Tela de Início: já está em tela cheia
+}
 function toggleFs() {
+  if (isIOS) { if (!asApp) $('#iosFs').showModal(); return; }
   const d = document.documentElement;
   if (document.fullscreenElement || document.webkitFullscreenElement) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
   else (d.requestFullscreen || d.webkitRequestFullscreen)?.call(d, { navigationUI: 'hide' })?.catch?.(() => {});

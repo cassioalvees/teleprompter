@@ -129,6 +129,11 @@ input[type=password]{flex:1;min-width:0;height:38px;border-radius:10px;border:1p
 input[type=password]:focus{border-color:var(--accent)}
 dialog button:not(.icon),.login button{height:38px;padding:0 16px;border:none;border-radius:980px;background:var(--accent);color:var(--accent-ink);font-weight:600}
 .help p{margin:0;color:var(--muted);line-height:1.55}
+.help ol{margin:0;padding-left:20px;color:var(--muted);line-height:1.55;display:flex;flex-direction:column;gap:6px}.help ol b,.help p b{color:var(--text)}
+.help > button{align-self:flex-end}
+/* iPad/iPhone: tela cheia só pela Tela de Início; aberto como app, o botão de tela cheia some (já está em tela cheia). */
+.only-ios{display:none}body.ios .only-ios{display:block}body.ios .not-ios{display:none!important}
+body.ios.app #btnFs{display:none}
 .login{position:fixed;inset:0;z-index:50;display:flex;align-items:center;justify-content:center;background:var(--bg)}
 .login form{display:flex;flex-direction:column;align-items:center;gap:12px;width:min(320px,calc(100vw - 32px));padding:24px;border-radius:14px;background:var(--ui);border:1px solid var(--border)}
 .login input{width:100%}
