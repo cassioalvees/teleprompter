@@ -120,6 +120,17 @@ public partial class MainWindow
         }
     }
 
+    /// <summary>Registra as palavras de cada linha no editor, na medição das telas e no talento (se aberto).</summary>
+    private void LogLineWords()
+    {
+        string Desc(string name, List<int> w) => w.Count == 0 ? $"{name}: sem linhas"
+            : $"{name}: {w.Count} linhas · média {w.Average():0.00} palavras · mín {w.Min()} · máx {w.Max()} · [{string.Join(",", w)}]";
+        Arca.Core.Storage.Log.Info($"Palavras por linha — ajuste {Vm.WordsPerLine:0.##} · fonte {_layout.FontSize:0} · {Vm.S.FontKey}");
+        Arca.Core.Storage.Log.Info(Desc("Editor", PrompterSurface.CountLineWords(Editor)));
+        Arca.Core.Storage.Log.Info(Desc("Telas (medição)", _measure.WordsPerLine()));
+        if (TalentLayer.Visibility == Visibility.Visible) Arca.Core.Storage.Log.Info(Desc("Talento", TalentSurface.WordsPerLine()));
+    }
+
     /// <summary>
     /// Rolagem vinda do monitor web (dedo no iPad, roda do mouse no navegador). Parado: desliza pela mesma mola da roda
     /// do mouse — o arrasto chega aos poucos (a cada ~40 ms) e o app, as telas e o NDI acompanham o dedo sem pular.
@@ -207,6 +218,7 @@ public partial class MainWindow
             case "newWindow": Outputs.AddWindow(); break;   // só pela linha de comando (o monitor web não envia este)
             case "ndi": ToggleNdi(); break;   // idem
             case "licenca": _ = ShowLicense(); break;   // idem (testes da tela de licença)
+            case "linhas": LogLineWords(); break;       // idem (medição de palavras por linha em cada tela)
             case "gotoBm": if (value is { } i) JumpBookmark((int)i); break;
             default: DoAction(name); break;
         }

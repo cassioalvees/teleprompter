@@ -35,5 +35,15 @@ public partial class MainWindow
         d = Fit(out ok); check("Janela mais estreita: texto acompanha", ok, d);
 
         WindowState = prevState; Width = prevW; Height = prevH; await wait(400);
+
+        // Preferências: a janela tem o mesmo tamanho em todas as abas (antes crescia e encolhia ao trocar de aba).
+        var hs = new List<string>(); var heights = new List<double>();
+        foreach (var tab in new[] { "geral", "atalhos", "disp", "integ" })
+        {
+            ShowPrefs(tab); await wait(350);
+            heights.Add(DialogCard.ActualHeight); hs.Add($"{tab} {DialogCard.ActualHeight:0}");
+            CloseDialog(); await wait(150);
+        }
+        check("Preferências com o mesmo tamanho em todas as abas", heights.Max() - heights.Min() < 1, string.Join(" · ", hs));
     }
 }

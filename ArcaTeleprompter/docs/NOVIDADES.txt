@@ -1,7 +1,10 @@
-ARCA Teleprompter 2.8.7 — novidades
+ARCA Teleprompter 2.8.8 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- Preferências com tamanho fixo: a janela não cresce nem encolhe ao trocar de aba.
+
+Também nesta atualização (2.8.7):
 - NDI fluido a 60 quadros por segundo, inclusive com fundo transparente (antes saía irregular, com quadros atrasados).
 - O iPad/navegador pega sozinho a versão nova do monitor web quando o ARCA é atualizado (antes era preciso recarregar a página).
 - Tela cheia no iPad volta a ser pelo botão, no próprio Safari.

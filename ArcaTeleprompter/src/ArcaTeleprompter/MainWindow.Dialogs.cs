@@ -269,11 +269,12 @@ public partial class MainWindow
         foreach (var (id, l) in names)
         {
             var rb = new RadioButton { Style = St("Seg"), Content = l, GroupName = "prefs", HorizontalContentAlignment = HorizontalAlignment.Left, Height = 34, Margin = new Thickness(0, 0, 0, 2), IsChecked = id == tab };
-            rb.Checked += (_, _) => { CaptureAction = null; content.Content = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MaxHeight = 560, Content = Pad(pages[id](), 20) }; };
+            rb.Checked += (_, _) => { CaptureAction = null; content.Content = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Content = Pad(pages[id](), 20) }; };
             nav.Children.Add(rb); buttons.Add(rb);
         }
-        content.Content = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, MaxHeight = 560, Content = Pad(pages[tab](), 20) };
-        var grid = new Grid { MinHeight = 400 };
+        content.Content = new ScrollViewer { VerticalScrollBarVisibility = ScrollBarVisibility.Auto, Content = Pad(pages[tab](), 20) };
+        // Altura fixa (a mesma em todas as abas, cabendo na janela): antes a janela crescia e encolhia a cada aba.
+        var grid = new Grid { Height = Math.Clamp(ActualHeight - 170, 360, 560) };
         grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(150) }); grid.ColumnDefinitions.Add(new ColumnDefinition());
         var navB = new Border { BorderBrush = Br("Line"), BorderThickness = new Thickness(0, 0, 1, 0), Child = nav };
         grid.Children.Add(navB); Grid.SetColumn(content, 1); grid.Children.Add(content);

@@ -205,6 +205,30 @@ public sealed class PrompterSurface : Grid
 
     public double TopOf(int block) => Map.FirstOrDefault(x => x.Block == block) is { Height: > 0 } b ? b.Top : double.NaN;
 
+    /// <summary>Palavras em cada linha de texto do documento (medição: palavras por linha, telas iguais).</summary>
+    public List<int> WordsPerLine() => CountLineWords(_text);
+
+    public static List<int> CountLineWords(RichTextBox tb)
+    {
+        var r = new List<int>();
+        if (tb.Document == null) return r;
+        tb.UpdateLayout();
+        foreach (var p in tb.Document.Blocks.OfType<Paragraph>())
+        {
+            var line = p.ContentStart.GetLineStartPosition(0);
+            while (line != null && line.CompareTo(p.ContentEnd) < 0)
+            {
+                var next = line.GetLineStartPosition(1, out var moved);
+                var end = moved == 0 || next == null || next.CompareTo(p.ContentEnd) > 0 ? p.ContentEnd : next;
+                var words = new TextRange(line, end).Text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries).Length;
+                if (words > 0) r.Add(words);
+                if (moved == 0 || next == null || end == p.ContentEnd) break;
+                line = next;
+            }
+        }
+        return r;
+    }
+
     /// <summary>Topo da última linha do bloco (linha anterior atravessando uma linha em branco).</summary>
     public double LastLineTopOf(int block)
     {

@@ -61,6 +61,12 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.8.8) — Preferências e palavras por linha
+
+Preferências abertas em cada aba (autoteste): Geral 520 · Atalhos 520 · Dispositivos 520 · Integrações 520 px (antes variava entre 400 e 560).
+
+Palavras por linha no roteiro do usuário (teleprompterteste.tps, em inglês; ajuste 5,25, Atkinson, fonte 58), `--cmd=linhas`: editor, telas de prompter e janela do talento com as mesmas 29 linhas, quebradas nas mesmas palavras — média 5,07 palavras por linha, de 2 a 7 (linha com uma palavra longa, como "teleprompter", fica com menos). O ajuste define o tamanho da letra pela média; cada linha varia com o tamanho das palavras.
+
 ## Resultados (versão 2.8.7) — NDI a 60p e monitor web atualizado sozinho
 
 **Diagnóstico no computador do usuário** (i5-1135G7, 4 núcleos/8 threads, na tomada): registro do ARCA com NDI 1080p60 e fundo transparente — 136–250 quadros a cada 5 s (meta 300), montagem 20–33 ms por quadro, quase todos atrasados (até 116 ms). Gravação das posições enviadas às telas enquanto o usuário arrastava no iPad: o texto andava em pulsos (salto grande, desliza ~0,4 s, para) — o padrão do monitor web antigo, que só mandava o arrasto ao soltar o dedo: o iPad ainda estava com o código anterior à 2.8.6.

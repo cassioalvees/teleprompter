@@ -3,6 +3,14 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.8.8] — 2026-10-25
+
+### Corrigido
+- **Preferências cresciam e encolhiam ao trocar de aba**: a janela ajustava a altura ao conteúdo de cada aba (entre 400 e 560 px). Agora tem altura fixa — a mesma em todas as abas, cabendo na janela do app (até 560 px) — e o conteúdo rola dentro. Autoteste: Geral, Atalhos, Dispositivos e Integrações com 520 px.
+
+### Adicionado
+- `--cmd=linhas` registra as palavras de cada linha no editor, nas telas de prompter e na janela do talento (diagnóstico de "palavras por linha").
+
 ## [2.8.7] — 2026-10-25
 
 ### Corrigido
