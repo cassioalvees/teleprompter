@@ -61,6 +61,16 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.8.1) — atualização automática pelo GitHub de verdade
+
+Computador do usuário com a 2.8.0 instalada em Arquivos de Programas; v2.8.1 publicada no GitHub Releases.
+
+| Passo | Resultado |
+|---|---|
+| Ajuda › Procurar atualizações (1ª tentativa) | Aviso da 2.8.1; o download falhou com "618 (jwt:jwt-not-provided)": o endereço do instalador era montado a partir do endereço temporário assinado do latest.json |
+| Correção publicada | latest.json da v2.8.1 reenviado com o endereço completo (`publish-release.ps1 -SoLatestJson`); o cache do GitHub levou ~1 min para entregar o novo |
+| 2ª tentativa | Baixou, o Windows pediu permissão (UAC), instalou a 2.8.1 e o app reabriu sozinho |
+
 ## Resultados (versão 2.8.0) — licença, Minha conta e instalador
 
 **Servidor e conta** (`wrangler dev` local, 31 verificações, todas OK): senha curta recusada; conta criada com cookie HttpOnly/SameSite=Lax; e-mail repetido (maiúsculas) recusado; a conta nasce com um código ARCA-XXXX-XXXX-XXXX livre; sem sessão → 401; segundo código recusado; o app ativa no computador 1 e a conta mostra nome e versão; computador 2 recusado com a dica de remover pela conta; outra conta não remove licença alheia; chamada vinda de outro site → 403; **remover pela conta** → a conferência do computador 1 responde "removida pela sua conta" e o computador 2 ativa; senha errada → "E-mail ou senha incorretos"; perfil salvo; trocar a senha exige a atual e encerra os outros navegadores; senha provisória do administrador encerra as sessões e entra; sair apaga o cookie; a rota antiga de cadastro sem conta não existe mais.
