@@ -3,6 +3,16 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.8.7] — 2026-10-25
+
+### Corrigido
+- **NDI sem fluidez a 60p** (relatado com 1080p60 e fundo transparente): a montagem de cada quadro (texto com posição em subpixel + camada sobreposta) rodava num núcleo só e, no uso real, passava de 16,7 ms — o NDI saía com ~45 quadros irregulares por segundo, quase todos atrasados. Agora o quadro é montado em faixas paralelas (uma por núcleo, até 8) e a mistura da camada sobreposta ficou mais leve (sem divisão por pixel). Medido a 1080p60 com fundo transparente: montagem de 3,8–13 ms (picos de 40) → **1,2–2,1 ms**; 300 de 300 quadros em 5 s, 0 atrasados — também com a janela do talento aberta em tela cheia.
+- **iPad continuava com o monitor web antigo depois de atualizar o ARCA**: ao reabrir o app, a página só reconectava e mantinha o código anterior na memória (por isso o arrasto da 2.8.6 não chegava ao iPad e as telas ainda andavam aos trancos). O app agora informa a identidade dos arquivos do monitor web ao conectar; se mudou, a página recarrega sozinha. Sem atualização, só reconecta.
+
+### Alterado
+- **Desfeito (2.8.5): tela cheia no iPad volta a ser a do Safari**, pelo botão de tela cheia, como antes — sem aviso para abrir pela Tela de Início.
+- Registro do NDI mostra o nome da saída e o formato em cada linha de métrica; `ARCA_NDI_BANDS` muda o número de faixas (medições).
+
 ## [2.8.6] — 2026-10-25
 
 ### Corrigido

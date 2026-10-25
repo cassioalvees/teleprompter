@@ -1,11 +1,15 @@
-ARCA Teleprompter 2.8.6 — novidades
+ARCA Teleprompter 2.8.7 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- NDI fluido a 60 quadros por segundo, inclusive com fundo transparente (antes saía irregular, com quadros atrasados).
+- O iPad/navegador pega sozinho a versão nova do monitor web quando o ARCA é atualizado (antes era preciso recarregar a página).
+- Tela cheia no iPad volta a ser pelo botão, no próprio Safari.
+
+Também nesta atualização (2.8.6):
 - Arrastar o texto pelo iPad: o NDI, as telas e o app acompanham o dedo, deslizando (antes só se mexiam ao soltar, de uma vez).
 
 Também nesta atualização (2.8.5):
-- iPad: a tela cheia agora é pela Tela de Início (Safari › Compartilhar › Adicionar à Tela de Início). A do Safari saía ao arrastar para baixo — o mesmo gesto que freia e rola o texto. O botão de tela cheia no iPad explica o passo a passo.
 
 Também nesta atualização (2.8.4):
 - A janela do talento já abre em tela cheia, cobrindo a barra do Windows. O botão □ (ou F11) volta para janela; Esc fecha.

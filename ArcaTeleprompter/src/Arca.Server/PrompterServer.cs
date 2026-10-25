@@ -165,6 +165,23 @@ public sealed class PrompterServer : IAsyncDisposable
         ViewersChanged?.Invoke(Viewers);
     }
 
+    /// <summary>
+    /// Identidade dos arquivos do monitor web (hash do que está embutido). O navegador guarda a da primeira conexão e,
+    /// se ao reconectar ela mudou (o ARCA foi atualizado e reaberto), recarrega a página para pegar os arquivos novos —
+    /// antes o iPad continuava com o código antigo na memória até alguém recarregar à mão.
+    /// </summary>
+    private static readonly Lazy<string> WebBuild = new(() =>
+    {
+        var asm = typeof(PrompterServer).Assembly;
+        using var sha = IncrementalHash.CreateHash(HashAlgorithmName.SHA256);
+        foreach (var n in asm.GetManifestResourceNames().Where(n => n.Contains("wwwroot", StringComparison.OrdinalIgnoreCase)).OrderBy(n => n, StringComparer.Ordinal))
+        {
+            using var s = asm.GetManifestResourceStream(n); if (s == null) continue;
+            using var ms = new MemoryStream(); s.CopyTo(ms); sha.AppendData(Encoding.UTF8.GetBytes(n)); sha.AppendData(ms.ToArray());
+        }
+        return Convert.ToHexString(sha.GetHashAndReset())[..12];
+    });
+
     private void Replay(Client c)
     {
         foreach (var m in new[] { _html, _state, _pos }) if (m != null) _ = SendAsync(c, Encoding.UTF8.GetBytes(m));
@@ -212,7 +229,7 @@ public sealed class PrompterServer : IAsyncDisposable
             var pass = m?["pass"]?.GetValue<string>() ?? "";
             var ok = _password.Length == 0 || CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(pass), Encoding.UTF8.GetBytes(_password));
             c.Authed = ok;
-            _ = SendAsync(c, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { t = "auth", ok, needPass = _password.Length > 0 })));
+            _ = SendAsync(c, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { t = "auth", ok, needPass = _password.Length > 0, ver = WebBuild.Value })));
             if (ok) Replay(c);
             ViewersChanged?.Invoke(Viewers);
             return;

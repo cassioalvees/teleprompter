@@ -27,6 +27,7 @@ public sealed class NdiService
     private Thread? _renderThread, _sendThread;
     private Dispatcher? _disp;
     private NdiSender? _sender;
+    private string _label = "";   // nome da saída e formato, no registro de métricas
     private PrompterSurface? _surface;
     private volatile bool _running;
     private DispatcherTimer? _statusTimer;
@@ -66,6 +67,7 @@ public sealed class NdiService
             return false;
         }
         var fmt = NdiFormat.Get(app.NdiFormat);
+        _label = $"{(app.NdiName.Trim().Length > 0 ? app.NdiName.Trim() : "ARCA-PROMPTER")} · {fmt.Id}";
         try { _sender = new NdiSender(app.NdiName.Trim().Length > 0 ? app.NdiName.Trim() : "ARCA-PROMPTER", fmt, app.NdiAlpha); }
         catch (Exception e) { vm.NdiOn = false; vm.NdiDot = "Live"; vm.NdiStatus = "Erro · " + e.Message; Log.Error("NDI", e); return false; }
         _fmt = fmt; _alpha = app.NdiAlpha; _mirror = app.NdiMirror; _lastSig = null;
@@ -348,7 +350,7 @@ public sealed class NdiService
             if (clock.Elapsed.TotalSeconds - lastLog >= 5)
             {
                 var g0 = GC.CollectionCount(0); var g2 = GC.CollectionCount(2);
-                Log.Info($"NDI: {frames} quadros em 5 s · montagem {sumCompose / frames:0.0} ms (máx {maxCompose:0.0}) + envio {(sumWork - sumCompose) / frames:0.0} ms (máx {maxSend:0.0}) · maior atraso {maxLate:0.0} ms · atrasados {late2} · limpezas de memória {g0 - gc0} (completas {g2 - gc2})");
+                Log.Info($"NDI ({_label}): {frames} quadros em 5 s · montagem {sumCompose / frames:0.0} ms (máx {maxCompose:0.0}) + envio {(sumWork - sumCompose) / frames:0.0} ms (máx {maxSend:0.0}) · maior atraso {maxLate:0.0} ms · atrasados {late2} · limpezas de memória {g0 - gc0} (completas {g2 - gc2})");
                 sumWork = sumCompose = maxWork = maxLate = maxCompose = maxSend = 0; frames = late2 = 0; lastLog = clock.Elapsed.TotalSeconds; gc0 = g0; gc2 = g2;
             }
             n++;
@@ -375,23 +377,33 @@ public sealed class NdiService
                 if (need >= 0 && !_tiles.ContainsKey(need) && _pending.Add(need))
                 { var idx = need; _disp?.BeginInvoke(DispatcherPriority.Background, () => RenderTile(idx, version)); }
         }
-        var span = frame.AsSpan();
+        var zero = _zeroRow.Length == stride ? _zeroRow : (_zeroRow = new byte[stride]);
         // Linha do texto p: da faixa certa, ou fundo (antes do início / depois do fim / faixa ainda não pronta).
         ReadOnlySpan<byte> Row(long p)
         {
             var ti = TileAt(p, h);
             var src = ti == t0 ? a : ti == t1 ? b : null;
             if (src != null && p >= 0) return src.AsSpan((int)(p - (long)ti * h) * stride, stride);
-            return bgRow.Length == stride ? bgRow : _zeroRow.Length == stride ? _zeroRow : (_zeroRow = new byte[stride]);
+            return bgRow.Length == stride ? bgRow : zero;
         }
-        for (var r = 0; r < h; r++)
+        // Em faixas paralelas (uma por núcleo): num só núcleo, texto + camada sobreposta passavam de 16,7 ms por quadro
+        // em alguns roteiros e o NDI a 60p saía irregular (~45 qps, quase todos os quadros atrasados).
+        Parallel.For(0, Bands, band =>
         {
-            var dst = span.Slice(r * stride, stride);
-            if (wgt == 0) Row(p0 + r).CopyTo(dst);
-            else Lerp(Row(p0 + r), Row(p0 + r + 1), dst, wgt);
-        }
-        if (ov != null) BlendOverlay(frame, ov, ovRows, w, h);
+            int r0 = band * h / Bands, r1 = (band + 1) * h / Bands;
+            for (var r = r0; r < r1; r++)
+            {
+                var dst = frame.AsSpan(r * stride, stride);
+                if (wgt == 0) Row(p0 + r).CopyTo(dst);
+                else Lerp(Row(p0 + r), Row(p0 + r + 1), dst, wgt);
+            }
+            if (ov != null) BlendOverlay(frame, ov, ovRows, w, r0, r1);
+        });
     }
+
+    /// <summary>Faixas montadas em paralelo (uma por núcleo, até 8). <c>ARCA_NDI_BANDS</c> troca o número (medições).</summary>
+    private static readonly int Bands = Environment.GetEnvironmentVariable("ARCA_NDI_BANDS") is { } e && int.TryParse(e, out var nb)
+        ? Math.Clamp(nb, 1, 16) : Math.Clamp(Environment.ProcessorCount, 2, 8);
 
     private byte[] _zeroRow = Array.Empty<byte>();
 
@@ -411,12 +423,15 @@ public sealed class NdiService
         for (; i < d.Length; i++) d[i] = (byte)((a[i] * (256 - w) + b[i] * w) >> 8);
     }
 
-    /// <summary>Overlay (BGRA pré-multiplicado) sobre o quadro: d = s + d·(1 − αs). Só nos trechos com alfa.</summary>
-    private static unsafe void BlendOverlay(byte[] frame, byte[] ov, (int From, int To)[][] rows, int w, int h)
+    /// <summary>
+    /// Overlay (BGRA pré-multiplicado) sobre as linhas [r0, r1) do quadro: d = s + d·(1 − αs). Só nos trechos com alfa.
+    /// Divisão por 255 trocada por multiplicação e deslocamento (mesmo resultado arredondado, bem mais rápido).
+    /// </summary>
+    private static unsafe void BlendOverlay(byte[] frame, byte[] ov, (int From, int To)[][] rows, int w, int r0, int r1)
     {
         fixed (byte* fp = frame) fixed (byte* op = ov)
         {
-            for (var r = 0; r < h; r++)
+            for (var r = r0; r < r1 && r < rows.Length; r++)
             foreach (var (from, to) in rows[r])
             {
                 var o = op + (r * w + from) * 4; var d = fp + (r * w + from) * 4;
@@ -426,14 +441,18 @@ public sealed class NdiService
                     if (sa == 0) continue;
                     if (sa == 255) { *(uint*)d = *(uint*)o; continue; }
                     int ia = 255 - sa;
-                    d[0] = (byte)(o[0] + (d[0] * ia + 127) / 255);
-                    d[1] = (byte)(o[1] + (d[1] * ia + 127) / 255);
-                    d[2] = (byte)(o[2] + (d[2] * ia + 127) / 255);
-                    d[3] = (byte)(sa + (d[3] * ia + 127) / 255);
+                    d[0] = (byte)(o[0] + Div255(d[0] * ia));
+                    d[1] = (byte)(o[1] + Div255(d[1] * ia));
+                    d[2] = (byte)(o[2] + Div255(d[2] * ia));
+                    d[3] = (byte)(sa + Div255(d[3] * ia));
                 }
             }
         }
     }
+
+    /// <summary>x/255 arredondado, para 0 ≤ x ≤ 65025.</summary>
+    [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+    private static int Div255(int x) { x += 128; return (x + (x >> 8)) >> 8; }
 
     public void SetPosition(double y, double v) { lock (_posLock) { _y = y; _v = v; _yAt = Stopwatch.GetTimestamp(); } }
 }

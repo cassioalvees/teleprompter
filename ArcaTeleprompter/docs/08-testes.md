@@ -61,6 +61,22 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.8.7) — NDI a 60p e monitor web atualizado sozinho
+
+**Diagnóstico no computador do usuário** (i5-1135G7, 4 núcleos/8 threads, na tomada): registro do ARCA com NDI 1080p60 e fundo transparente — 136–250 quadros a cada 5 s (meta 300), montagem 20–33 ms por quadro, quase todos atrasados (até 116 ms). Gravação das posições enviadas às telas enquanto o usuário arrastava no iPad: o texto andava em pulsos (salto grande, desliza ~0,4 s, para) — o padrão do monitor web antigo, que só mandava o arrasto ao soltar o dedo: o iPad ainda estava com o código anterior à 2.8.6.
+
+**NDI 1080p60 com fundo transparente** (app de teste licenciado, prompt rodando, com o ARCA do usuário aberto ao lado):
+
+| Montagem | Montagem por quadro | Quadros em 5 s (meta 300) | Atrasados |
+|---|---|---|---|
+| 1 núcleo (`ARCA_NDI_BANDS=1`, como antes) | 3,8–13 ms (máx 40) | 228–300 | 11–88 |
+| Faixas paralelas | 1,2–1,7 ms (máx 4) | 300 · 300 · 300 | 1 · 0 · 0 |
+| Faixas paralelas + janela do talento em tela cheia | 1,6–2,1 ms (máx 5) | 302 · 300 (após abrir a janela) | 3 · 0 |
+
+**Recarga automática do monitor web**: página aberta e marcada; app reaberto sem mudança → reconectou, sem recarregar (marca mantida); app reaberto com um arquivo do monitor web alterado → a página recarregou sozinha ao reconectar e já com o arquivo novo.
+
+Autoteste: as duas primeiras rodadas (logo depois de compilações, com o ARCA do usuário mandando NDI a 60p ao lado) falharam nos 3 itens de suavidade do editor (8 quadros acima de 50 ms); o código da 2.8.6 nas mesmas condições passou, e a 2.8.7 recompilada passou 2 de 2 — variação de carga do computador, não a mudança (que não toca no desenho do editor). Não testado: num iPad físico.
+
 ## Resultados (versão 2.8.6) — arrastar pelo iPad com o NDI acompanhando
 
 App licenciado com NDI ligado (nome próprio "ARCA-TESTE-ARRASTO") e monitor web na porta 8430; arrasto de dedo simulado no navegador (toque, parado): 3 s subindo ~130 px/s, ~60 movimentos por segundo. Receptor NDI independente (`tools/NdiProbe --movimento 300`), 300 quadros a 30 qps:

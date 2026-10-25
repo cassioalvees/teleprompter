@@ -17,7 +17,7 @@ let state = null;           // PrompterSnapshot
 // Usar o deslocamento (e não uma fração) mantém a linha de leitura sobre uma linha do texto mesmo que a
 // altura total do parágrafo varie um pouco entre o app e o navegador.
 let feed = { y: 0, v: 0, b: -1, o: 0, at: performance.now() };
-let dragHoldUntil = 0;
+let dragHoldUntil = 0, webVer = null;   // webVer: identidade do monitor web no app (ver mensagem auth)
 let clockOff = null;          // performance.now() − relógio do servidor (atraso mínimo)
 let shown = null, lastFrame = performance.now(), localV = 0;
 let ws = null, authed = false, retry = 0;
@@ -38,6 +38,9 @@ const setConn = s => { $('#conn b').textContent = s; };
 
 function onMessage(m) {
   if (m.t === 'auth') {
+    // O ARCA foi atualizado e reaberto enquanto esta página estava aberta: recarrega para usar o monitor web novo
+    // (senão continuaria com o código antigo na memória até alguém recarregar à mão).
+    if (m.ver) { if (!webVer) webVer = m.ver; else if (m.ver !== webVer) { location.reload(); return; } }
     authed = m.ok;
     $('#login').hidden = m.ok || !m.needPass;
     $('#loginErr').hidden = m.ok || !prefs.pass;
@@ -281,16 +284,7 @@ addEventListener('pointerup', () => {
 function along(e) { return { 90: -e.clientX, 180: -e.clientY, 270: e.clientX }[prefs.rot] ?? e.clientY; }
 
 // ——— Tela cheia (sem bordas, como o F11), nesta tela ou em outro monitor ———
-// iPad/iPhone: a tela cheia do Safari sai quando se arrasta para baixo — o mesmo gesto que aqui freia e rola o texto.
-// Lá o certo é abrir pela Tela de Início: abre como app, já em tela cheia, sem esse gesto. O botão explica como.
-const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-const asApp = navigator.standalone === true || matchMedia('(display-mode: standalone), (display-mode: fullscreen)').matches;
-if (isIOS) {
-  body.classList.add('ios');
-  if (asApp) body.classList.add('app');   // aberto pela Tela de Início: já está em tela cheia
-}
 function toggleFs() {
-  if (isIOS) { if (!asApp) $('#iosFs').showModal(); return; }
   const d = document.documentElement;
   if (document.fullscreenElement || document.webkitFullscreenElement) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
   else (d.requestFullscreen || d.webkitRequestFullscreen)?.call(d, { navigationUI: 'hide' })?.catch?.(() => {});
