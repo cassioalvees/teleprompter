@@ -106,9 +106,11 @@
       <Grid Margin="0,0,0,8">
         <Grid.ColumnDefinitions><ColumnDefinition Width="Auto" SharedSizeGroup="Lbl"/><ColumnDefinition/></Grid.ColumnDefinitions>
         <TextBlock Text="Senha" Style="{StaticResource Label}"/>
-        <TextBox Grid.Column="1" Style="{StaticResource Input}" Text="{Binding App.WebPassword, UpdateSourceTrigger=PropertyChanged, Delay=500}" ToolTip="Opcional: pedida no navegador/iPad"/>
+        <TextBox x:Name="WebPassBox" Grid.Column="1" Style="{StaticResource Input}" Text="{Binding App.WebPassword, UpdateSourceTrigger=PropertyChanged, Delay=500}" ToolTip="Pedida no navegador/iPad antes de ver o roteiro e controlar" TextChanged="WebPass_Changed"/>
       </Grid>
-      <CheckBox Content="Permitir controlar o prompter pelo navegador" IsChecked="{Binding App.WebControl}" Checked="WebOption_Click" Unchecked="WebOption_Click" Margin="0,0,0,4"/>
+      <CheckBox x:Name="WebCtrlBox" Content="Permitir controlar o prompter pelo navegador" IsChecked="{Binding App.WebControl}" Checked="WebOption_Click" Unchecked="WebOption_Click" Margin="0,0,0,4"/>
+      <!-- Sem senha e com controle: qualquer aparelho da mesma rede vê o roteiro e controla o prompter. -->
+      <TextBlock x:Name="WebOpenWarn" Text="Sem senha: qualquer pessoa na mesma rede Wi-Fi pode ver o roteiro e controlar o prompter. Em eventos, igrejas e redes compartilhadas, defina uma senha." TextWrapping="Wrap" FontSize="11.5" Foreground="{DynamicResource Live}" Margin="0,2,0,8"/>
       <CheckBox Content="Ligar o monitor web ao abrir o app" IsChecked="{Binding App.WebOnStart}" Margin="0,0,0,10"/>
       <Button Style="{StaticResource Pill}" Content="Abrir monitor web e QR code do iPad" Click="OpenMonitor_Click" Focusable="False"/>
     </StackPanel>

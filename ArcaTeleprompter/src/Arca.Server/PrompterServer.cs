@@ -52,6 +52,8 @@ public sealed class PrompterServer : IAsyncDisposable
         public bool Authed { get; set; }
         public readonly SemaphoreSlim Send = new(1, 1);
         public string? Agent { get; init; }
+        public string Ip { get; init; } = "?";
+        public int Fails;
     }
 
     public async Task StartAsync(int port, bool https)
@@ -187,12 +189,30 @@ public sealed class PrompterServer : IAsyncDisposable
         foreach (var m in new[] { _html, _state, _pos }) if (m != null) _ = SendAsync(c, Encoding.UTF8.GetBytes(m));
     }
 
+    /// <summary>
+    /// A conexão vem da própria página do monitor? Sem isso, qualquer site aberto num navegador da mesma rede podia
+    /// abrir ws://IP:8420/ws e controlar o prompter (sequestro de WebSocket entre sites). Sem Origin (OBS, apps,
+    /// ferramentas) é permitido: não é um navegador agindo por outro site.
+    /// </summary>
+    private static bool SameOrigin(HttpContext ctx)
+    {
+        var o = ctx.Request.Headers.Origin.ToString();
+        if (string.IsNullOrEmpty(o)) return true;
+        return Uri.TryCreate(o, UriKind.Absolute, out var u) && string.Equals(u.Authority, ctx.Request.Host.Value, StringComparison.OrdinalIgnoreCase);
+    }
+
+    // Senha errada: no máximo 5 tentativas por conexão e 10 a cada 10 min por endereço (depois, 10 min bloqueado).
+    private readonly ConcurrentDictionary<string, (int Fails, DateTime Since)> _fails = new();
+    private bool Blocked(string ip) => _fails.TryGetValue(ip, out var f) && f.Fails >= 10 && DateTime.UtcNow - f.Since < TimeSpan.FromMinutes(10);
+    private void Failed(string ip) => _fails.AddOrUpdate(ip, _ => (1, DateTime.UtcNow), (_, f) => DateTime.UtcNow - f.Since > TimeSpan.FromMinutes(10) ? (1, DateTime.UtcNow) : (f.Fails + 1, f.Since));
+
     private async Task HandleSocket(HttpContext ctx)
     {
         if (!ctx.WebSockets.IsWebSocketRequest) { ctx.Response.StatusCode = 400; return; }
+        if (!SameOrigin(ctx)) { ctx.Response.StatusCode = 403; Log.Info("Monitor web: conexão recusada de outra origem (" + ctx.Request.Headers.Origin + ")"); return; }
         using var ws = await ctx.WebSockets.AcceptWebSocketAsync();
         var id = Guid.NewGuid();
-        var client = new Client { Socket = ws, Agent = ctx.Request.Headers.UserAgent };
+        var client = new Client { Socket = ws, Agent = ctx.Request.Headers.UserAgent, Ip = ctx.Connection.RemoteIpAddress?.ToString() ?? "?" };
         _clients[id] = client;
         var buf = new byte[16 * 1024];
         try
@@ -227,7 +247,18 @@ public sealed class PrompterServer : IAsyncDisposable
         if (t == "auth")
         {
             var pass = m?["pass"]?.GetValue<string>() ?? "";
-            var ok = _password.Length == 0 || CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(pass), Encoding.UTF8.GetBytes(_password));
+            var blocked = _password.Length > 0 && Blocked(c.Ip);
+            var ok = !blocked && (_password.Length == 0 || CryptographicOperations.FixedTimeEquals(Encoding.UTF8.GetBytes(pass), Encoding.UTF8.GetBytes(_password)));
+            if (!ok && _password.Length > 0 && pass.Length > 0)
+            {
+                Failed(c.Ip);
+                if (++c.Fails >= 5 || Blocked(c.Ip))
+                {
+                    Log.Info($"Monitor web: senha errada repetidas vezes de {c.Ip} — conexão encerrada");
+                    _ = c.Socket.CloseAsync(WebSocketCloseStatus.PolicyViolation, "tentativas", CancellationToken.None);
+                    return;
+                }
+            }
             c.Authed = ok;
             _ = SendAsync(c, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(new { t = "auth", ok, needPass = _password.Length > 0, ver = WebBuild.Value })));
             if (ok) Replay(c);

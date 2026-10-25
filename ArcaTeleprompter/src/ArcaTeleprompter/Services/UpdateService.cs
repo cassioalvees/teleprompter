@@ -22,6 +22,8 @@ public sealed class UpdateInfo
     [JsonPropertyName("sha256")] public string Sha256 { get; set; } = "";
     [JsonPropertyName("notes")] public string Notes { get; set; } = "";
     [JsonPropertyName("date")] public string Date { get; set; } = "";
+    /// <summary>Assinatura de "versão|arquivo|sha256|tamanho" (Arca.Core.Net.UpdateSignature).</summary>
+    [JsonPropertyName("sig")] public string? Sig { get; set; }
     [JsonIgnore] public Uri? DownloadUri { get; set; }
 }
 
@@ -53,6 +55,14 @@ public sealed class UpdateService
         if (!resp.IsSuccessStatusCode) return null;
         var info = JsonSerializer.Deserialize<UpdateInfo>(await resp.Content.ReadAsStringAsync(ct));
         if (info == null || !System.Version.TryParse(info.Version, out _) || string.IsNullOrWhiteSpace(info.Url) || info.Sha256.Length != 64) return null;
+        // Só instala o que foi assinado com a chave de atualizações: o SHA-256 vem do mesmo lugar que o instalador, e
+        // sozinho não protege de quem conseguisse publicar no GitHub. ARCA_UPDATE_ALLOW_UNSIGNED=1 só para testes locais.
+        if (!Arca.Core.Net.UpdateSignature.Verify(Arca.Core.Net.UpdateSignature.Payload(info.Version, info.File, info.Sha256, info.Size), info.Sig)
+            && Environment.GetEnvironmentVariable("ARCA_UPDATE_ALLOW_UNSIGNED") != "1")
+        {
+            Log.Info($"Atualização: latest.json da versão {info.Version} sem assinatura válida — ignorado");
+            return null;
+        }
         // O GitHub redireciona "latest/download" para a versão: endereços relativos valem a partir do endereço final.
         // Nome relativo: monta a partir do endereço ORIGINAL do latest.json. O endereço final do redirecionamento
         // do GitHub é temporário e assinado (?jwt=…); montar a partir dele perdia a assinatura (erro 618).
@@ -108,14 +118,30 @@ public sealed class UpdateService
         if (r != 1) { Log.Info("Atualização: lembrar depois"); return; }
         var file = new UpdateDownloadWindow(_main, info).Run();
         if (file == null) return;
-        Launch(file);
+        Launch(file, info.Sha256);
     }
 
-    /// <summary>Roda o instalador em modo atualização e fecha o app (o instalador reabre o app no fim).</summary>
-    private void Launch(string file)
+    private static FileStream? _held;
+
+    /// <summary>
+    /// Roda o instalador em modo atualização e fecha o app (o instalador reabre o app no fim). O arquivo fica aberto só
+    /// para leitura até o app fechar e o SHA-256 é conferido de novo nesse instante: entre o download e a execução,
+    /// outro programa não consegue trocar o instalador (a pasta de downloads é do usuário).
+    /// </summary>
+    private void Launch(string file, string sha256)
     {
         try
         {
+            _held?.Dispose();
+            _held = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
+            var hash = Convert.ToHexString(SHA256.HashData(_held));
+            if (!hash.Equals(sha256, StringComparison.OrdinalIgnoreCase))
+            {
+                _held.Dispose(); _held = null;
+                Log.Info("Atualização: o instalador mudou depois do download — nada foi instalado");
+                ArcaDialog.Info(_main, "Atualização", "A atualização foi cancelada", "O arquivo baixado foi alterado antes de instalar. Nada foi instalado; tente de novo.", danger: true);
+                return;
+            }
             Log.Info("Atualização: iniciando " + Path.GetFileName(file));
             Process.Start(new ProcessStartInfo(file, "--update") { UseShellExecute = true });
             _main.Close();

@@ -3,6 +3,25 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.9.0] — 2026-10-25
+
+Revisão de segurança completa (monitor web, servidor de licenças, atualização, instalador e licença) — detalhes em [docs/10-seguranca-privacidade.md](docs/10-seguranca-privacidade.md).
+
+### Segurança
+- **Monitor web: só aceita conexões da própria página.** Antes, qualquer site aberto num navegador da mesma rede podia abrir o WebSocket do ARCA e controlar o prompter (com o padrão "sem senha", sem barreira). Agora conexões de outra origem são recusadas; OBS e programas (sem origem) continuam funcionando.
+- **Monitor web: limite de senhas erradas.** 5 erradas encerram a conexão; 10 em 10 minutos bloqueiam aquele aparelho por 10 minutos. Antes não havia limite.
+- **Monitor web: aviso no app** (inspetor › Telas) quando o controle pelo navegador está liberado sem senha.
+- **Cor do texto validada** no HTML das telas: só #hex, rgb()/rgba() ou nome (um arquivo importado podia levar CSS junto com a cor).
+- **Atualização assinada:** o latest.json passa a ser assinado com uma chave só de atualizações (ECDSA P-256) e o app recusa o que não estiver assinado — antes, quem conseguisse publicar no GitHub mandaria um instalador falso que o app aceitaria. O instalador baixado fica travado contra escrita e o SHA-256 é conferido de novo na hora de abrir.
+- **Instalador recusa pastas perigosas** (pasta do Windows, raiz do disco, "Arquivos de Programas" em si, pasta de usuários), também na continuação elevada (UAC), que lia a pasta de um arquivo temporário.
+- **Servidor de licenças:** o tempo de resposta do login não revela mais se um e-mail tem conta; sessões vencidas são apagadas.
+
+### Documentação
+- **Manual do Operador 2.9:** licença ilimitada, atualização assinada, senha e segurança do monitor web, arrastar no iPad, NDI a 60p, novos problemas comuns e **seção 13 — Perguntas frequentes** (24 perguntas). O FAQ também está em `docs/FAQ.md`.
+
+### Adicionado
+- `tools/assinar-atualizacao.mjs` (assinatura usada pelo `publish-release.ps1` e pelo `build.ps1`); testes de segurança (cor, assinatura) e de pastas do instalador (`tools/SetupTest`).
+
 ## [2.8.8] — 2026-10-25
 
 ### Corrigido

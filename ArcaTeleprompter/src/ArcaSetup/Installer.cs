@@ -60,6 +60,27 @@ public static class Installer
 
     public static bool IsAdmin { get { using var id = WindowsIdentity.GetCurrent(); return new WindowsPrincipal(id).IsInRole(WindowsBuiltInRole.Administrator); } }
 
+    /// <summary>
+    /// Pasta aceitável para instalar: caminho completo de disco, fora da pasta do Windows, e nunca a raiz do disco, a
+    /// pasta de usuários ou a própria "Arquivos de Programas" (o instalador escreveria lá dentro como administrador).
+    /// </summary>
+    public static bool SafeTarget(string p)
+    {
+        try
+        {
+            if (!System.Text.RegularExpressions.Regex.IsMatch(p.Trim(), @"^[a-zA-Z]:\\[^<>:""|?*]*$")) return false;
+            var full = System.IO.Path.TrimEndingDirectorySeparator(System.IO.Path.GetFullPath(p.Trim()));
+            bool Under(Environment.SpecialFolder f) { var d = Environment.GetFolderPath(f); return d.Length > 0 && (full.Equals(d, StringComparison.OrdinalIgnoreCase) || full.StartsWith(d + "\\", StringComparison.OrdinalIgnoreCase)); }
+            bool Is(Environment.SpecialFolder f) { var d = Environment.GetFolderPath(f); return d.Length > 0 && full.Equals(System.IO.Path.TrimEndingDirectorySeparator(d), StringComparison.OrdinalIgnoreCase); }
+            if (full.Length <= 3) return false;                                   // raiz do disco
+            if (Under(Environment.SpecialFolder.Windows)) return false;           // C:\Windows e tudo dentro
+            if (Is(Environment.SpecialFolder.ProgramFiles) || Is(Environment.SpecialFolder.ProgramFilesX86) || Is(Environment.SpecialFolder.CommonApplicationData)) return false;
+            if (Is(Environment.SpecialFolder.UserProfile) || full.Equals(System.IO.Path.GetDirectoryName(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)), StringComparison.OrdinalIgnoreCase)) return false;
+            return true;
+        }
+        catch { return false; }
+    }
+
     public static string DefaultPath(Scope s) => s == Scope.AllUsers
         ? System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), Product)
         : System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Programs", Product);

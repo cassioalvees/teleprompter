@@ -1,7 +1,12 @@
-ARCA Teleprompter 2.8.8 — novidades
+ARCA Teleprompter 2.9.0 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- Mais segurança no monitor web: só a própria página controla o prompter (sites de terceiros não), e senhas erradas repetidas bloqueiam o aparelho por 10 minutos. O app avisa quando o controle está liberado sem senha.
+- Atualizações assinadas digitalmente: o app só instala versões publicadas pela ARCA.
+- Manual atualizado, com uma seção nova de Perguntas frequentes.
+
+Também nesta atualização (2.8.8):
 - Preferências com tamanho fixo: a janela não cresce nem encolhe ao trocar de aba.
 
 Também nesta atualização (2.8.7):

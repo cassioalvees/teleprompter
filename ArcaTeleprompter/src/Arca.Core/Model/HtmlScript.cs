@@ -147,12 +147,19 @@ public static partial class HtmlScript
     public static string RunHtml(TextRun r)
     {
         var t = Enc(r.Text);
-        if (r.Color != null) t = $"<span style=\"color:{Enc(r.Color)}\">{t}</span>";
+        if (r.Color != null && SafeColor(r.Color)) t = $"<span style=\"color:{Enc(r.Color)}\">{t}</span>";
         if (r.Underline) t = $"<u>{t}</u>";
         if (r.Italic) t = $"<i>{t}</i>";
         if (r.Bold) t = $"<b>{t}</b>";
         return t;
     }
+
+    /// <summary>
+    /// Só cores de verdade (#hex, rgb()/rgba() ou um nome) entram no estilo: uma cor vinda de arquivo importado não pode
+    /// levar outras regras de CSS para as telas (ex.: "red;background:url(…)" buscaria um endereço de fora).
+    /// </summary>
+    public static bool SafeColor(string c) => System.Text.RegularExpressions.Regex.IsMatch(c.Trim(),
+        @"^(#[0-9a-fA-F]{3,8}|rgba?\(\s*[\d.]+%?\s*,\s*[\d.]+%?\s*,\s*[\d.]+%?\s*(,\s*[\d.]+%?\s*)?\)|[a-zA-Z]{3,20})$");
 
     public static string Enc(string s) => s.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;").Replace("\"", "&quot;");
 }

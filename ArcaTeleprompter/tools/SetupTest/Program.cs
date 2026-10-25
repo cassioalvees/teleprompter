@@ -13,6 +13,13 @@ var hadKey = Registry.CurrentUser.OpenSubKey(Installer.RegKey) != null;
 var fails = 0;
 void Check(bool ok, string what) { Console.WriteLine((ok ? "OK    " : "FALHA ") + what); if (!ok) fails++; }
 
+// Pastas que o instalador aceita (também na continuação elevada).
+foreach (var (p, want) in new[] {
+    (@"C:\Program Files\ARCA Teleprompter", true), (@"D:\Apps\ARCA Teleprompter", true), (@"C:\Users\Cassio Santos\AppData\Local\Programs\ARCA Teleprompter", true),
+    (@"C:\", false), (@"C:\Windows", false), (@"C:\Windows\System32", false), (@"C:\Program Files", false), (@"C:\ProgramData", false),
+    (@"C:\Users", false), (Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), false), (@"relativo\pasta", false), (@"C:\pasta<inválida>", false) })
+    Check(Installer.SafeTarget(p) == want, $"pasta {(want ? "aceita" : "recusada")}: {p}");
+
 // "Instalação anterior": o app do pacote com um byte diferente em cada arquivo.
 using (var zip = ZipFile.OpenRead(Path.Combine(AppContext.BaseDirectory, "payload.zip")))
     foreach (var e in zip.Entries.Where(e => e.Length > 0 && e.FullName.Replace('\\', '/').StartsWith("app/")))

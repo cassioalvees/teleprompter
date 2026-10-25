@@ -23,12 +23,14 @@
   kbd { font:13px Consolas, monospace; background:var(--ui); border:1px solid var(--line); border-bottom-width:2px; border-radius:4px; padding:1px 6px; white-space:nowrap; }
   .tip { background:var(--soft); border-left:3px solid var(--accent); padding:10px 14px; border-radius:6px; margin:12px 0; }
   ol li, ul li { margin:3px 0; }
+  details { background:var(--ui); border:1px solid var(--line); border-radius:8px; margin:6px 0; padding:0 14px; }
+  summary { cursor:pointer; padding:10px 0; font-weight:600; } details p { margin:0 0 12px; color:var(--muted); }
   @media (max-width:640px) { nav { columns:1; } h1 { font-size:23px; } table { font-size:14px; } }
   @media print { nav { display:none; } h2 { break-after:avoid; } body { background:#fff; } }
 </style>
 </head>
 <body>
-<header><div><h1>ARCA <span>Teleprompter</span></h1><p>Manual do Operador — versão 2.0</p></div></header>
+<header><div><h1>ARCA <span>Teleprompter</span></h1><p>Manual do Operador — versão 2.9</p></div></header>
 <main>
 <nav>
   <a href="#inicio">1. Primeiros passos</a>
@@ -43,15 +45,16 @@
   <a href="#mos">10. Redação (MOS) e legendas</a>
   <a href="#atalhos">11. Atalhos</a>
   <a href="#problemas">12. Solução de problemas</a>
+  <a href="#faq">13. Perguntas frequentes</a>
 </nav>
 
 <h2 id="inicio">1. Primeiros passos</h2>
 <p>Na primeira execução (e depois de uma instalação nova) o ARCA abre limpo, com um roteiro vazio, <b>Sem título.tps</b>, e a tela de <b>boas-vindas</b> (também em Ajuda › Boas-vindas). Depois de uma atualização, a mesma tela mostra as novidades. Nas seguintes, ele restaura as abas da última sessão, inclusive alterações não salvas.</p>
 <p>Roteiros de exemplo ficam em <b>Documentos\ARCA Teleprompter\Exemplos</b>. Use <kbd>Ctrl</kbd>+<kbd>O</kbd> para abri-los.</p>
 <h3>Licença</h3>
-<p>O ARCA é gratuito com uma conta no site. Sem licença ele funciona em <b>modo demonstração</b>: 10 minutos de prompter por dia, um roteiro e uma tela de prompter (NDI, monitor web/iPad, voz, redação, câmera e impressão pedem a licença). Para ativar: crie sua conta no site, copie o código em <b>Minha conta › Licenças</b> e cole em <b>Ajuda › Licença</b> (ou na tela que aparece ao abrir). A ativação usa a internet uma vez; depois o app funciona offline. Cada licença fica ativa em um computador por vez: para trocar, use <b>Remover deste computador</b> em Minha conta › Licenças (ou Ajuda › Licença › Desativar este computador) e ative no novo com o mesmo código. A barra de status mostra a situação (Licenciado, ou os minutos de demonstração que restam hoje).</p>
+<p>O ARCA é gratuito com uma conta no site. Sem licença ele funciona em <b>modo demonstração</b>: 10 minutos de prompter por dia, um roteiro e uma tela de prompter (NDI, monitor web/iPad, voz, redação, câmera e impressão pedem a licença). Para ativar: crie sua conta no site, copie o código em <b>Minha conta › Licenças</b> e cole em <b>Ajuda › Licença</b> (ou na tela que aparece ao abrir). A ativação usa a internet uma vez; depois o app funciona offline. Cada licença fica ativa em um computador por vez: para trocar, use <b>Remover deste computador</b> em Minha conta › Licenças (ou Ajuda › Licença › Desativar este computador) e ative no novo com o mesmo código. A barra de status mostra a situação (Licenciado, ou os minutos de demonstração que restam hoje). Licenças <b>ilimitadas</b> (para equipe ou para o dono) ativam em quantos computadores quiser com o mesmo código e aparecem em Minha conta como "Vários computadores".</p>
 <h3>Atualizações</h3>
-<p>Ao abrir, o ARCA procura versão nova pela internet. Se houver, aparece <b>"ARCA Teleprompter X disponível"</b> com as novidades: <b>Atualizar agora</b> baixa a versão (com progresso e conferência do arquivo), fecha o app e instala sozinho, e o app reabre na versão nova. <b>Lembrar depois</b> pergunta de novo na próxima vez que o app abrir. O aviso nunca aparece com o prompt rodando ou a voz ligada. Roteiros, preferências e modelos de voz são mantidos. Para procurar na hora: Ajuda › Procurar atualizações; para desligar: Preferências › Geral.</p>
+<p>Ao abrir, o ARCA procura versão nova pela internet. Se houver, aparece <b>"ARCA Teleprompter X disponível"</b> com as novidades: <b>Atualizar agora</b> baixa a versão (com progresso e conferência do arquivo), fecha o app e instala sozinho, e o app reabre na versão nova. <b>Lembrar depois</b> pergunta de novo na próxima vez que o app abrir. O aviso nunca aparece com o prompt rodando ou a voz ligada. Roteiros, preferências e modelos de voz são mantidos. Para procurar na hora: Ajuda › Procurar atualizações; para desligar: Preferências › Geral. O app só instala versões <b>assinadas digitalmente</b> pela ARCA e confere o arquivo de novo logo antes de instalar. Navegadores e iPads ligados ao monitor web recarregam sozinhos quando o ARCA muda de versão.</p>
 <p>A janela tem quatro áreas: a <b>lista de marcadores</b> (esquerda), o <b>editor</b>, que já mostra o texto como no prompter (centro), o <b>inspetor</b> com Roteiro, Overlay, Telas, Voz e Vídeo (direita), e o <b>transporte</b> (embaixo), com a mesma barra de controle da janela do talento, das janelas de prompter e do navegador: parágrafo ↑, linha ↑, linha ↓, parágrafo ↓, play, início, ré, − velocidade +.</p>
 
 <h2 id="editor">2. Editor de roteiro</h2>
@@ -101,17 +104,26 @@
   <li>Na primeira vez, baixe o certificado no link indicado na página e instale-o em Ajustes › Geral › VPN e Gerenciamento de Dispositivos. Depois ative-o em Ajustes › Geral › Sobre › Ajustes de Confiança de Certificados.</li>
   <li>No Safari, toque em Compartilhar › <b>Adicionar à Tela de Início</b>. O prompter abre em tela cheia e a tela fica acesa.</li>
   <li><b>Girar o texto</b> (monitor de pé ou invertido): ⚙ › Tela › Girar o texto — ou acrescente <code>?girar=90</code> ao endereço.</li>
-  <li><b>Tela cheia sem bordas</b> (como o F11): ⚙ › Tela cheia › <i>Nesta tela</i> ou <i>Outro monitor…</i> (Chrome ou Edge; o navegador pede permissão para "gerenciar janelas"). A tecla <kbd>F</kbd> liga e desliga.</li>
+  <li><b>Tela cheia sem bordas</b> (como o F11): botão de tela cheia na barra, ou ⚙ › Tela cheia › <i>Nesta tela</i> ou <i>Outro monitor…</i> (Chrome ou Edge; o navegador pede permissão para "gerenciar janelas"). A tecla <kbd>F</kbd> liga e desliga. No iPad, o Safari mostra "arraste para baixo para sair".</li>
+  <li><b>Arrastar o texto</b> com o dedo: parado, rola o texto — o app, as outras telas e o NDI acompanham; rodando, para cima acelera e para baixo freia.</li>
   <li>Para <b>OBS ou vMix</b>, use o endereço com <code>?obs</code> (ex.: <code>http://IP:8420/?obs</code>): só o texto, sem barra nem controles; acrescente <code>&amp;fundo=transparente</code> para sobrepor ao vídeo.</li>
   <li>No menu ⚙ da página escolha o modo:
     <ul><li><b>Limpo</b> mostra só o texto, sem contadores. É o modo para o vidro do prompter.</li>
         <li><b>Controle</b> mostra a barra igual à do talento. Ela só comanda o app se o operador liberar <i>Controle remoto</i>.</li></ul></li>
   <li>Espelhamento horizontal e vertical, HUD e senha são guardados em cada aparelho.</li>
 </ol>
-<div class="tip">Em redes compartilhadas, defina uma <b>senha</b> e mantenha o controle remoto desligado quando não precisar dele.</div>
+<h3>Senha e segurança do monitor web</h3>
+<p>A <b>senha</b> (inspetor › Telas › Monitor web) é pedida no navegador/iPad antes de mostrar o roteiro e de aceitar comandos. <b>Sem senha, qualquer aparelho na mesma rede Wi-Fi vê o texto e, com o controle liberado, controla o prompter</b> — o app mostra esse aviso em vermelho. Proteções do app:</p>
+<ul>
+  <li>Só aceita conexões da própria página do monitor (ou de programas como o OBS): um site aberto num navegador da rede não consegue controlar o prompter.</li>
+  <li>5 senhas erradas encerram a conexão; 10 em 10 minutos bloqueiam aquele aparelho por 10 minutos.</li>
+  <li>No endereço <b>http</b> (8420) o texto e a senha passam sem criptografia; o <b>https</b> (8421, com o certificado instalado) cifra a conexão.</li>
+</ul>
+<div class="tip">Em eventos, igrejas e redes compartilhadas, defina uma <b>senha</b>, use o https e desligue <i>Permitir controlar o prompter pelo navegador</i> quando não precisar dele.</div>
 
 <h2 id="ndi">8. Saída NDI</h2>
-<p>Instale o <b>NDI Runtime 6</b> (há um link no app). No inspetor › Telas › NDI, escolha o formato (1080p 29,97/59,94/25 ou 720p) e o fundo: opaco, ou transparente para sobrepor ao vídeo. A fonte aparece no mixer como <b>MÁQUINA (ARCA Teleprompter)</b>. O app mostra quantos receptores estão conectados e o tally.</p>
+<p>Instale o <b>NDI Runtime 6</b> (há um link no app). No inspetor › Telas › NDI, escolha o formato (1080p 29,97/59,94/25 ou 720p) e o fundo: opaco, ou transparente para sobrepor ao vídeo. A fonte aparece no mixer como <b>MÁQUINA (nome da saída)</b>. O app mostra quantos receptores estão conectados e o tally.</p>
+<p>O quadro é montado usando todos os núcleos do processador: 1080p a 59,94 quadros, com fundo transparente, sai sem atrasos num processador de notebook comum. Em computadores modestos, 29,97 pesa a metade. A cada 5 s o registro (Ajuda › Registro de eventos) mostra o nome da saída, quantos quadros saíram e quantos atrasaram.</p>
 
 <h2 id="voz">9. Acompanhamento por voz</h2>
 <ol>
@@ -169,8 +181,45 @@
   <tr><td>"Adicionar à Tela de Início" abre só o site</td><td>Use o endereço https e instale e ative o certificado (seção 7).</td></tr>
   <tr><td>NDI indisponível</td><td>Instale o NDI Runtime 6 e reinicie o app.</td></tr>
   <tr><td>A voz não acompanha</td><td>Confira o nível no medidor, o canal ASIO e se o texto do roteiro corresponde ao que está sendo lido. Se o nível está bom e mesmo assim as palavras não aparecem, troque o motor para <b>Whisper · preciso</b>.</td></tr>
+  <tr><td>iPad ou navegador anda aos pulos, ou com comportamento antigo</td><td>Recarregue a página uma vez (no app da Tela de Início: feche e abra). Da 2.8.7 em diante isso acontece sozinho quando o ARCA atualiza.</td></tr>
+  <tr><td>O iPad não aceita a senha</td><td>Depois de muitas senhas erradas o aparelho fica bloqueado por 10 minutos. Espere e use a senha certa (inspetor › Telas › Monitor web).</td></tr>
+  <tr><td>NDI sem fluidez</td><td>Veja no registro as linhas "NDI (nome · formato)": muitos quadros atrasados indicam computador sobrecarregado — use 29,97 ou feche programas pesados.</td></tr>
+  <tr><td>A instalação diz que um arquivo está em uso</td><td>Feche o programa indicado e clique em <b>Tentar de novo</b>. Se falhar, a instalação anterior volta inteira.</td></tr>
   <tr><td>Algo estranho aconteceu</td><td>Veja Ajuda › Registro de eventos. Os arquivos ficam em %LOCALAPPDATA%\ARCA Teleprompter\logs.</td></tr>
 </table>
+
+<h2 id="faq">13. Perguntas frequentes</h2>
+<h3>Licença e conta</h3>
+<details><summary>O ARCA é pago?</summary><p>Não. A licença é gratuita e vitalícia: crie a conta no site, copie o código em <b>Minha conta › Licenças</b> e ative em <b>Ajuda › Licença</b>.</p></details>
+<details><summary>Posso usar em mais de um computador?</summary><p>A licença gratuita fica ativa em um computador por vez. Para trocar, clique em <b>Remover deste computador</b> em Minha conta › Licenças (ou Ajuda › Licença › Desativar este computador) e ative no novo com o mesmo código. Licenças <b>ilimitadas</b> (equipe, dono) ativam em quantos computadores quiser.</p></details>
+<details><summary>Precisa de internet para usar?</summary><p>Só para ativar e para atualizar. Depois de ativado, o ARCA funciona offline — inclusive a voz. Ao abrir com internet, ele confere se a licença continua valendo.</p></details>
+<details><summary>O que a demonstração permite?</summary><p>10 minutos de prompter por dia, um roteiro e uma tela de prompter. NDI, monitor web/iPad, voz, redação (MOS), câmera e impressão pedem a licença.</p></details>
+<details><summary>Esqueci a senha da conta. E agora?</summary><p>Fale com o suporte informando o e-mail da conta: o administrador gera uma senha provisória, e você troca em Minha conta › Meus dados.</p></details>
+<h3>Instalação e atualização</h3>
+<details><summary>Como atualizo?</summary><p>O app avisa ao abrir quando há versão nova. <b>Atualizar agora</b> baixa, instala e reabre o app sozinho; o Windows pede permissão de administrador quando o ARCA está em Arquivos de Programas. Para procurar na hora: Ajuda › Procurar atualizações.</p></details>
+<details><summary>A atualização é segura?</summary><p>Sim. O app só instala versões assinadas pela ARCA (assinatura digital conferida com uma chave embutida no app) e confere o SHA-256 do instalador logo antes de abrir. Arquivo alterado no caminho é recusado e nada é instalado.</p></details>
+<details><summary>A instalação disse que um arquivo está em uso.</summary><p>Outro programa estava com um arquivo da pasta aberto (às vezes o antivírus). O instalador espera alguns segundos, diz qual programa é e oferece <b>Tentar de novo</b>. Se falhar, a instalação anterior volta inteira.</p></details>
+<details><summary>Perco meus roteiros ao atualizar ou reinstalar?</summary><p>Não. Roteiros, preferências e modelos de voz ficam na sua pasta de usuário e são mantidos.</p></details>
+<h3>No ar</h3>
+<details><summary>O texto do editor, das telas e do iPad está na mesma linha?</summary><p>Sim. Todas as telas quebram as linhas nas mesmas palavras e seguem a mesma posição — inclusive perto de marcadores e pausas.</p></details>
+<details><summary>"Palavras por linha" não dá exatamente esse número em cada linha.</summary><p>É uma média: o ajuste define o tamanho da letra. Cada linha quebra onde a próxima palavra não cabe, então uma linha com palavras longas tem menos palavras.</p></details>
+<details><summary>A janela do talento cobre a barra do Windows?</summary><p>Sim, ela abre em tela cheia. O botão □ (ou <kbd>F11</kbd>) alterna com janela; <kbd>Esc</kbd> fecha.</p></details>
+<details><summary>O trackpad está sensível demais.</summary><p>Ajuste em Preferências › Geral › Roda do mouse e trackpad: <b>Rolagem (parado)</b> e <b>Velocidade (rodando)</b>.</p></details>
+<h3>iPad e navegador</h3>
+<details><summary>Para que serve a senha do monitor web?</summary><p>Sem senha, qualquer aparelho na mesma rede Wi-Fi que abrir o endereço vê o roteiro e — com o controle liberado — controla o prompter. Com senha, o navegador/iPad pede a senha antes de mostrar o texto. Use sempre em eventos, igrejas e redes compartilhadas; o app mostra um aviso em vermelho enquanto o controle estiver liberado sem senha.</p></details>
+<details><summary>Errei a senha e o iPad não entra mais.</summary><p>Por segurança, depois de 5 senhas erradas a conexão é encerrada, e depois de 10 em 10 minutos aquele aparelho fica bloqueado por 10 minutos. Espere e tente com a senha certa.</p></details>
+<details><summary>Um site pode controlar meu prompter pela rede?</summary><p>Não. O app só aceita conexões vindas da própria página do monitor (ou de programas como o OBS), não de outros sites abertos num navegador da rede.</p></details>
+<details><summary>Atualizei o ARCA e o iPad continua com o comportamento antigo.</summary><p>A partir da 2.8.7 a página recarrega sozinha quando o ARCA muda de versão. Se o iPad ainda estiver numa página aberta antes disso, recarregue uma vez (ou feche e abra o app da Tela de Início).</p></details>
+<details><summary>Arrastar o texto no iPad move as outras telas?</summary><p>Sim: parado, arrastar rola o texto e o app, as telas e o NDI acompanham o dedo; rodando, arrastar para cima acelera e para baixo freia.</p></details>
+<h3>NDI</h3>
+<details><summary>O NDI está sem fluidez.</summary><p>Use 1080p 29,97/30 se o computador for modesto; 59,94/60 dá mais fluidez e pede mais do processador. O registro (Ajuda › Registro de eventos) mostra a cada 5 s quantos quadros saíram e quantos atrasaram.</p></details>
+<details><summary>Posso usar fundo transparente?</summary><p>Sim, em inspetor › Telas › NDI › Fundo transparente, para sobrepor o texto ao vídeo no vMix ou OBS.</p></details>
+<h3>Voz</h3>
+<details><summary>A voz funciona sem internet?</summary><p>Sim. O reconhecimento (Vosk ou Whisper) roda no próprio computador; o áudio não sai da máquina.</p></details>
+<details><summary>Qual motor de voz usar?</summary><p><b>Vosk · rápido</b> é leve e já vem instalado. <b>Whisper · preciso</b> entende melhor salas com eco, ruído e voz longe do microfone; baixe o modelo Base (57 MB) na primeira vez.</p></details>
+<h3>Segurança e privacidade</h3>
+<details><summary>Quais dados a conta guarda?</summary><p>Nome, e-mail, empresa, telefone, a senha cifrada (nunca a senha em si), e para cada licença o nome do computador, a versão do app e a última conferência. Os roteiros nunca saem do seu computador.</p></details>
+<details><summary>Como deixar o monitor web mais seguro?</summary><p>Defina uma senha, desligue <b>Permitir controlar o prompter pelo navegador</b> quando não precisar e prefira o endereço <b>https</b> (porta 8421): no http a senha e o texto passam pela rede sem criptografia.</p></details>
 </main>
 </body>
 </html>

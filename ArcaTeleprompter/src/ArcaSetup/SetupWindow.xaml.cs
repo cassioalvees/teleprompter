@@ -515,7 +515,7 @@ public partial class SetupWindow : Window
 
     // ═══ Auxiliares visuais ═══
     private static SolidColorBrush Hex(string h) => new((Color)ColorConverter.ConvertFromString(h));
-    private static bool PathOk(string p) => System.Text.RegularExpressions.Regex.IsMatch(p.Trim(), @"^[a-zA-Z]:\\[^<>:""|?*]*$") && p.Trim().Length > 3;
+    private static bool PathOk(string p) => Installer.SafeTarget(p);
     private static bool NdiInstalled()
     {
         foreach (var v in new[] { "NDI_RUNTIME_DIR_V6", "NDI_RUNTIME_DIR_V5" })

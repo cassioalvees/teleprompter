@@ -73,6 +73,8 @@ async function passwordOk(pw, stored) {
   const salt = String(stored || '').split('$')[2];
   return !!salt && sameSecret(await hashPassword(pw, salt), stored);
 }
+// Hash de uma senha qualquer (sal fixo), comparado quando o e-mail não tem conta.
+const DUMMY_HASH = `pbkdf2$${ITER}$00000000000000000000000000000000$` + '0'.repeat(64);
 const passwordError = pw => typeof pw !== 'string' || pw.length < 8 ? 'A senha precisa ter pelo menos 8 caracteres.' : pw.length > 200 ? 'Senha longa demais.' : null;
 
 function readCookie(req, name) {
@@ -141,11 +143,15 @@ async function login(req, env, url, ip) {
   const tries = await env.DB.prepare("SELECT COUNT(*) AS n FROM events WHERE kind = 'login-falhou' AND ip = ? AND at > ?").bind(ip, since(900_000)).first();
   if (tries && tries.n >= 10) return fail(429, 'Muitas tentativas. Aguarde 15 minutos e tente de novo.');
   const user = await env.DB.prepare('SELECT id, password FROM users WHERE email = ?').bind(email).first();
-  if (!user || !(await passwordOk(String(b.password ?? ''), user.password))) {
+  // E-mail sem conta também calcula um hash: o tempo de resposta não revela quem tem conta.
+  const ok = await passwordOk(String(b.password ?? ''), user ? user.password : DUMMY_HASH);
+  if (!user || !ok) {
     await log(env, null, 'login-falhou', null, email, ip);
     return fail(401, 'E-mail ou senha incorretos.');
   }
   await log(env, null, 'login', null, email, ip);
+  // Faxina: sessões vencidas saem do banco a cada entrada.
+  await env.DB.prepare('DELETE FROM sessions WHERE expires_at < ?').bind(now()).run();
   return json({ ok: true }, 200, { 'set-cookie': await startSession(env, url, user.id) });
 }
 

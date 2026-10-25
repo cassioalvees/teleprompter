@@ -61,6 +61,17 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.9.0) — revisão de segurança
+
+| Verificação | Resultado |
+|---|---|
+| Testes automatizados (xUnit) | 34/34 — 15 novos: cor só como cor (9 casos), assinatura de atualização aceita e recusada se versão, arquivo ou tamanho mudarem, sem assinatura, com outra chave ou malformada |
+| Monitor web com senha (app de teste, porta 8430) | conexão com Origin de outro site → recusada (403); da própria página e sem Origin → aceitas; 4 senhas erradas → conexão segue; 5ª → encerrada pelo app; após 10 em 10 min → nem a senha certa entra |
+| Atualização assinada (servidor local, ARCA_UPDATE_URL) | latest.json 9.9.9 assinado com a chave real → "versão 9.9.9 disponível"; o mesmo com o tamanho alterado em 1 byte → ignorado |
+| Pastas do instalador (`tools/SetupTest`) | aceitas: Arquivos de Programas\ARCA Teleprompter, D:\Apps\…, AppData\Local\Programs\…; recusadas: C:\, C:\Windows, C:\Windows\System32, C:\Program Files, C:\ProgramData, C:\Users, a pasta do usuário, caminho relativo e caracteres inválidos; arquivo preso e reinstalação continuam OK |
+| Servidor de licenças publicado | 31 testes de conta OK; login: e-mail com conta ~466 ms, sem conta ~460 ms (antes o sem-conta respondia sem calcular hash) |
+| Autoteste do app | Rodado com o computador parado havia 44 min (monitor desligado pela economia de energia): os itens de movimento falham — a janela desenha ~3 quadros/s — e o **código da 2.8.8 falha igual** nas mesmas condições (20 quadros em 7 s). Os demais itens passam. Os de movimento passaram com a tela ligada nas versões anteriores e não dependem das mudanças desta versão |
+
 ## Resultados (versão 2.8.8) — Preferências e palavras por linha
 
 Preferências abertas em cada aba (autoteste): Geral 520 · Atalhos 520 · Dispositivos 520 · Integrações 520 px (antes variava entre 400 e 560).

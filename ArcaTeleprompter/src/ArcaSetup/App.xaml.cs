@@ -23,6 +23,8 @@ public partial class App : Application
         if (ri >= 0 && ri + 1 < args.Length && File.Exists(args[ri + 1]))
         {
             try { resume = JsonSerializer.Deserialize<InstallOptions>(File.ReadAllText(args[ri + 1])); File.Delete(args[ri + 1]); } catch { }
+            // A continuação roda como administrador e as opções vêm de um arquivo temporário: pasta perigosa = recomeça pela tela.
+            if (resume != null && !Installer.SafeTarget(resume.Path)) { try { File.AppendAllText(Path.Combine(Path.GetTempPath(), "arca-setup.log"), $"{DateTime.Now:s} pasta recusada na continuação elevada: {resume.Path}{Environment.NewLine}"); } catch { } resume = null; }
         }
         // Instalação para todos os usuários: a remoção mexe em Arquivos de Programas e no HKLM.
         if (uninstall && !Installer.IsAdmin && Installer.Installed() is { Scope: Scope.AllUsers } && !args.Contains("--no-elevate"))

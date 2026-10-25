@@ -14,6 +14,7 @@ public partial class InspTelas : UserControl
     {
         InitializeComponent();
         NdiFormat.ItemsSource = Arca.Ndi.NdiFormat.All;
+        Loaded += (_, _) => UpdateWebWarn();
         Loaded += (_, _) =>
         {
             if (_hudInit) return;
@@ -38,7 +39,14 @@ public partial class InspTelas : UserControl
         Main.ApplyHudOptions();
     }
     private void NdiOption_Click(object sender, RoutedEventArgs e) => Main.Ndi.UpdateOptions();
-    private void WebOption_Click(object sender, RoutedEventArgs e) => Main.Web.UpdateOptions();
+    private void WebOption_Click(object sender, RoutedEventArgs e) { Main.Web.UpdateOptions(); UpdateWebWarn(); }
+    private void WebPass_Changed(object sender, System.Windows.Controls.TextChangedEventArgs e) => UpdateWebWarn();
+    /// <summary>Aviso em vermelho enquanto o controle pelo navegador estiver liberado sem senha.</summary>
+    private void UpdateWebWarn()
+    {
+        if (WebOpenWarn == null || WebPassBox == null || WebCtrlBox == null) return;
+        WebOpenWarn.Visibility = WebCtrlBox.IsChecked == true && WebPassBox.Text.Length == 0 ? Visibility.Visible : Visibility.Collapsed;
+    }
     private void OpenMonitor_Click(object sender, RoutedEventArgs e) => Main.ShowMonitorDialog();
     private void CopyUrl_Click(object sender, RoutedEventArgs e)
     {

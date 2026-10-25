@@ -90,4 +90,8 @@ $latest = [ordered]@{
 }
 $json = $latest | ConvertTo-Json
 [System.IO.File]::WriteAllText("$dist\latest.json", $json, (New-Object System.Text.UTF8Encoding $false))
+# Assina já aqui quando a chave de atualizações existe neste computador (testes locais com ARCA_UPDATE_URL).
+if ((Get-Command node -ErrorAction SilentlyContinue) -and (Select-String -Path "$root\server\licencas\.dev.vars" -Pattern '^UPDATE_PRIVATE_KEY=' -Quiet -ErrorAction SilentlyContinue)) {
+  & node "$root\tools\assinar-atualizacao.mjs" "$dist\latest.json" "$dist\latest.json" | Out-Null
+}
 Write-Host "latest.json: versão $version ($asset)"
