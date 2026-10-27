@@ -83,7 +83,7 @@ Sim. O reconhecimento (Vosk ou Whisper) roda no próprio computador; o áudio n�
 ## Segurança e privacidade
 
 **Quais dados a conta guarda?**
-Nome, e-mail, empresa, telefone, a senha cifrada (nunca a senha em si), e para cada licença o nome do computador, a versão do app e a última conferência. Os roteiros nunca saem do seu computador.
+Nome, e-mail, empresa, telefone, a senha cifrada (nunca a senha em si), e para cada licença o nome do computador, a versão do app e a última conferência. Os roteiros nunca saem do seu computador. Em **Minha conta › Meus dados** você baixa todos os seus dados num arquivo ou exclui a conta; a política de privacidade fica em **/privacidade**, no site.
 
 **Como deixar o monitor web mais seguro?**
 Defina uma senha, desligue **Permitir controlar o prompter pelo navegador** quando não precisar e prefira o endereço **https** (porta 8421): no http a senha e o texto passam pela rede sem criptografia.

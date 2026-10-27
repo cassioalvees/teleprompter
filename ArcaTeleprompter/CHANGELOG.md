@@ -3,6 +3,15 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## Site e servidor de licenças — 2026-10-27
+
+Sem versão nova do app (o manual atualizado entra no próximo instalador).
+
+### Adicionado
+- **Política de privacidade (LGPD)** em `/privacidade`: dados guardados e o que não guardamos (roteiros e áudio nunca saem do computador), finalidades, com quem compartilhamos (Cloudflare, GitHub), retenção e direitos. Links no aviso do cadastro, no rodapé do site e de Minha conta, e uma pergunta nova no FAQ do site.
+- **Minha conta › Meus dados › Baixar meus dados**: arquivo JSON com cadastro, licenças (computador, versão, última conferência) e histórico — sem o hash da senha.
+- **Minha conta › Meus dados › Excluir minha conta**: pede a senha e uma confirmação; apaga conta, sessões, licenças (os computadores voltam à demonstração na próxima conferência) e o histórico ligado à pessoa; fica só um registro anônimo de exclusão.
+
 ## [2.9.0] — 2026-10-25
 
 Revisão de segurança completa (monitor web, servidor de licenças, atualização, instalador e licença) — detalhes em [docs/10-seguranca-privacidade.md](docs/10-seguranca-privacidade.md).

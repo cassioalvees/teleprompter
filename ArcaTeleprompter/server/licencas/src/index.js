@@ -169,6 +169,18 @@ async function account(req, env, url, ip) {
     const rows = await env.DB.prepare('SELECT code, kind, status, created_at, machine_name, activated_at, last_seen, app_version, (machine IS NOT NULL) AS active FROM licenses WHERE user_id = ? ORDER BY id').bind(user.id).all();
     return json({ ok: true, user: { name: user.name, email: user.email, company: user.company, phone: user.phone, created_at: user.created_at }, licenses: rows.results });
   }
+  // LGPD — acesso e portabilidade: tudo o que o servidor guarda sobre a pessoa, num arquivo JSON.
+  if (req.method === 'GET' && url.pathname === '/api/account/export') {
+    const lic = await env.DB.prepare('SELECT code, kind, status, created_at, machine_name, activated_at, last_seen, app_version FROM licenses WHERE user_id = ? ORDER BY id').bind(user.id).all();
+    const codes = lic.results.map(l => l.code);
+    const ev = await env.DB.prepare(`SELECT kind, code, detail, ip, at FROM events WHERE detail = ? ${codes.length ? `OR code IN (${codes.map(() => '?').join(',')})` : ''} ORDER BY id`).bind(user.email, ...codes).all();
+    const data = {
+      gerado_em: now(), aviso: 'Dados guardados pelo servidor de licenças do ARCA Teleprompter. Os roteiros nunca saem do seu computador.',
+      conta: { nome: user.name, email: user.email, empresa: user.company, telefone: user.phone, criada_em: user.created_at, ip_do_cadastro: user.created_ip },
+      licencas: lic.results, eventos: ev.results
+    };
+    return new Response(JSON.stringify(data, null, 2), { headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store', 'content-disposition': 'attachment; filename="meus-dados-arca.json"' } });
+  }
   if (req.method !== 'POST') return fail(404, 'Rota não encontrada.');
   const b = await body(req);
 
@@ -208,6 +220,22 @@ async function account(req, env, url, ip) {
     ]);
     await log(env, null, 'senha-trocada', null, user.email, ip);
     return json({ ok: true });
+  }
+  // LGPD — exclusão: apaga conta, sessões, licenças (os computadores voltam à demonstração na próxima conferência)
+  // e o histórico ligado à pessoa. Pede a senha de novo. Fica só um registro anônimo de que uma conta foi excluída.
+  if (url.pathname === '/api/account/delete') {
+    if (!(await passwordOk(String(b.password ?? ''), user.password))) return fail(400, 'Senha incorreta.');
+    const codes = (await env.DB.prepare('SELECT code FROM licenses WHERE user_id = ?').bind(user.id).all()).results.map(l => l.code);
+    const stmts = [
+      env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(user.id),
+      env.DB.prepare('DELETE FROM events WHERE detail = ?').bind(user.email),
+      env.DB.prepare('DELETE FROM licenses WHERE user_id = ?').bind(user.id),
+      env.DB.prepare('DELETE FROM users WHERE id = ?').bind(user.id),
+    ];
+    if (codes.length) stmts.splice(1, 0, env.DB.prepare(`DELETE FROM events WHERE code IN (${codes.map(() => '?').join(',')})`).bind(...codes));
+    await env.DB.batch(stmts);
+    await log(env, null, 'conta-excluida', null, null, null);
+    return json({ ok: true }, 200, { 'set-cookie': sessionCookie(url, '', 0) });
   }
   return fail(404, 'Rota não encontrada.');
 }

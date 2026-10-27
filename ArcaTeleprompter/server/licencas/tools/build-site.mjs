@@ -83,6 +83,7 @@ const faq = [
   ['Consigo abrir meus roteiros atuais?', 'O ARCA abre arquivos TPS, DOCX, PDF, RTF e TXT. Marcadores e pausas podem ser escritos direto no texto (*Título e [PAUSA]).'],
   ['Como recebo as atualizações?', 'Ao abrir, o app confere se há versão nova. Se houver, mostra as novidades: um clique baixa, instala e reabre o app, mantendo roteiros e preferências.'],
   ['Onde fica meu código?', 'Em Minha conta › Licenças, no site. Lá você também vê em qual computador ele está ativado. Esqueceu a senha? Fale com o suporte informando o e-mail da conta.'],
+  ['Quais dados vocês guardam?', 'Nome, e-mail, empresa e telefone, e o computador onde a licença está ativa. Seus roteiros nunca saem do seu computador. Em Minha conta você baixa todos os seus dados ou exclui a conta; os detalhes estão na política de privacidade (link no rodapé).'],
   ['A licença tem custo?', 'Por enquanto o cadastro é gratuito e a licença é vitalícia.']
 ];
 
@@ -333,7 +334,7 @@ ${compare.map(([a, b, c]) => `<div><span>${esc(a)}</span><span class="demo">${es
 ${signupFields}
 <button class="btn" type="submit" id="go" style="margin-top:16px">${dl}Criar conta e baixar</button>
 <p class="err" id="err" role="alert"></p>
-<p class="small">Usamos seus dados só para a licença e para avisos sobre o app.</p>
+<p class="small">Usamos seus dados só para a licença e para avisos sobre o app. <a href="/privacidade" style="text-decoration:underline">Política de privacidade</a></p>
 <p class="small" style="border-top:1px solid #26262B;padding-top:14px;margin-top:10px;font-size:13.5px">Já tem conta? <a href="/conta" style="text-decoration:underline">Entrar</a> · Windows 10 e 11, 64 bits<span data-size></span></p>
 </form>
 </div>
@@ -354,7 +355,7 @@ ${faq.map(([q, a], i) => `<div class="faq-item${i === 0 ? ' open' : ''}"><button
 </main>
 
 <footer><div class="wrap"><span><b>ARCA</b> · Teleprompter para estúdio, eventos e jornalismo</span>
-<nav aria-label="Rodapé" style="gap:22px"><a href="/conta">Minha conta</a><a href="#licenca">Download</a><a href="#perguntas">Dúvidas</a><a href="https://github.com/cassioalvees/teleprompter/releases">Versões</a></nav></div></footer>
+<nav aria-label="Rodapé" style="gap:22px"><a href="/conta">Minha conta</a><a href="#licenca">Download</a><a href="#perguntas">Dúvidas</a><a href="/privacidade">Privacidade</a><a href="https://github.com/cassioalvees/teleprompter/releases">Versões</a></nav></div></footer>
 
 <script>
 (() => {
@@ -481,7 +482,7 @@ dialog .row{justify-content:flex-end}
 ${signupFields}
 <button class="btn" type="submit" style="margin-top:16px">${dl}Criar conta e baixar</button>
 <p class="err" role="alert"></p>
-<p class="small">Gratuita · licença vitalícia · um computador por vez.</p>
+<p class="small">Gratuita · licença vitalícia · um computador por vez. <a href="/privacidade" style="text-decoration:underline">Política de privacidade</a></p>
 </form>
 </div>
 </div>
@@ -503,6 +504,12 @@ ${signupFields}
 <label for="s-nova">Nova senha</label><input id="s-nova" name="password" type="password" autocomplete="new-password" placeholder="Pelo menos 8 caracteres" required>
 <button class="btn" type="submit" style="margin-top:16px">Trocar a senha</button><p class="err" role="alert"></p>
 <p class="small">Os outros navegadores onde a conta estiver aberta precisam entrar de novo.</p></form>
+<form class="form-card" id="lgpd" novalidate><h3 style="font:700 19px Sora,sans-serif">Seus dados</h3>
+<p class="small" style="margin:4px 0 12px;font-size:13.5px">Veja tudo o que guardamos sobre você ou exclua a conta. Saiba mais na <a href="/privacidade" style="text-decoration:underline">política de privacidade</a>.</p>
+<a class="ghost" href="/api/account/export" download style="display:inline-flex;align-items:center;justify-content:center">Baixar meus dados</a>
+<label for="x-senha" style="margin-top:18px">Excluir minha conta — confirme com a senha</label><input id="x-senha" name="password" type="password" autocomplete="current-password" required>
+<button class="danger" type="submit" style="margin-top:12px">Excluir minha conta</button><p class="err" role="alert"></p>
+<p class="small">Apaga a conta, as licenças (os computadores voltam ao modo demonstração) e o histórico. Não dá para desfazer.</p></form>
 </div></div>
 </div>
 </div>
@@ -511,7 +518,7 @@ ${signupFields}
 <dialog id="confirm"><h3 id="c-title"></h3><p id="c-text"></p><div class="row"><button type="button" class="ghost" value="no">Cancelar</button><button type="button" class="btn red" value="yes" style="min-height:44px">Remover</button></div></dialog>
 
 <footer><div class="wrap"><span><b>ARCA</b> · Teleprompter para estúdio, eventos e jornalismo</span>
-<nav aria-label="Rodapé" style="gap:22px"><a href="/">Início</a><a href="/#perguntas">Dúvidas</a><a href="https://github.com/cassioalvees/teleprompter/releases">Versões</a></nav></div></footer>
+<nav aria-label="Rodapé" style="gap:22px"><a href="/">Início</a><a href="/#perguntas">Dúvidas</a><a href="/privacidade">Privacidade</a><a href="https://github.com/cassioalvees/teleprompter/releases">Versões</a></nav></div></footer>
 
 <script>
 (() => {
@@ -601,8 +608,8 @@ ${signupFields}
   });
 
   // Confirmação (diálogo da página, não o do navegador)
-  const ask = (title, text) => new Promise(res => {
-    const dlg = $('#confirm'); $('#c-title').textContent = title; $('#c-text').textContent = text;
+  const ask = (title, text, yes = 'Remover') => new Promise(res => {
+    const dlg = $('#confirm'); $('#c-title').textContent = title; $('#c-text').textContent = text; dlg.querySelector('[value=yes]').textContent = yes;
     dlg.querySelectorAll('button').forEach(b => b.onclick = () => { dlg.close(); res(b.value === 'yes'); });
     dlg.oncancel = () => res(false);
     dlg.showModal();
@@ -615,6 +622,15 @@ ${signupFields}
   const saved = (err, msg) => { err.className = 'ok'; err.textContent = msg; setTimeout(() => { err.textContent = ''; err.className = 'err'; }, 3000); };
   submit($('#profile'), '/api/account/profile', (d, err) => { saved(err, 'Dados salvos.'); load(); });
   submit($('#password'), '/api/account/password', (d, err) => { $('#password').reset(); saved(err, 'Senha trocada.'); });
+  // Excluir a conta: confirma de novo antes de mandar (não dá para desfazer).
+  $('#lgpd').addEventListener('submit', async e => {
+    e.preventDefault(); const f = e.target, err = f.querySelector('.err'); err.textContent = '';
+    if (!f.password.value) { err.textContent = 'Digite a sua senha para confirmar.'; return; }
+    if (!(await ask('Excluir sua conta?', 'A conta, as licenças e o histórico serão apagados. Os computadores com o ARCA ativado voltam ao modo demonstração. Não dá para desfazer.', 'Excluir'))) return;
+    const d = await api('/api/account/delete', { password: f.password.value });
+    if (!d.ok) { err.textContent = d.error || 'Não foi possível excluir.'; return; }
+    location.href = '/privacidade?excluida=1';
+  });
   $('#logout').onclick = async () => { await api('/api/account/logout', {}); me = null; view('auth'); authTab('login'); };
 
   load();
@@ -624,5 +640,61 @@ ${signupFields}
 </html>
 `;
 const outConta = path.join(path.dirname(out), 'conta.html');
+
 fs.writeFileSync(outConta, conta);
 console.log('Gerado ' + outConta + ' (' + Math.round(conta.length / 1024) + ' KB)');
+
+// ——— Política de privacidade (public/privacidade.html) ———
+const ATUALIZADA = '27 de outubro de 2026';
+const priv = [
+  ['Quem somos', 'O ARCA Teleprompter é um aplicativo para Windows. Este site cuida das contas e das licenças do app. Esta política explica quais dados pessoais tratamos, para quê e como você controla esses dados, conforme a Lei Geral de Proteção de Dados (LGPD, Lei 13.709/2018).'],
+  ['Quais dados guardamos', '<ul><li><b>Cadastro:</b> nome, e-mail, empresa e telefone.</li><li><b>Senha:</b> guardada cifrada (PBKDF2 com sal) — nunca a senha em si.</li><li><b>Licenças:</b> o código, o tipo, e para cada ativação o nome do computador, uma identificação técnica do computador (um código derivado do Windows, não o seu nome nem arquivos), a versão do app e a data da última conferência.</li><li><b>Segurança:</b> registro de cadastro, entradas, ativações e tentativas de senha errada, com data e endereço IP.</li><li><b>Sessão:</b> um cookie técnico que mantém você conectado em Minha conta por até 30 dias.</li></ul>'],
+  ['O que NÃO guardamos', 'Seus <b>roteiros nunca saem do seu computador</b>. O áudio do acompanhamento por voz é processado só no seu computador. O app não envia telemetria nem dados de uso; ele acessa a internet apenas para ativar e conferir a licença, procurar atualizações e baixar modelos de voz.'],
+  ['Para que usamos', '<ul><li>Criar e manter a sua conta e a sua licença (execução do serviço que você pediu).</li><li>Ativar a licença em um computador e permitir a troca de computador.</li><li>Segurança: impedir abuso, como tentativas repetidas de senha (legítimo interesse).</li><li>Avisos sobre o app, como versões novas e mudanças importantes. Não vendemos nem cedemos seus dados para publicidade.</li></ul>'],
+  ['Com quem compartilhamos', 'Os dados ficam na <b>Cloudflare</b> (hospedagem do site e do banco de dados), que trata os dados em nosso nome. Os instaladores são baixados do <b>GitHub</b>. Não compartilhamos seus dados com mais ninguém, exceto quando a lei exigir.'],
+  ['Por quanto tempo', 'Enquanto a conta existir. Ao excluir a conta, apagamos na hora o cadastro, as licenças, as sessões e o histórico ligado a você. Fica apenas um registro anônimo de que uma conta foi excluída.'],
+  ['Seus direitos', 'Em <a href="/conta">Minha conta</a> você pode, a qualquer momento:<ul><li><b>ver e corrigir</b> nome, empresa e telefone (Meus dados);</li><li><b>baixar todos os seus dados</b> num arquivo (Meus dados › Baixar meus dados);</li><li><b>excluir a conta</b> e tudo o que está ligado a ela (Meus dados › Excluir minha conta);</li><li><b>remover a licença de um computador</b> (Licenças).</li></ul>'],
+  ['Segurança', 'Conexões por https, senha cifrada, sessão em cookie protegido (HttpOnly), limite de tentativas de senha e licenças assinadas digitalmente. Detalhes técnicos no documento de segurança do projeto.'],
+  ['Mudanças nesta política', 'Quando esta política mudar, a data abaixo é atualizada e, se a mudança for importante, avisamos pelo app ou por e-mail.'],
+];
+const privacidade = `<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Política de privacidade — ARCA Teleprompter</title>
+<meta name="description" content="Como o ARCA Teleprompter trata seus dados pessoais (LGPD).">
+<meta name="theme-color" content="#0B0B0D">
+<link rel="icon" href="/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+${css}
+.doc{max-width:820px;padding:56px 0 80px}.doc h1{font:800 40px/1.1 Sora,sans-serif;letter-spacing:-.02em;margin:10px 0 8px}
+.doc h2{font:700 22px Sora,sans-serif;margin:34px 0 8px}.doc p,.doc li{color:#C8C8D0;font-size:16px}.doc ul{padding-left:22px}.doc li{margin:4px 0}
+.doc b{color:var(--text)}.doc a{text-decoration:underline}.upd{color:var(--faint);font-size:14px}
+.ok{display:block;padding:14px 18px;border-radius:14px;border:1px solid #1F4A33;background:#0F1F17;color:#BFEFD3;margin:18px 0}
+@media (max-width:700px){.doc h1{font-size:30px}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<a class="brand" href="/"><b>ARCA</b><i></i><span>Teleprompter</span></a>
+<nav aria-label="Principal"><a href="/">Início</a><a href="/conta">Minha conta</a></nav>
+</div></header>
+<main class="wrap doc">
+<span class="ok" id="excluida" hidden>✓ Sua conta e todos os dados ligados a ela foram excluídos.</span>
+${eyebrow('LGPD')}<h1>Política de privacidade</h1>
+<p class="upd">Atualizada em ${ATUALIZADA}</p>
+${priv.map(([t, b]) => `<h2>${t}</h2>${b.startsWith('<') ? b : '<p>' + b + '</p>'}`).join('\n')}
+</main>
+<footer><div class="wrap"><span><b>ARCA</b> · Teleprompter para estúdio, eventos e jornalismo</span>
+<nav aria-label="Rodapé" style="gap:22px"><a href="/">Início</a><a href="/conta">Minha conta</a></nav></div></footer>
+<script>if (new URLSearchParams(location.search).has('excluida')) document.getElementById('excluida').hidden = false;</script>
+</body>
+</html>
+`;
+const outPriv = path.join(path.dirname(out), 'privacidade.html');
+fs.writeFileSync(outPriv, privacidade);
+console.log('Gerado ' + outPriv + ' (' + Math.round(privacidade.length / 1024) + ' KB)');

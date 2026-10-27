@@ -41,7 +41,8 @@ Revisão completa em 2.9.0 (25/10/2026): monitor web, servidor de licenças e co
 ## Privacidade
 - **Áudio**: processado em memória, localmente (Vosk/Whisper); nada é gravado nem enviado (exceto o diagnóstico de 15 s, gravado só quando o operador pede, nos registros locais). A gravação de vídeo é explícita e salva em `Vídeos\ARCA Teleprompter`.
 - **Roteiros**: ficam na máquina (`.tps`, `session.json`, `versions.json`); nunca vão para o servidor.
-- **Conta (servidor)**: nome, e-mail, empresa, telefone, senha cifrada; por licença, nome do computador, versão do app e última conferência; registro de eventos (cadastro, entrada, ativação) com endereço IP. Para LGPD: publicar uma política de privacidade no site e atender pedidos de exclusão (hoje pelo administrador).
+- **Conta (servidor)**: nome, e-mail, empresa, telefone, senha cifrada; por licença, nome do computador, versão do app e última conferência; registro de eventos (cadastro, entrada, ativação) com endereço IP.
+- **LGPD (27/10/2026)**: política de privacidade em `/privacidade`; a pessoa vê e corrige os dados (Meus dados), **baixa tudo** num JSON (`GET /api/account/export`, sem o hash da senha) e **exclui a conta** (`POST /api/account/delete`, com a senha): conta, sessões, licenças e histórico apagados na hora, fica só um registro anônimo de exclusão. Pendente: canal de contato do controlador (e-mail/CNPJ) na política.
 - Nenhuma telemetria. O app acessa a internet para licença, atualização e download de modelos de voz.
 
 ## Riscos conhecidos

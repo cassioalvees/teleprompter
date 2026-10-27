@@ -61,6 +61,10 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (site, 27/10/2026) — LGPD: política, baixar dados e excluir conta
+
+Servidor local e depois o publicado, 13 verificações, todas OK: baixar meus dados vem como arquivo para download, com cadastro, licença (computador PC-LGPD) e histórico (cadastro, ativação), sem o hash da senha; sem entrar não baixa nada; excluir com senha errada é recusado e a conta continua; com a senha, a conta é excluída e a sessão encerrada; não dá mais para entrar; o computador perde a licença na próxima conferência; o mesmo e-mail pode criar conta de novo (nada sobrou); `/privacidade` abre. Pela tela: senha → confirmação "Excluir sua conta?" → volta para a política com "Sua conta e todos os dados ligados a ela foram excluídos". Os 31 testes de conta repetidos depois: TUDO OK.
+
 ## Resultados (versão 2.9.0) — revisão de segurança
 
 | Verificação | Resultado |
