@@ -646,6 +646,8 @@ console.log('Gerado ' + outConta + ' (' + Math.round(conta.length / 1024) + ' KB
 
 // ——— Política de privacidade (public/privacidade.html) ———
 const ATUALIZADA = '27 de outubro de 2026';
+// Contato do controlador (pedidos de titulares, LGPD).
+const CONTATO = 'cassiosantos.csa@gmail.com';
 const priv = [
   ['Quem somos', 'O ARCA Teleprompter é um aplicativo para Windows. Este site cuida das contas e das licenças do app. Esta política explica quais dados pessoais tratamos, para quê e como você controla esses dados, conforme a Lei Geral de Proteção de Dados (LGPD, Lei 13.709/2018).'],
   ['Quais dados guardamos', '<ul><li><b>Cadastro:</b> nome, e-mail, empresa e telefone.</li><li><b>Senha:</b> guardada cifrada (PBKDF2 com sal) — nunca a senha em si.</li><li><b>Licenças:</b> o código, o tipo, e para cada ativação o nome do computador, uma identificação técnica do computador (um código derivado do Windows, não o seu nome nem arquivos), a versão do app e a data da última conferência.</li><li><b>Segurança:</b> registro de cadastro, entradas, ativações e tentativas de senha errada, com data e endereço IP.</li><li><b>Sessão:</b> um cookie técnico que mantém você conectado em Minha conta por até 30 dias.</li></ul>'],
@@ -653,8 +655,9 @@ const priv = [
   ['Para que usamos', '<ul><li>Criar e manter a sua conta e a sua licença (execução do serviço que você pediu).</li><li>Ativar a licença em um computador e permitir a troca de computador.</li><li>Segurança: impedir abuso, como tentativas repetidas de senha (legítimo interesse).</li><li>Avisos sobre o app, como versões novas e mudanças importantes. Não vendemos nem cedemos seus dados para publicidade.</li></ul>'],
   ['Com quem compartilhamos', 'Os dados ficam na <b>Cloudflare</b> (hospedagem do site e do banco de dados), que trata os dados em nosso nome. Os instaladores são baixados do <b>GitHub</b>. Não compartilhamos seus dados com mais ninguém, exceto quando a lei exigir.'],
   ['Por quanto tempo', 'Enquanto a conta existir. Ao excluir a conta, apagamos na hora o cadastro, as licenças, as sessões e o histórico ligado a você. Fica apenas um registro anônimo de que uma conta foi excluída.'],
-  ['Seus direitos', 'Em <a href="/conta">Minha conta</a> você pode, a qualquer momento:<ul><li><b>ver e corrigir</b> nome, empresa e telefone (Meus dados);</li><li><b>baixar todos os seus dados</b> num arquivo (Meus dados › Baixar meus dados);</li><li><b>excluir a conta</b> e tudo o que está ligado a ela (Meus dados › Excluir minha conta);</li><li><b>remover a licença de um computador</b> (Licenças).</li></ul>'],
+  ['Seus direitos', 'Em <a href="/conta">Minha conta</a> você pode, a qualquer momento:<ul><li><b>ver e corrigir</b> nome, empresa e telefone (Meus dados);</li><li><b>baixar todos os seus dados</b> num arquivo (Meus dados › Baixar meus dados);</li><li><b>excluir a conta</b> e tudo o que está ligado a ela (Meus dados › Excluir minha conta);</li><li><b>remover a licença de um computador</b> (Licenças).</li></ul><p>Para qualquer outro pedido sobre seus dados — inclusive se não conseguir entrar na conta — escreva para <a href="mailto:' + CONTATO + '">' + CONTATO + '</a>.</p>'],
   ['Segurança', 'Conexões por https, senha cifrada, sessão em cookie protegido (HttpOnly), limite de tentativas de senha e licenças assinadas digitalmente. Detalhes técnicos no documento de segurança do projeto.'],
+  ['Contato', 'Dúvidas, pedidos sobre seus dados pessoais ou sobre esta política: <a href="mailto:' + CONTATO + '">' + CONTATO + '</a>. Respondemos em até 15 dias, como prevê a LGPD.'],
   ['Mudanças nesta política', 'Quando esta política mudar, a data abaixo é atualizada e, se a mudança for importante, avisamos pelo app ou por e-mail.'],
 ];
 const privacidade = `<!doctype html>
