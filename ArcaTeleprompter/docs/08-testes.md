@@ -61,6 +61,19 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.9.2) — Enter sem recuo
+
+O teste `--cmd=medirEdicao` acompanha quadro a quadro a posição do parágrafo de baixo. A 2.9.1 só media um Enter no fim de um parágrafo comum e não pegava os casos abaixo, que são os do uso real: os roteiros têm linha em branco entre os parágrafos, feita com dois Enters.
+
+| Caso | 2.9.1 | 2.9.2 |
+|---|---|---|
+| Enter duas vezes e digitar | desce 99 px, recua 59,5 px ~1 s depois | desce 40 px na hora, recua 0 |
+| Digitar numa linha em branco | cresce 59,5 px ~0,5 s depois | cresce na primeira letra |
+| Enter no fim de parágrafo com apresentador | recua 26 px | 0 |
+| Digitação: pior quadro / acima de 50 ms | 64 ms / 5 | 53 ms / 2 |
+
+Autoteste do app: TUDO OK.
+
 ## Resultados (versão 2.9.1) — edição sem travadinhas
 
 Teste com `--cmd=medirEdicao`: roteiro de 66 blocos e 1.512 palavras, com a janela do talento aberta. A digitação simulada põe uma letra a cada 60 ms e pausa 400 ms por palavra; cada pausa dispara uma releitura.

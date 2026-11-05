@@ -166,6 +166,22 @@ public partial class MainWindow
         if (_suppress > 0) return;
         _editorMapDirty = true;
         _editT.Stop(); _editT.Start();
+        if (!_spacingQueued) { _spacingQueued = true; Dispatcher.BeginInvoke(DispatcherPriority.Normal, FixSpacingNearCaret); }
+    }
+
+    // Espaçamento em volta do cursor acertado na hora (antes do próximo quadro), não na releitura 250 ms depois: Enter
+    // duas vezes deixava a linha vazia de cima com altura cheia até a releitura encolhê-la (o texto descia e recuava
+    // ~60 px), digitar numa linha em branco ficava espremido até ela crescer, e a linha nova depois de um parágrafo com
+    // apresentador herdava o espaço do nome (recuava ~26 px).
+    private bool _spacingQueued;
+    private void FixSpacingNearCaret()
+    {
+        _spacingQueued = false;
+        var fd = Editor.Document;
+        if (fd == null || ScriptFlow.TopBlock(Editor.CaretPosition, fd) is not Paragraph cur) return;
+        using (SuppressEdits())
+            foreach (var b in new[] { cur.PreviousBlock, cur, cur.NextBlock })
+                if (b is Paragraph p) ScriptFlow.ApplySpacing(p, Vm.S, _layout, cur);
     }
 
     /// <summary>Tempos da última releitura (ms): ler, aparência, comparar, telas (medição em <c>--cmd=medirEdicao</c>).</summary>

@@ -2,6 +2,7 @@ using System.Windows;
 using System.Windows.Documents;
 using Arca.Core.Model;
 using Arca.Core.Storage;
+using Arca.App.Editor;
 
 namespace Arca.App;
 
@@ -94,5 +95,42 @@ public partial class MainWindow
         CommitEdits(); Editor.UpdateLayout(); await Wait(30);
         Log.Info($"Edição — digitar na linha nova: texto de baixo se mexeu {(probe != null ? TopOf(probe) - b2 : double.NaN):0.0} px depois da releitura");
         _ = below;
+
+        // Como se usa de verdade: Enter duas vezes (pula uma linha) e começa a digitar; depois clica numa linha em branco e
+        // digita. Acompanha quadro a quadro onde fica o parágrafo de baixo: só pode descer; subir é o "abre e recua".
+        async Task Track(string name, Block probeB, Func<Task> act)
+        {
+            var tops = new List<(double T, double Top)>(); var t0 = _traceClock.Elapsed.TotalMilliseconds;
+            EventHandler f = (_, _) => { var y = TopOf(probeB); if (tops.Count == 0 || Math.Abs(tops[^1].Top - y) > 0.5) tops.Add((_traceClock.Elapsed.TotalMilliseconds - t0, y)); };
+            System.Windows.Media.CompositionTarget.Rendering += f;
+            await act(); await Wait(900);
+            System.Windows.Media.CompositionTarget.Rendering -= f;
+            double down = 0, up = 0;
+            for (var i = 1; i < tops.Count; i++) { var d = tops[i].Top - tops[i - 1].Top; if (d > 0) down += d; else up -= d; }
+            Log.Info($"Edição — {name}: desceu {down:0.0} px, recuou {up:0.0} px (0 = sem recuo) · " + string.Join(" → ", tops.Select(x => $"{x.Top:0}@{x.T:0}ms")));
+        }
+        async Task TypeText(string s) { foreach (var ch in s) { Editor.CaretPosition.InsertTextInRun(ch.ToString()); Editor.CaretPosition = Editor.CaretPosition.GetPositionAtOffset(1, LogicalDirection.Forward) ?? Editor.CaretPosition; await Wait(60); } }
+        var host = Para(12); var probe2 = host.NextBlock!;
+        Editor.CaretPosition = host.ContentEnd.GetInsertionPosition(LogicalDirection.Backward); await Wait(400);
+        await Track("Enter duas vezes e digitar", probe2, async () =>
+        {
+            EditingCommands.EnterParagraphBreak.Execute(null, Editor); await Wait(150);
+            EditingCommands.EnterParagraphBreak.Execute(null, Editor); await Wait(150);
+            await TypeText("Texto novo");
+        });
+        var blankLine = host.NextBlock as Paragraph;
+        if (blankLine != null)
+        {
+            Editor.CaretPosition = blankLine.ContentStart.GetInsertionPosition(LogicalDirection.Forward); await Wait(400);
+            await Track("digitar numa linha em branco", probe2, () => TypeText("Mais"));
+        }
+        // Parágrafo com nome de apresentador: Enter no fim dele.
+        if (Vm.S.Presenters.Count > 0)
+        {
+            var pres = Para(14); pres.Tag = new BlockTag { Who = 1 }; CommitEdits(); await Wait(400);
+            var probe3 = pres.NextBlock!;
+            Editor.CaretPosition = pres.ContentEnd.GetInsertionPosition(LogicalDirection.Backward); await Wait(200);
+            await Track("Enter no fim de parágrafo com apresentador", probe3, async () => { EditingCommands.EnterParagraphBreak.Execute(null, Editor); await Wait(150); await TypeText("Novo"); });
+        }
     }
 }

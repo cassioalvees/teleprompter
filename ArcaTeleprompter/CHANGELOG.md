@@ -3,6 +3,16 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.9.2] — 2026-11-05
+
+### Corrigido
+- **Pular linha com Enter não faz mais o texto descer e recuar.** Com dois Enters, a primeira linha vazia ficava com altura cheia até a releitura (250 ms depois da última tecla) encolhê-la para meia linha, e o texto de baixo recuava 59,5 px. Agora o espaçamento das linhas em volta do cursor é acertado no mesmo instante da tecla, antes de a tela ser desenhada.
+- **Digitar numa linha em branco:** a linha cresce na primeira letra (antes a letra ficava espremida na meia linha e a linha crescia ~0,5 s depois, num pulo de 59,5 px).
+- **Enter no fim de um parágrafo com nome de apresentador:** a linha nova não herda mais o espaço reservado para o nome (o texto recuava 26 px na releitura).
+
+### Interno
+- `--cmd=medirEdicao` acompanha quadro a quadro o parágrafo de baixo ao apertar Enter duas vezes, ao digitar numa linha em branco e ao apertar Enter depois de um apresentador. Ele só pode descer: se subir, é recuo.
+
 ## [2.9.1] — 2026-11-05
 
 ### Corrigido

@@ -217,15 +217,26 @@ public static class ScriptFlow
             if (p.ReadLocalValue(TextElement.ForegroundProperty) is not SolidColorBrush cur || cur.Color != want) p.Foreground = new SolidColorBrush(want);
             var deco = skip ? TextDecorations.Strikethrough : null;
             if (!ReferenceEquals(p.ReadLocalValue(Paragraph.TextDecorationsProperty) as TextDecorationCollection, deco)) p.TextDecorations = deco;
-            var start = tag.Who > 0 && tag.Who != prevWho && s.PresenterNames;
-            // Igual ao prompter: espaço entre parágrafos proporcional à linha; linha em branco = meia linha.
-            var blank = p != editing && new TextRange(p.ContentStart, p.ContentEnd).Text.Trim().Length == 0 && p.Inlines.Count <= 1;
-            var isBlank = p.ReadLocalValue(Block.LineHeightProperty) is double;
-            if (blank != isBlank || (blank && p.LineHeight != l.FontSize * s.LineHeight * Spacing.BlankLine)) Spacing.Blank(p, blank, s, l);
-            var margin = blank ? new Thickness(0) : new Thickness(0, start ? Spacing.NameRoom(fs) : 0, 0, Spacing.After(s, l));
-            if (p.Margin != margin) p.Margin = margin;
+            ApplySpacing(p, s, l, editing, prevWho);
             prevWho = tag.Who;
         }
+    }
+
+    /// <summary>
+    /// Espaçamento de um parágrafo, igual ao prompter: espaço entre parágrafos proporcional à linha, espaço para o nome
+    /// no início de cada apresentador e linha em branco = meia linha. O parágrafo em edição (<paramref name="editing"/>)
+    /// não encolhe. Só altera o que mudou.
+    /// </summary>
+    public static void ApplySpacing(Paragraph p, PrompterSettings s, PrompterLayout l, Block? editing, int? prevWho = null)
+    {
+        var who = (p.Tag as BlockTag)?.Who ?? 0;
+        var before = prevWho ?? ((p.PreviousBlock as Paragraph)?.Tag as BlockTag)?.Who ?? 0;
+        var start = who > 0 && who != before && s.PresenterNames;
+        var blank = p != editing && p.Inlines.Count <= 1 && new TextRange(p.ContentStart, p.ContentEnd).Text.Trim().Length == 0;
+        var isBlank = p.ReadLocalValue(Block.LineHeightProperty) is double;
+        if (blank != isBlank || (blank && p.LineHeight != l.FontSize * s.LineHeight * Spacing.BlankLine)) Spacing.Blank(p, blank, s, l);
+        var margin = blank ? new Thickness(0) : new Thickness(0, start ? Spacing.NameRoom(l.FontSize) : 0, 0, Spacing.After(s, l));
+        if (p.Margin != margin) p.Margin = margin;
     }
 
     /// <summary>Lê o documento do editor de volta para o modelo.</summary>
