@@ -3,6 +3,14 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.9.3] — 2026-11-05
+
+### Corrigido
+- **A linha em branco do cursor tem o mesmo tamanho das outras.** Com o cursor numa linha em branco, ela ficava com altura cheia, mais o espaço de parágrafo, e o espaço entre os dois parágrafos passava de 1,75 para 2,5 linhas. O espaço mudava de novo quando o cursor saía. Agora a linha vazia do cursor tem meia linha, como as outras e como no prompter, e cresce no instante em que se digita a primeira letra.
+
+### Interno
+- `--cmd=espacos` mede, em linhas, o espaço entre dois parágrafos separados por uma linha em branco: no editor com o cursor longe, com o cursor na linha em branco e no prompter.
+
 ## [2.9.2] — 2026-11-05
 
 ### Corrigido

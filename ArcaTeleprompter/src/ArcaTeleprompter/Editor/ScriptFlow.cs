@@ -186,7 +186,7 @@ public static class ScriptFlow
     /// Reaplica a apresentação (cores dos apresentadores, blocos pulados riscados, tamanhos dos marcadores)
     /// sem recriar o documento — preserva cursor e desfazer.
     /// </summary>
-    public static void ApplyPresentation(FlowDocument fd, PrompterSettings s, PrompterLayout l, Block? editing = null)
+    public static void ApplyPresentation(FlowDocument fd, PrompterSettings s, PrompterLayout l)
     {
         // Só muda o que de fato mudou: cada propriedade trocada faz o Windows rediagramar e redesenhar o parágrafo. Antes,
         // toda pausa na digitação recriava cor, margens e espaçamento de todos os parágrafos (quadros de 80–120 ms).
@@ -217,22 +217,22 @@ public static class ScriptFlow
             if (p.ReadLocalValue(TextElement.ForegroundProperty) is not SolidColorBrush cur || cur.Color != want) p.Foreground = new SolidColorBrush(want);
             var deco = skip ? TextDecorations.Strikethrough : null;
             if (!ReferenceEquals(p.ReadLocalValue(Paragraph.TextDecorationsProperty) as TextDecorationCollection, deco)) p.TextDecorations = deco;
-            ApplySpacing(p, s, l, editing, prevWho);
+            ApplySpacing(p, s, l, prevWho);
             prevWho = tag.Who;
         }
     }
 
     /// <summary>
     /// Espaçamento de um parágrafo, igual ao prompter: espaço entre parágrafos proporcional à linha, espaço para o nome
-    /// no início de cada apresentador e linha em branco = meia linha. O parágrafo em edição (<paramref name="editing"/>)
-    /// não encolhe. Só altera o que mudou.
+    /// no início de cada apresentador e linha em branco = meia linha (também a do cursor:
+    /// ela cresce na primeira letra, ver MainWindow.FixSpacingNearCaret). Só altera o que mudou.
     /// </summary>
-    public static void ApplySpacing(Paragraph p, PrompterSettings s, PrompterLayout l, Block? editing, int? prevWho = null)
+    public static void ApplySpacing(Paragraph p, PrompterSettings s, PrompterLayout l, int? prevWho = null)
     {
         var who = (p.Tag as BlockTag)?.Who ?? 0;
         var before = prevWho ?? ((p.PreviousBlock as Paragraph)?.Tag as BlockTag)?.Who ?? 0;
         var start = who > 0 && who != before && s.PresenterNames;
-        var blank = p != editing && p.Inlines.Count <= 1 && new TextRange(p.ContentStart, p.ContentEnd).Text.Trim().Length == 0;
+        var blank = p.Inlines.Count <= 1 && new TextRange(p.ContentStart, p.ContentEnd).Text.Trim().Length == 0;
         var isBlank = p.ReadLocalValue(Block.LineHeightProperty) is double;
         if (blank != isBlank || (blank && p.LineHeight != l.FontSize * s.LineHeight * Spacing.BlankLine)) Spacing.Blank(p, blank, s, l);
         var margin = blank ? new Thickness(0) : new Thickness(0, start ? Spacing.NameRoom(l.FontSize) : 0, 0, Spacing.After(s, l));

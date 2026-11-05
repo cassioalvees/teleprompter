@@ -220,6 +220,7 @@ public partial class MainWindow
             case "licenca": _ = ShowLicense(); break;   // idem (testes da tela de licença)
             case "linhas": LogLineWords(); break;       // idem (medição de palavras por linha em cada tela)
             case "medirEdicao": _ = MeasureEditing(); break;   // idem (tempo de cada etapa ao editar)
+            case "espacos": _ = MeasureBlankGaps(); break;     // idem (espaço da linha em branco no editor e no prompter)
             case "gotoBm": if (value is { } i) JumpBookmark((int)i); break;
             default: DoAction(name); break;
         }

@@ -172,7 +172,8 @@ public partial class MainWindow
     // Espaçamento em volta do cursor acertado na hora (antes do próximo quadro), não na releitura 250 ms depois: Enter
     // duas vezes deixava a linha vazia de cima com altura cheia até a releitura encolhê-la (o texto descia e recuava
     // ~60 px), digitar numa linha em branco ficava espremido até ela crescer, e a linha nova depois de um parágrafo com
-    // apresentador herdava o espaço do nome (recuava ~26 px).
+    // apresentador herdava o espaço do nome (recuava ~26 px). A linha vazia do cursor fica com meia linha, como as outras
+    // e como no prompter (com altura cheia o espaço entre os parágrafos ficava 2,5 linhas em vez de 1,75 ali).
     private bool _spacingQueued;
     private void FixSpacingNearCaret()
     {
@@ -181,7 +182,7 @@ public partial class MainWindow
         if (fd == null || ScriptFlow.TopBlock(Editor.CaretPosition, fd) is not Paragraph cur) return;
         using (SuppressEdits())
             foreach (var b in new[] { cur.PreviousBlock, cur, cur.NextBlock })
-                if (b is Paragraph p) ScriptFlow.ApplySpacing(p, Vm.S, _layout, cur);
+                if (b is Paragraph p) ScriptFlow.ApplySpacing(p, Vm.S, _layout);
     }
 
     /// <summary>Tempos da última releitura (ms): ler, aparência, comparar, telas (medição em <c>--cmd=medirEdicao</c>).</summary>
@@ -212,9 +213,7 @@ public partial class MainWindow
             }
             var next = ScriptFlow.Read(fd);
             tRead = sw.Elapsed.TotalMilliseconds;
-            // A linha onde está o cursor não encolhe para "linha em branco" enquanto é editada: depois de um Enter ela
-            // abria com altura cheia, encolhia na releitura e crescia de novo ao digitar (o texto de baixo pulava ~60 px).
-            ScriptFlow.ApplyPresentation(fd, Vm.S, _layout, ScriptFlow.TopBlock(Editor.CaretPosition, fd));
+            ScriptFlow.ApplyPresentation(fd, Vm.S, _layout);
             LayoutEditor(); // garante a folga do topo/rodapé (só altera se mudou)
             DrawEditorNames();
             tLook = sw.Elapsed.TotalMilliseconds;

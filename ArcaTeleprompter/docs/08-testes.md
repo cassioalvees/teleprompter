@@ -61,6 +61,18 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.9.3) — linha em branco do cursor
+
+Teste com `--cmd=espacos`: espaço entre o topo da última linha de um parágrafo e o topo da primeira linha do seguinte, separados por uma linha em branco, medido em linhas.
+
+| Situação | 2.9.2 | 2.9.3 |
+|---|---|---|
+| Editor, cursor longe | 1,75 | 1,75 |
+| Editor, cursor na linha em branco (depois de editar) | 2,50 | 1,75 |
+| Prompter | 1,75 | 1,75 |
+
+Teste com `--cmd=medirEdicao`: Enter duas vezes e digitar, digitar numa linha em branco e Enter depois de apresentador. Em todos, recuo 0: o texto de baixo só desce, no quadro da tecla. Digitação real em 3 rodadas: pior quadro entre 47 e 78 ms (variação do notebook). Autoteste do app: TUDO OK.
+
 ## Resultados (versão 2.9.2) — Enter sem recuo
 
 O teste `--cmd=medirEdicao` acompanha quadro a quadro a posição do parágrafo de baixo. A 2.9.1 só media um Enter no fim de um parágrafo comum e não pegava os casos abaixo, que são os do uso real: os roteiros têm linha em branco entre os parágrafos, feita com dois Enters.

@@ -1,7 +1,10 @@
-ARCA Teleprompter 2.9.2 — novidades
+ARCA Teleprompter 2.9.3 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- Linhas em branco do mesmo tamanho no editor, com ou sem o cursor nelas, iguais às do prompter.
+
+Também nesta atualização (2.9.2):
 - Pular linha com Enter: o texto de baixo desce uma vez e fica (antes descia e recuava). Digitar numa linha em branco também não pula mais.
 
 Também nesta atualização (2.9.1):

@@ -21,6 +21,33 @@ public partial class MainWindow
         var t0 = _traceClock.Elapsed.TotalMilliseconds; a(); _trace.Add((t0, what, _traceClock.Elapsed.TotalMilliseconds - t0));
     }
 
+    /// <summary>
+    /// <c>--cmd=espacos</c>: roteiro com linha em branco entre os parágrafos (como os do usuário). Mede, em linhas, o espaço
+    /// entre o fim de um parágrafo e o começo do seguinte no editor — com o cursor longe e com o cursor na linha em
+    /// branco — e o mesmo espaço no prompter.
+    /// </summary>
+    private async Task MeasureBlankGaps()
+    {
+        var p = "A chuva forte das últimas vinte e quatro horas deixou cidades do litoral em estado de alerta.";
+        var doc = new ScriptDocument();
+        for (var i = 0; i < 12; i++) { doc.Blocks.Add(ScriptBlock.Paragraph($"{i + 1}. {p}")); if (i < 11) doc.Blocks.Add(ScriptBlock.Paragraph("")); }
+        LoadEditor(doc); await Task.Delay(1500);
+        var line = _layout.FontSize * Vm.S.LineHeight;
+        var paras = Editor.Document.Blocks.OfType<Paragraph>().ToList();
+        Paragraph a = paras[6], blank = paras[7], b = paras[8];
+        double Gap() { Editor.UpdateLayout(); var end = a.ContentEnd.GetCharacterRect(LogicalDirection.Backward); var st = b.ContentStart.GetCharacterRect(LogicalDirection.Forward); return (st.Top - end.Top) / line; }
+        Editor.CaretPosition = paras[0].ContentStart; CommitEdits(); await Task.Delay(300);
+        var far = Gap();
+        Editor.Focus(); Editor.CaretPosition = blank.ContentStart; await Task.Delay(400);
+        var onBlankNow = Gap();
+        CommitEdits(); await Task.Delay(400);
+        var onBlankAfter = Gap();
+        var caret = blank.ContentStart.GetCharacterRect(LogicalDirection.Forward);
+        _measure.UpdateLayout();
+        var pr = (_measure.TopOf(8) - _measure.LastLineTopOf(6)) / line;
+        Log.Info($"Espaços — entre parágrafos (em linhas, do topo da última linha ao topo da primeira): editor com cursor longe {far:0.00} · cursor na linha em branco {onBlankNow:0.00} (depois da releitura {onBlankAfter:0.00}) · prompter {pr:0.00} · altura do cursor {caret.Height / line:0.00} linha");
+    }
+
     private async Task MeasureEditing()
     {
         static async Task Wait(int ms) => await Task.Delay(ms);
