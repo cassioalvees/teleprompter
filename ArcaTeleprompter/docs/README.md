@@ -1,4 +1,4 @@
-# Documentação — ARCA Teleprompter 2.0
+# Documentação — ARCA Teleprompter 2.10
 
 | # | Documento | Para quem |
 |---|---|---|
@@ -13,7 +13,9 @@
 | 09 | [Build, implantação e operação](09-build-implantacao.md) | engenharia, TI |
 | 10 | [Segurança e privacidade](10-seguranca-privacidade.md) | TI, segurança |
 | 11 | [Registro de decisões (ADR)](11-decisoes.md) | engenharia |
-| 12 | [Versionamento e atualizações](12-versionamento.md) | engenharia, TI |
+| 12 | [Versionamento e atualizações](12-versionamento.md) — publicar versão e servidor | engenharia, TI |
+| 13 | [Hospedagem](13-hospedagem.md) — site, licenças, atualizações, outra hospedagem, backup das chaves | dono do produto, TI |
+| — | [Perguntas frequentes](FAQ.md) (também na seção 13 do manual) | todos |
 | — | [Histórico de versões (CHANGELOG)](../CHANGELOG.md) | todos |
 | — | [Manual do Operador](Manual%20do%20Operador.html) (instalado com o app: Ajuda › Manual) | operadores |
 | — | [NOVIDADES.txt](NOVIDADES.txt) | todos |

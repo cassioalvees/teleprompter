@@ -8,7 +8,7 @@ automaticamente (voz offline).
 
 Referências de mercado: Autoscript (VoiceTracking, WinPlus) e PowerPrompter (suborbital).
 
-## Escopo da versão 2.0
+## Escopo (versão 2.10)
 - Editor de roteiro com marcadores, pausas, apresentadores, trechos pulados, formatação e histórico de versões.
 - Prompter com rolagem suave (DirectX/WPF), velocidade variável, reverso, contagem regressiva,
   linha de leitura, indicador (seta/quadrado/ponto/linha), overlay (faixa/fade/destaque).
@@ -16,10 +16,13 @@ Referências de mercado: Autoscript (VoiceTracking, WinPlus) e PowerPrompter (su
 - Monitor web e **PWA** (iPad/Android/PC) em modo *limpo* (só texto) ou *controle* (barra igual à do talento),
   HTTP 8420 e HTTPS 8421, QR code, senha opcional.
 - Saída **NDI** 1080p/720p com fundo opaco ou transparente, tally.
-- **Voz**: microfone WASAPI ou ASIO (escolha de canal), arquivo de áudio ou simulação; Vosk offline pt/es/en.
+- **Voz**: microfone WASAPI ou ASIO (escolha de canal), arquivo de áudio ou simulação; Vosk (rápido) ou Whisper (preciso), offline, pt/es/en.
 - **MOS 2.8** (running order) para sistemas de redação; **legendas** para vMix/TCP.
 - Importação DOCX, PDF, HTML, RTF, TXT, TPS; exportação TXT, impressão e PDF.
 - Instalador e desinstalador próprios (por usuário ou para todos), associação `.tps`, atalhos, regra de firewall.
+- **Atualização automática** pelo GitHub Releases, com `latest.json` assinado (ECDSA P-256) e conferência do SHA-256.
+- **Conta e licença**: cadastro gratuito no site, código de ativação, licença assinada que vale sem internet, demonstração de 10 min/dia sem licença; política de privacidade (LGPD) com baixar e excluir dados.
+- **Editor = prompter**: cada Enter é uma linha, nas mesmas quebras de linha em todas as telas.
 
 ## Fora do escopo
 - Controle por pedal/USB HID dedicado (usa teclado e clickers que emulam teclado).

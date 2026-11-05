@@ -10,6 +10,9 @@
 3. **Desinstalador** — `ArcaSetup` publicado como `ArcaUninstall.exe` na mesma pasta (usa o runtime do app).
 4. **Pacote** — `payload.zip` com `app\`, `docs\`, `samples\` e `models\` (Vosk pt-BR).
 5. **Instalador** — `ArcaSetup` em arquivo único com o pacote embutido → `dist\ARCA Teleprompter Setup <versão>.exe` + `SHA256SUMS.txt`.
+6. **latest.json** — versão, arquivo, tamanho, SHA-256 e novidades; assinado com `UPDATE_PRIVATE_KEY` se o `.dev.vars` estiver presente.
+
+Publicação (GitHub Releases) e deploy do servidor: [12 — Versionamento](12-versionamento.md). Hospedagem: [13](13-hospedagem.md).
 
 Versão: altere `<Version>` em `Directory.Build.props` e siga o checklist de [12 — Versionamento](12-versionamento.md).
 
@@ -24,7 +27,7 @@ O instalador: copia arquivos (com proteção contra *zip slip*), cria atalhos, a
 cria regra de firewall para 8420–8421 (quando elevado), copia exemplos para `Documentos\ARCA Teleprompter\Exemplos`,
 grava `install.json` e a chave de desinstalação. Em erro, desfaz tudo (pilha de desfazer).
 
-Instalação silenciosa: não suportada na 2.0 (planejado).
+Instalação silenciosa: ainda não suportada (planejado). A atualização automática roda o instalador com as opções da instalação existente.
 
 ## Desinstalação
 `ArcaUninstall.exe` (Configurações › Aplicativos ou menu Iniciar). Opções: manter roteiros, preferências e perfis.

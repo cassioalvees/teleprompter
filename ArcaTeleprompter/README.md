@@ -1,4 +1,4 @@
-# ARCA Teleprompter 2.6
+# ARCA Teleprompter 2.10
 
 Teleprompter profissional para Windows (C# / .NET 8 / WPF) com monitor web/PWA para tablets,
 saída NDI, acompanhamento por voz offline, integração MOS com sistemas de redação e instalador próprio.
@@ -18,7 +18,8 @@ saída NDI, acompanhamento por voz offline, integração MOS com sistemas de red
 | `src/ArcaTeleprompter` | Aplicativo WPF (editor, prompter, telas, talento, inspetor, serviços). |
 | `src/ArcaSetup` | Instalador / desinstalador (WPF, arquivo único). |
 | `tests/Arca.Core.Tests` | Testes automatizados (xUnit). |
-| `tools/` | Ferramentas de verificação: `NdiTest`, `NdiProbe` (`--medir N`: regularidade dos quadros), `VoiceTest`, `ServerTest`, `MakeSamples`. |
+| `server/licencas` | Site, conta e servidor de licenças (Cloudflare Workers + D1). Páginas em `public/`, geradas por `tools/build-site.mjs`. Chaves em `.dev.vars` (fora do git). |
+| `tools/` | Ferramentas: `NdiTest`, `NdiProbe` (`--medir N`: regularidade dos quadros), `VoiceTest`, `ServerTest`, `SetupTest` (pastas do instalador), `MakeSamples`, `assinar-atualizacao.mjs` (assina o `latest.json`). |
 | `docs/` | Documentação de engenharia ([índice](docs/README.md)) e manual do operador. |
 | `CHANGELOG.md` | [Histórico de versões](CHANGELOG.md) — o que mudou em cada versão. |
 
@@ -34,7 +35,7 @@ dotnet build ArcaTeleprompter.sln
 dotnet test tests/Arca.Core.Tests
 ```
 
-Gerar o instalador (testes → publicação → pacote → `dist\ARCA Teleprompter Setup 2.0.0.exe`):
+Gerar o instalador (testes → publicação → pacote → `dist\ARCA Teleprompter Setup <versão>.exe` e `dist\latest.json` assinado):
 
 ```bash
 powershell -ExecutionPolicy Bypass -File build.ps1
@@ -42,9 +43,12 @@ powershell -ExecutionPolicy Bypass -File build.ps1
 
 Opções: `-SkipTests`, `-NoVoiceModel` (instalador sem o modelo de voz; o app baixa quando precisar).
 
+Publicar a versão (atualização automática pelo GitHub Releases) e o servidor: [12 — Versionamento](docs/12-versionamento.md).
+Hospedagem do site/licenças, atualizações e backup das chaves: [13 — Hospedagem](docs/13-hospedagem.md).
+
 ## Dependências (todas públicas)
 
-CommunityToolkit.Mvvm (MIT) · NAudio (MIT) · Vosk (Apache-2.0) · DocumentFormat.OpenXml (MIT) ·
+CommunityToolkit.Mvvm (MIT) · NAudio (MIT) · Vosk (Apache-2.0) · Whisper.net + whisper.cpp (MIT) · DocumentFormat.OpenXml (MIT) ·
 PdfPig (Apache-2.0) · QRCoder (MIT) · ASP.NET Core (MIT) · xUnit (Apache-2.0) ·
 fontes Atkinson Hyperlegible, Source Sans 3, Source Serif 4, IBM Plex Mono, Raleway, Sora (OFL) ·
 NDI® runtime (licença NDI, instalado à parte pelo usuário).

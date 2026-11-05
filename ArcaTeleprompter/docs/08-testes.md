@@ -61,6 +61,22 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.10.1) — auditoria completa
+
+| Verificação | Resultado |
+|---|---|
+| Build da solução (Release) | 0 erros, 0 avisos (antes, 9 avisos de comentário) |
+| Testes automatizados (xUnit) | 39/39 (novo: importar DOCX com negrito, pela biblioteca corrigida) |
+| Dependências .NET (`--vulnerable --include-transitive`) | antes: `System.IO.Packaging` 8.0.0 com 2 falhas altas, e `System.Net.Http`/`Regex` 4.3.0 vindas das bibliotecas antigas de teste; depois: nenhuma |
+| Dependências do servidor (`npm audit`) | antes: 3 (wrangler/miniflare, só ferramenta); depois: 0 |
+| Segredos no git (arquivos e histórico) | nenhum; `.dev.vars` ignorado |
+| Site publicado | `/`, `/conta` e `/privacidade` respondem 200; `/api/admin/stats` sem token responde 401; `.dev.vars`, `schema.sql` e `wrangler.toml` respondem 404 |
+| Site com CSP (servidor local) | página inicial, Minha conta, Política e painel sem nenhum bloqueio no console; fontes e imagens carregam |
+| Conta e LGPD (servidor local) | 31/31 e 13/13 |
+| Monitor web, ataques (app de teste com senha) | outra origem recusada; 5ª senha errada encerra; endereço bloqueado. TUDO OK. Sem senha configurada, os dois últimos não se aplicam: qualquer senha entra |
+| Monitor web, espaçamento | espaço entre parágrafos 0; linha em branco = 1,3em = uma linha (entrelinha 1,3) |
+| Autoteste do app | TUDO OK |
+
 ## Resultados (versão 2.10.0) — uma linha é uma linha
 
 Teste com `--cmd=espacos`, medindo do topo da última linha de um parágrafo ao topo da primeira linha do seguinte, em linhas:

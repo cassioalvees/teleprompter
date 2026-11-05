@@ -380,7 +380,9 @@ async function download(env) {
   return Response.redirect(l ? `${RELEASES}/download/v${l.version}/${l.file}` : RELEASES, 302);
 }
 
-const page = html => new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8', 'x-frame-options': 'DENY', 'referrer-policy': 'no-referrer' } });
+// Página do painel: só o próprio script e estilo embutidos, chamadas só para o próprio servidor.
+const CSP = "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; form-action 'self'; frame-ancestors 'none'; base-uri 'none'";
+const page = html => new Response(html, { headers: { 'content-type': 'text/html; charset=utf-8', 'x-frame-options': 'DENY', 'referrer-policy': 'no-referrer', 'x-content-type-options': 'nosniff', 'content-security-policy': CSP } });
 
 const STYLE = `
 :root{--bg:#0f0f11;--card:#18181b;--line:#2a2a2f;--text:#ececef;--muted:#9a9aa3;--accent:#e5484d;--ok:#30a46c}

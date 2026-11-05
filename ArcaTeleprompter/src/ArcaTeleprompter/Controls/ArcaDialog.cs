@@ -77,7 +77,7 @@ public sealed class ArcaDialog : Window
         return d._result < 0 ? d._cancel : d._result;
     }
 
-    /// <summary>Como <see cref="Ask"/>, com um conteúdo extra entre o texto e os botões (campo, links…).</summary>
+    /// <summary>Como o <c>Ask</c> sem conteúdo extra, com um conteúdo extra entre o texto e os botões (campo, links…).</summary>
     public static int Ask(Window? owner, string eyebrow, string message, string? detail, string[] buttons, int primary, int cancel, UIElement extra, bool danger = false)
     {
         var d = new ArcaDialog(owner, eyebrow, message, detail, buttons, primary, cancel < 0 ? buttons.Length - 1 : cancel, extra, danger);

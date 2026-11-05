@@ -23,8 +23,9 @@ para o instalador (nome do arquivo `ARCA Teleprompter Setup <versão>.exe`, chav
 
 ## Publicar a versão (atualização automática)
 1. `.\build.ps1` — gera `dist\ARCA Teleprompter Setup <versão>.exe` e `dist\latest.json` (versão, arquivo, tamanho, SHA-256, novidades).
-2. `$env:GITHUB_TOKEN = "<token>"` — token do GitHub com **Contents: Read and write** no repositório `cassioalvees/teleprompter` (Settings › Developer settings › Fine-grained tokens).
-3. `.\publish-release.ps1` — cria a versão `v<versão>` no GitHub Releases e anexa `ARCA-Teleprompter-Setup-<versão>.exe` e `latest.json`.
+2. `GITHUB_TOKEN` — token do GitHub com **Contents: Read and write** no repositório `cassioalvees/teleprompter`. O login do GitHub já salvo no Windows serve: no Git Bash, `export GITHUB_TOKEN=$(printf 'protocol=https\nhost=github.com\n\n' | git credential fill | sed -n 's/^password=//p')` (o token não aparece na tela).
+3. `.\publish-release.ps1` — cria a versão `v<versão>` no GitHub Releases, assina o `latest.json` (`tools/assinar-atualizacao.mjs`) e anexa o instalador e o `latest.json`. **Nunca publique sem assinatura**: as versões 2.9.0+ recusam.
+4. Servidor/site mudou? Em `server/licencas`: `node tools/build-site.mjs` (se mudou o site) e `npx wrangler deploy` (**sem** `--secrets-file`: os segredos já estão na Cloudflare).
 
 Os apps instalados consultam `https://github.com/cassioalvees/teleprompter/releases/latest/download/latest.json` ao abrir e oferecem a atualização. `ARCA_UPDATE_URL` troca o endereço (testes com servidor local).
 O instalador sem assinatura digital mostra o aviso do SmartScreen nas primeiras instalações; a atualização funciona igual.

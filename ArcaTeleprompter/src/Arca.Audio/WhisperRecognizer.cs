@@ -94,6 +94,8 @@ public sealed class WhisperRecognizer : IVoiceRecognizer
     /// <summary>Hipótese de cada transcrição (diagnóstico).</summary>
     public event Action<string>? Trace;
 
+    /// <param name="input">Entrada de áudio (microfone, placa ou arquivo).</param>
+    /// <param name="modelPath">Arquivo do modelo Whisper.</param>
     /// <param name="language">Idioma do app (pt-BR, es-ES, en-US…).</param>
     /// <param name="vocabulary">Palavras do roteiro em volta da posição (as 40 anteriores e as seguintes), em ordem.</param>
     public WhisperRecognizer(AudioInput input, string modelPath, string language, IEnumerable<string>? vocabulary = null)

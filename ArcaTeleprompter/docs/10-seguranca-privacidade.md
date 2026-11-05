@@ -38,6 +38,12 @@ Revisão completa em 2.9.0 (25/10/2026): monitor web, servidor de licenças e co
 - Proteção contra *zip slip*; desfaz por inteiro se algo falhar (2.8.0).
 - `SHA256SUMS.txt` publicado junto com o instalador.
 
+## Auditoria 2.10.1 (05/11/2026)
+- **Bibliotecas com falha conhecida:** `System.IO.Packaging` 8.0.0, usada para abrir DOCX, tinha duas falhas de nível alto (GHSA-f32c-w444-8ppv, GHSA-qj66-m88j-hmgj). Foi fixada em 8.0.1. As bibliotecas dos testes (xUnit, Test SDK) e o wrangler (ferramenta de deploy, 4.158) também foram atualizados. Resultado: `dotnet list package --vulnerable` e `npm audit` sem nenhuma falha.
+- **Site:** nova política de segurança de conteúdo (`Content-Security-Policy`) nas páginas e no painel. Scripts e chamadas só do próprio site; fontes só do Google Fonts; sem molduras de outros sites (`frame-ancestors 'none'`); formulários só para o próprio site. Os outros cabeçalhos (`nosniff`, `X-Frame-Options`, `Referrer-Policy`) já existiam; o HTTPS é obrigatório pelo domínio `.dev`.
+- **Segredos:** nenhum arquivo de chave nem senha no git, inclusive no histórico. O `.dev.vars` está no `.gitignore`.
+- **Testes repetidos:** conta (31 itens), LGPD (13), ataques ao monitor web (origem, senha, bloqueio), autoteste do app e 39 testes automatizados (um novo, de importar DOCX), todos OK. Build sem avisos.
+
 ## Privacidade
 - **Áudio**: processado em memória, localmente (Vosk/Whisper); nada é gravado nem enviado (exceto o diagnóstico de 15 s, gravado só quando o operador pede, nos registros locais). A gravação de vídeo é explícita e salva em `Vídeos\ARCA Teleprompter`.
 - **Roteiros**: ficam na máquina (`.tps`, `session.json`, `versions.json`); nunca vão para o servidor.
@@ -57,3 +63,5 @@ Revisão completa em 2.9.0 (25/10/2026): monitor web, servidor de licenças e co
 | Senha esquecida só pelo administrador | Envio por e-mail precisa de domínio + serviço de e-mail |
 | `.dev.vars` com as chaves privadas em disco | Backup cifrado; nunca no git (já no `.gitignore`) |
 | Runtime NDI de terceiros | Carregado só se presente; falha não afeta o app |
+| Endereço do servidor de licenças fixo no app (`workers.dev`) | Mudar de hospedagem exigiria versão nova do app. Usar um domínio próprio (ver [13](13-hospedagem.md)) |
+| Bibliotecas com versão nova maior (NAudio 3, OpenXml 3.5, PdfPig 0.1.16) | Sem falhas conhecidas nas versões em uso; atualizar com testes de importação e áudio numa rodada própria |

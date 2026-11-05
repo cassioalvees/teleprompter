@@ -444,10 +444,6 @@ public sealed class PrompterSurface : Grid
     private Border _hudL = null!, _hudR = null!;
     private bool _hudShowBlock = true;
 
-    /// <summary>
-    /// Escolhe o que aparece nas informações da tela (bloco, tempo do bloco, relógio) e onde (em cima / embaixo).
-    /// <paramref name="bottomGap"/>: distância da base (a janela do talento tem a barra de controle embaixo).
-    /// </summary>
     // Zona morta: faixa da cor do fundo atrás das informações — o texto passa por baixo e não disputa com elas.
     private readonly Border _hudZone = new() { IsHitTestVisible = false, Visibility = Visibility.Collapsed };
     private bool _hudBottom = true; private double _hudGap = 16, _hudRight = 20;
@@ -476,6 +472,10 @@ public sealed class PrompterSurface : Grid
         _hudZone.Visibility = _hud.Visibility == Visibility.Visible && (_hudL.Visibility == Visibility.Visible || _hudR.Visibility == Visibility.Visible) ? Visibility.Visible : Visibility.Collapsed;
     }
 
+    /// <summary>
+    /// Escolhe o que aparece nas informações da tela (bloco, tempo do bloco, relógio) e onde (em cima / embaixo).
+    /// <paramref name="bottomGap"/>: distância da base (a janela do talento tem a barra de controle embaixo).
+    /// </summary>
     public void SetHudOptions(bool block, bool time, bool clock, bool bottom, double bottomGap = 16, double rightGap = 20)
     {
         _hudBottom = bottom; _hudGap = bottomGap; _hudRight = rightGap;

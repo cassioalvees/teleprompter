@@ -24,6 +24,7 @@ public sealed class PrompterLayout
     private static readonly Dictionary<string, double> IndicatorWidth = new() { ["seta"] = 1.8, ["quadrado"] = 1.7, ["ponto"] = 1.8 };
     private static readonly double[] SizeMul = { 0.65, 1, 1.45 };
 
+    /// <param name="s">Configurações do prompter (palavras por linha, margem, entrelinha…).</param>
     /// <param name="fontFactor">Fator de largura da fonte (para fontes do sistema, medido pelo app).</param>
     public static PrompterLayout Compute(PrompterSettings s, double fontFactor)
     {

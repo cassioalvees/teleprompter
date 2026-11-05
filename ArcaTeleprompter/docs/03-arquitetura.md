@@ -5,12 +5,15 @@
 ```
             ┌──────────────┐  teclado/clicker   ┌──────────────────────────┐
  Operador ─▶│  PC Windows  │◀───────────────────│ Apresentador (talento)   │
-            │  ARCA 2.0    │──── monitores ────▶│ prompter físico (espelho)│
+            │  ARCA 2.10   │──── monitores ────▶│ prompter físico (espelho)│
             └─┬───┬───┬──┬─┘                    └──────────────────────────┘
    WebSocket  │   │   │  │ MOS TCP 10540/41
   8420/8421   │   │   │  └──────────────▶ Sistema de redação (NRCS)
  iPad / PWA ◀─┘   │   └─ NDI ──────────▶ Mixer / vMix / OBS / TriCaster
                   └─ HTTP/TCP legenda ─▶ vMix / gerador de caracteres
+
+ Internet (HTTPS): servidor de licenças (Cloudflare Workers + D1) ◀── ativação / conferência
+                   GitHub Releases ◀── latest.json assinado + instalador (atualização)
 ```
 
 ## Contêineres e DLLs (C4 nível 2)
@@ -46,6 +49,10 @@ infraestrutura referenciam só `Arca.Core`. O app compõe tudo nos *Services*.
 | VideoService | `Services/VideoService.cs` | Prévia de câmera e gravação MP4 (MediaCapture) |
 | CaptionService, MosService | `Services/IntegrationServices.cs` | Legenda e espelho MOS |
 | Native | `Services/Native.cs` | Monitores (DisplayConfig), hotkeys globais, manter tela acesa |
+| LicenseService | `Services/LicenseService.cs` | Ativa/libera o código no servidor, confere a licença assinada (vale sem internet), demonstração |
+| UpdateService | `Services/UpdateService.cs` | Ao abrir: lê o `latest.json`, confere a assinatura, baixa, confere o SHA-256 e abre o instalador |
+
+Servidor de licenças e site: `server/licencas/src/index.js` (Worker) + `schema.sql` (D1). Detalhes de hospedagem em [13](13-hospedagem.md).
 
 ## Espaço de layout
 Todo o texto é diagramado num espaço de **1000 unidades de largura**; a escala para cada saída é
@@ -76,6 +83,9 @@ Regra: só a thread de UI altera o documento e o motor de rolagem. As demais pub
    as pequenas diferenças de diagramação do navegador, e suaviza a posição exibida (sem trancos).
 3. `SlowTick` (5 Hz): leituras, marcador atual, HUD do talento, estado web, legenda.
 
+## Edição
+O editor relê o texto 250 ms depois da última tecla: só os parágrafos alterados são trocados nas telas (assinatura por bloco), uma tela por quadro. O espaçamento em volta do cursor é acertado na hora da tecla (`FixSpacingNearCaret`). Cada Enter é uma linha (linha em branco = uma linha; régua Parágrafos = espaço extra, 0 de fábrica).
+
 ## Persistência
-`%APPDATA%\ARCA Teleprompter\`: `settings.json`, `session.json`, `versions.json`, `profiles.json`, `https.pfx`.
+`%APPDATA%\ARCA Teleprompter\`: `settings.json`, `session.json`, `versions.json`, `profiles.json`, `https.pfx`, `licenca.json`.
 `%LOCALAPPDATA%\ARCA Teleprompter\`: `logs\`, `models\` (Vosk). Gravação atômica (arquivo temporário + `File.Replace`).

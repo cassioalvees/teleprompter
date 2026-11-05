@@ -87,3 +87,6 @@ Nome, e-mail, empresa, telefone, a senha cifrada (nunca a senha em si), e para c
 
 **Como deixar o monitor web mais seguro?**
 Defina uma senha, desligue **Permitir controlar o prompter pelo navegador** quando não precisar e prefira o endereço **https** (porta 8421): no http a senha e o texto passam pela rede sem criptografia.
+
+**Posso colocar o site e as licenças em outra hospedagem (Hostinger, HostGator…)?**
+Pode, mas o servidor de licenças roda na Cloudflare (Workers + banco D1) e não funciona como está numa hospedagem comum de PHP. O caminho mais simples é continuar na Cloudflare, que é gratuita, usando um endereço do seu domínio. A chave de licenças precisa ir junto em qualquer mudança. As atualizações ficam no GitHub. Detalhes em [13 — Hospedagem](13-hospedagem.md).

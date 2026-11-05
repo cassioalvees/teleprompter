@@ -48,6 +48,8 @@ public sealed class SpeechRecognizer : IVoiceRecognizer
     /// <summary>Reconhecedor pronto para ouvir (o áudio de antes fica na fila e é reconhecido em seguida).</summary>
     public event Action? Ready;
 
+    /// <param name="input">Entrada de áudio (microfone, placa ou arquivo).</param>
+    /// <param name="modelPath">Pasta do modelo Vosk.</param>
     /// <param name="vocabulary">
     /// Palavras do roteiro. Quando informado, o Vosk reconhece só essas palavras e "[unk]" para o resto —
     /// muito mais preciso para seguir o texto, e o improviso aparece como palavras desconhecidas.

@@ -20,3 +20,6 @@ design_handoff_arca_teleprompter/arca-prompter/dist-electron/
 .vs/
 *.user
 .claude/settings.local.json
+
+# Entregas (zip)
+entrega/

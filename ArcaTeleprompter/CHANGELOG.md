@@ -3,6 +3,23 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.10.1] — 2026-11-05
+
+Auditoria completa: app, site, servidor de licenças, monitor web, dependências e documentação.
+
+### Segurança
+- **Abrir DOCX:** a biblioteca `System.IO.Packaging` 8.0.0 tinha duas falhas de segurança de nível alto (GHSA-f32c-w444-8ppv, GHSA-qj66-m88j-hmgj) e foi fixada na versão corrigida (8.0.1). Um arquivo DOCX malicioso podia explorá-las.
+- **Site e painel:** política de segurança de conteúdo (`Content-Security-Policy`). Scripts e chamadas só do próprio site, fontes só do Google Fonts, nenhum outro site pode abrir as páginas dentro de uma moldura, e os formulários só enviam para o próprio site.
+- Ferramentas de desenvolvimento atualizadas (wrangler 4.158; xUnit 2.9.3 e Test SDK 17.12 nos testes). Teste novo de importar DOCX. Nenhuma falha conhecida nas dependências (`dotnet list package --vulnerable` e `npm audit`).
+
+### Documentação
+- **Novo [13 — Hospedagem](docs/13-hospedagem.md):** onde fica cada parte (site/licenças na Cloudflare, atualizações no GitHub, chaves), como levar para outra hospedagem (domínio próprio, VPS ou PHP), o que precisa ir junto e o backup das chaves e do banco.
+- README, índice, visão geral, arquitetura, build e versionamento atualizados para a 2.10 (estavam em 2.0/2.6). Também foi incluído o passo de publicar com o login do GitHub já salvo, sem colar o token.
+- FAQ: pergunta sobre outra hospedagem. Segurança: resultado da auditoria e dois riscos novos registrados.
+
+### Interno
+- Build sem avisos (comentários de documentação corrigidos).
+
 ## [2.10.0] — 2026-11-05
 
 ### Alterado
