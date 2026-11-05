@@ -3,6 +3,20 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.10.0] — 2026-11-05
+
+### Alterado
+- **Uma linha é uma linha: cada Enter soma exatamente uma linha**, no editor, no prompter, no talento, no NDI e no iPad. Antes, cada parágrafo ganhava 0,25 linha a mais e a linha em branco valia meia linha. Um Enter dava 1,25 linha e dois Enters davam 1,75 em vez de 2.
+  - Linha em branco: altura de uma linha inteira (antes, meia).
+  - Régua **Parágrafos** (inspetor › Roteiro): 0 de fábrica (antes, 0,25). Configurações e roteiros salvos com o valor de fábrica antigo passam para 0. Um valor escolhido à mão fica.
+  - Nos roteiros com linha em branco entre os parágrafos, o espaço no prompter passa de 1,75 para 2 linhas.
+
+### Documentação
+- Manual 2.10: item **Linhas** no Editor de roteiro.
+
+### Interno
+- `--cmd=espacos` também mede um Enter e dois Enters. Testes novos de migração do espaçamento (38 no total).
+
 ## [2.9.3] — 2026-11-05
 
 ### Corrigido

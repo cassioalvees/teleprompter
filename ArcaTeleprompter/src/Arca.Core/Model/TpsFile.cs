@@ -37,7 +37,7 @@ public static class TpsFile
         PrompterSettings? settings = null;
         if (node["settings"] is JsonObject s)
         {
-            try { settings = s.Deserialize<PrompterSettings>(new JsonSerializerOptions { NumberHandling = JsonNumberHandling.AllowReadingFromString })?.MigrateSpeed(); }
+            try { settings = s.Deserialize<PrompterSettings>(new JsonSerializerOptions { NumberHandling = JsonNumberHandling.AllowReadingFromString })?.MigrateSpeed().MigrateSpacing(); }
             catch (JsonException) { /* configurações incompatíveis: ignora */ }
         }
         if (doc.Blocks.Count == 0) doc.Blocks.Add(ScriptBlock.Paragraph(""));

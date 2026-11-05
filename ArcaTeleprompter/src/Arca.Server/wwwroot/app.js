@@ -80,7 +80,7 @@ function applyState(s) {
   // O app envia Name/Color (maiúsculos): sem isso as falas ficavam brancas no navegador e no iPad.
   s.pres.forEach((p, i) => r.setProperty('--who' + (i + 1), p.color || p.Color || '#ffffff'));
   // Espaço entre parágrafos e linha em branco nas mesmas proporções do app (em linhas).
-  r.setProperty('--pgap', (s.lineH * (s.paraGap ?? 0.25)) + 'em'); r.setProperty('--blank', (s.lineH * 0.5) + 'em');
+  r.setProperty('--pgap', (s.lineH * (s.paraGap ?? 0)) + 'em'); r.setProperty('--blank', s.lineH + 'em');
   Object.assign(text.style, {
     fontFamily: `'${s.fontFamily}', sans-serif`, fontSize: s.fontSize + 'px', lineHeight: s.lineH,
     padding: `0 ${s.padR}px 0 ${s.padL}px`, textAlign: s.align

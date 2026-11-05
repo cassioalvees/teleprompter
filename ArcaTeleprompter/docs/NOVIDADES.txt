@@ -1,7 +1,10 @@
-ARCA Teleprompter 2.9.3 — novidades
+ARCA Teleprompter 2.10.0 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- Uma linha é uma linha: cada Enter soma exatamente uma linha, no editor e em todas as telas. Dois Enters deixam uma linha em branco do tamanho de uma linha. Para afastar mais os parágrafos, use a régua Parágrafos no inspetor › Roteiro.
+
+Também nesta atualização (2.9.3):
 - Linhas em branco do mesmo tamanho no editor, com ou sem o cursor nelas, iguais às do prompter.
 
 Também nesta atualização (2.9.2):

@@ -29,8 +29,8 @@ svg.fill{fill:currentColor;stroke:none}
 #stage{position:fixed;inset:0;overflow:hidden;background:var(--pbg,#000);container-type:inline-size}
 #flip{position:absolute;inset:0}
 #text{position:absolute;left:0;top:0;width:1000px;transform-origin:0 0;will-change:transform;color:var(--pfg,#fff)}
-#text p{margin:0 0 var(--pgap,.33em)}
-#text p.blank{height:var(--blank,.65em);margin:0}
+#text p{margin:0 0 var(--pgap,0)}
+#text p.blank{height:var(--blank,1.3em);margin:0}
 #text .bm{font-family:'IBM Plex Mono',monospace;font-size:.3em;letter-spacing:.12em;text-transform:uppercase;opacity:.55;border-top:1px solid currentColor;padding:.7em 0 .2em;margin:1.2em 0 .8em;line-height:1.4}
 #text .stop{font-family:'IBM Plex Mono',monospace;font-size:.3em;letter-spacing:.12em;text-transform:uppercase;opacity:.65;border:1px dashed currentColor;border-radius:.4em;padding:.4em .9em;width:fit-content;line-height:1.4}
 #text .w1{color:var(--who1)}#text .w2{color:var(--who2)}#text .w3{color:var(--who3)}#text .w4{color:var(--who4)}

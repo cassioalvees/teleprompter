@@ -27,7 +27,7 @@ public static class DisplayHtml
                     sb.Append($"<p class=\"stop\" data-i=\"{i}\">Pausa · ").Append(HtmlScript.Enc(b.PlainText)).Append("</p>");
                     break;
                 default:
-                    // Linha em branco: meia linha (classe "blank" no CSS), igual ao app.
+                    // Linha em branco: uma linha (classe "blank" no CSS), igual ao app.
                     if (string.IsNullOrWhiteSpace(b.PlainText)) { sb.Append($"<p class=\"blank\" data-i=\"{i}\"></p>"); break; }
                     sb.Append($"<p data-i=\"{i}\"");
                     if (b.Who > 0)

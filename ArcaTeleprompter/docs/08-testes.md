@@ -61,6 +61,22 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.10.0) — uma linha é uma linha
+
+Teste com `--cmd=espacos`, medindo do topo da última linha de um parágrafo ao topo da primeira linha do seguinte, em linhas:
+
+| Caso | 2.9.3 | 2.10.0 |
+|---|---|---|
+| Um Enter | 1,25 | 1,00 |
+| Dois Enters, cursor longe | 1,75 | 2,00 |
+| Dois Enters, cursor na linha em branco | 1,75 | 2,00 |
+| Prompter, dois Enters | 1,75 | 2,00 |
+
+- **Testes automatizados (xUnit):** 38/38. Os 4 novos cobrem o padrão novo (0); o 0,25 antigo virando 0; um valor escolhido (0,5) mantido; e 0,25 mantido depois da migração.
+- **Autoteste do app:** TUDO OK.
+- **`--cmd=medirEdicao`:** sem recuo no Enter.
+- **Digitação:** releitura de 18 ms, pior quadro de 63 ms. Comparação feita com o carregador ligado: a 2.9.3 deu releitura de 20 ms e pior quadro de 53 ms nas mesmas condições. Medições anteriores, feitas com o notebook na bateria com 6%, deram tudo 4 a 5 vezes mais lento nas duas versões, porque o processador estava economizando energia.
+
 ## Resultados (versão 2.9.3) — linha em branco do cursor
 
 Teste com `--cmd=espacos`: espaço entre o topo da última linha de um parágrafo e o topo da primeira linha do seguinte, separados por uma linha em branco, medido em linhas.

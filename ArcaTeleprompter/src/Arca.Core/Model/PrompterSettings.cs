@@ -19,7 +19,9 @@ public sealed class PrompterSettings
     [JsonPropertyName("mPos")] public double MarginPos { get; set; } = -1;
     [JsonPropertyName("lineH")] public double LineHeight { get; set; } = 1.3;
     /// <summary>Espaço entre parágrafos, em frações da altura da linha (0,25 = um quarto de linha).</summary>
-    [JsonPropertyName("paraGap")] public double ParagraphGap { get; set; } = 0.25;
+    [JsonPropertyName("paraGap")] public double ParagraphGap { get; set; } = 0; // 2.10: cada Enter = uma linha (antes 0,25 a mais)
+    /// <summary>Revisão do espaçamento (0 = salvo antes da 2.10, ver <see cref="MigrateSpacing"/>).</summary>
+    [JsonPropertyName("spacingRev")] public int SpacingRev { get; set; }
     /// <summary>atk, sans, serif, mono ou "sys:Família" (fonte instalada no Windows).</summary>
     [JsonPropertyName("fontKey")] public string FontKey { get; set; } = "atk";
     [JsonPropertyName("bg")] public string Background { get; set; } = "#000000";
@@ -66,6 +68,16 @@ public sealed class PrompterSettings
     public PrompterSettings MigrateSpeed()
     {
         if (Math.Abs(SpeedT - 0.3) < 1e-6 && Math.Abs(MinSpeed - 0.3) < 1e-6 && Math.Abs(MaxSpeed - 3) < 1e-6) { SpeedT = 0.15; MinSpeed = 0.2; MaxSpeed = 2.5; }
+        return this;
+    }
+
+    /// <summary>
+    /// 2.10: uma linha é uma linha — cada Enter soma exatamente uma linha. O espaço extra entre parágrafos que vinha de
+    /// fábrica (0,25 linha) vira 0; um valor escolhido pelo usuário fica.
+    /// </summary>
+    public PrompterSettings MigrateSpacing()
+    {
+        if (SpacingRev < 1) { if (Math.Abs(ParagraphGap - 0.25) < 1e-6) ParagraphGap = 0; SpacingRev = 1; }
         return this;
     }
 }

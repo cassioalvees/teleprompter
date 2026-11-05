@@ -13,7 +13,7 @@ public sealed class PrompterSnapshot
     [JsonPropertyName("fontFamily")] public string FontFamily { get; set; } = "Atkinson Hyperlegible";
     [JsonPropertyName("fontSize")] public double FontSize { get; set; }
     [JsonPropertyName("lineH")] public double LineH { get; set; }
-    [JsonPropertyName("paraGap")] public double ParaGap { get; set; } = 0.25;
+    [JsonPropertyName("paraGap")] public double ParaGap { get; set; }
     [JsonPropertyName("padL")] public double PadL { get; set; }
     [JsonPropertyName("padR")] public double PadR { get; set; }
     [JsonPropertyName("align")] public string Align { get; set; } = "left";

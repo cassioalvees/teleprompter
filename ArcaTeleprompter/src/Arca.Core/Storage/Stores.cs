@@ -139,7 +139,7 @@ public static class Stores
     public static AppSettings LoadSettings()
     {
         var s = JsonStore.Load(AppPaths.Settings, () => new AppSettings());
-        s.Prompter.MigrateSpeed();
+        s.Prompter.MigrateSpeed().MigrateSpacing();
         // 2.3: controle pelo navegador passa a vir ligado (gestos e atalhos do iPad/navegador funcionam de saída).
         if (s.SettingsRev < 3) { s.WebControl = true; s.SettingsRev = 3; }
         return s;

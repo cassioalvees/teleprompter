@@ -23,8 +23,8 @@ public static class Spacing
     public static double NameOffset(double fs) => fs * 0.45;
     /// <summary>Alinhamento do texto (esquerda/centro/direita) — o nome do apresentador e o marcador seguem o mesmo.</summary>
     public static TextAlignment Align(string? a) => a switch { "center" => TextAlignment.Center, "right" => TextAlignment.Right, _ => TextAlignment.Left };
-    /// <summary>Linha em branco digitada: meia linha (aparece, mas não abre um buraco).</summary>
-    public const double BlankLine = 0.5;
+    /// <summary>Linha em branco digitada: uma linha inteira, como em qualquer editor (cada Enter = uma linha). Até a 2.9 era meia.</summary>
+    public const double BlankLine = 1;
 
     /// <summary>Aplica (ou desfaz) o estilo de linha em branco num parágrafo.</summary>
     public static void Blank(Paragraph p, bool blank, PrompterSettings s, PrompterLayout l)
@@ -223,9 +223,9 @@ public static class ScriptFlow
     }
 
     /// <summary>
-    /// Espaçamento de um parágrafo, igual ao prompter: espaço entre parágrafos proporcional à linha, espaço para o nome
-    /// no início de cada apresentador e linha em branco = meia linha (também a do cursor:
-    /// ela cresce na primeira letra, ver MainWindow.FixSpacingNearCaret). Só altera o que mudou.
+    /// Espaçamento de um parágrafo, igual ao prompter: cada Enter soma uma linha (a linha em branco tem a altura de uma
+    /// linha e não leva o espaço de parágrafo), o espaço de parágrafo da régua "Parágrafos" (0 de fábrica) e o espaço do
+    /// nome no início de cada apresentador. Ajustado na hora em volta do cursor (MainWindow.FixSpacingNearCaret). Só altera o que mudou.
     /// </summary>
     public static void ApplySpacing(Paragraph p, PrompterSettings s, PrompterLayout l, int? prevWho = null)
     {

@@ -172,8 +172,8 @@ public partial class MainWindow
     // Espaçamento em volta do cursor acertado na hora (antes do próximo quadro), não na releitura 250 ms depois: Enter
     // duas vezes deixava a linha vazia de cima com altura cheia até a releitura encolhê-la (o texto descia e recuava
     // ~60 px), digitar numa linha em branco ficava espremido até ela crescer, e a linha nova depois de um parágrafo com
-    // apresentador herdava o espaço do nome (recuava ~26 px). A linha vazia do cursor fica com meia linha, como as outras
-    // e como no prompter (com altura cheia o espaço entre os parágrafos ficava 2,5 linhas em vez de 1,75 ali).
+    // apresentador herdava o espaço do nome (recuava ~26 px). A linha vazia do cursor segue a mesma regra das outras e
+    // do prompter (2.9.3: antes ficava maior que as outras enquanto o cursor estava nela).
     private bool _spacingQueued;
     private void FixSpacingNearCaret()
     {

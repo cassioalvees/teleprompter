@@ -30,12 +30,15 @@ public partial class MainWindow
     {
         var p = "A chuva forte das últimas vinte e quatro horas deixou cidades do litoral em estado de alerta.";
         var doc = new ScriptDocument();
-        for (var i = 0; i < 12; i++) { doc.Blocks.Add(ScriptBlock.Paragraph($"{i + 1}. {p}")); if (i < 11) doc.Blocks.Add(ScriptBlock.Paragraph("")); }
+        for (var i = 0; i < 12; i++) { doc.Blocks.Add(ScriptBlock.Paragraph($"{i + 1}. {p}")); if (i < 10) doc.Blocks.Add(ScriptBlock.Paragraph("")); } // os dois últimos sem linha em branco (um Enter)
         LoadEditor(doc); await Task.Delay(1500);
         var line = _layout.FontSize * Vm.S.LineHeight;
         var paras = Editor.Document.Blocks.OfType<Paragraph>().ToList();
         Paragraph a = paras[6], blank = paras[7], b = paras[8];
-        double Gap() { Editor.UpdateLayout(); var end = a.ContentEnd.GetCharacterRect(LogicalDirection.Backward); var st = b.ContentStart.GetCharacterRect(LogicalDirection.Forward); return (st.Top - end.Top) / line; }
+        double GapOf(Paragraph x, Paragraph y) { Editor.UpdateLayout(); var end = x.ContentEnd.GetCharacterRect(LogicalDirection.Backward); var st = y.ContentStart.GetCharacterRect(LogicalDirection.Forward); return (st.Top - end.Top) / line; }
+        double Gap() => GapOf(a, b);
+        var one = GapOf(paras[^2], paras[^1]); var inLine = 0.0;
+        { var r1 = a.ContentStart.GetCharacterRect(LogicalDirection.Forward); var r2 = a.ContentEnd.GetCharacterRect(LogicalDirection.Backward); inLine = r2.Top - r1.Top; }
         Editor.CaretPosition = paras[0].ContentStart; CommitEdits(); await Task.Delay(300);
         var far = Gap();
         Editor.Focus(); Editor.CaretPosition = blank.ContentStart; await Task.Delay(400);
@@ -45,7 +48,7 @@ public partial class MainWindow
         var caret = blank.ContentStart.GetCharacterRect(LogicalDirection.Forward);
         _measure.UpdateLayout();
         var pr = (_measure.TopOf(8) - _measure.LastLineTopOf(6)) / line;
-        Log.Info($"Espaços — entre parágrafos (em linhas, do topo da última linha ao topo da primeira): editor com cursor longe {far:0.00} · cursor na linha em branco {onBlankNow:0.00} (depois da releitura {onBlankAfter:0.00}) · prompter {pr:0.00} · altura do cursor {caret.Height / line:0.00} linha");
+        Log.Info($"Espaços — um Enter {one:0.00} linha · dois Enters (linha em branco) {far:0.00} · " + $"entre parágrafos (em linhas, do topo da última linha ao topo da primeira): editor com cursor longe {far:0.00} · cursor na linha em branco {onBlankNow:0.00} (depois da releitura {onBlankAfter:0.00}) · prompter {pr:0.00} · altura do cursor {caret.Height / line:0.00} linha");
     }
 
     private async Task MeasureEditing()
