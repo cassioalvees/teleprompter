@@ -242,26 +242,59 @@ public partial class MainWindow : Window
         var s = Vm.S;
         var st = alignOverride != null && alignOverride != s.Align ? WithAlign(s, alignOverride) : s;
         var fd = ScriptFlow.BuildPrompter(Doc, st, _layout, _font, out var who);
-        sf.SetContent(fd, who, st, _layout);
+        // Assinaturas: a da aparência (configurações, diagramação, fonte) e a de cada parágrafo (bloco + margem + cor).
+        // Iguais às da vez anterior, a tela troca só os parágrafos que mudaram (ver PrompterSurface.SetContent).
+        var look = System.Text.Json.JsonSerializer.Serialize(st) + $"|{_layout.FontSize}|{_layout.PaddingLeft}|{_layout.PaddingRight}|{_font.Source}";
+        var sigs = new List<string>(fd.Blocks.Count);
+        foreach (var b in fd.Blocks)
+        {
+            var src = b.Tag is int i && i < Doc.Blocks.Count ? System.Text.Json.JsonSerializer.Serialize(Doc.Blocks[i], TpsFile.Json) : "";
+            sigs.Add(src + "|" + b.Margin + "|" + (b.Foreground as SolidColorBrush)?.Color);
+        }
+        sf.SetContent(fd, who, st, _layout, look, sigs);
         sf.SetBackgroundImage(BackgroundImage(), s.BackgroundImageOpacity);
         sf.Y = Engine.Y;
     }
     private static PrompterSettings WithAlign(PrompterSettings s, string align) { var c = s.Clone(); c.Align = align; return c; }
 
     /// <summary>Texto ou layout mudaram: todas as saídas são reconstruídas mantendo a âncora de leitura.</summary>
-    private void RebuildOutputs((int Block, double Frac)? keep = null)
+    private void RebuildOutputs((int Block, double Frac)? keep = null, bool staged = false)
     {
         var anchor = keep ?? _measure.AnchorAt(Engine.Y);
         _pendingAnchor = anchor;
-        Rebuild(_measure);
+        var gen = ++_rebuildGen;
+        if (staged)
+        {
+            // Pausa na digitação: uma tela por quadro (medição, prévia, talento, depois janelas/NDI/web/voz). Tudo de uma
+            // vez, o Windows rediagramava as três telas no mesmo quadro e a digitação dava uma travadinha de 70–95 ms.
+            var td0 = Outputs.PreviewTarget;
+            var steps = new List<Action> { () => Rebuild(_measure), () => Rebuild(_preview, td0?.Align) };
+            if (TalentLayer.Visibility == Visibility.Visible) steps.Add(() => Rebuild(TalentSurface, _talentAlign));
+            steps.Add(() => { Outputs.RebuildAll(); Ndi.PushContent(); Web.PublishHtml(); Voice.Reload(); });
+            void Step(int i)
+            {
+                if (gen != _rebuildGen) return; // outra releitura começou: ela refaz tudo
+                Trace("telas " + (i + 1), steps[i]);
+                if (i + 1 < steps.Count) Dispatcher.BeginInvoke(DispatcherPriority.Background, () => Step(i + 1));
+            }
+            Step(0);
+            LastRebuildMs = $"em {steps.Count} quadros";
+            return;
+        }
+        var sw = System.Diagnostics.Stopwatch.StartNew(); var t = new double[7];
+        Rebuild(_measure); t[0] = sw.Elapsed.TotalMilliseconds;
         var td = Outputs.PreviewTarget;
-        Rebuild(_preview, td?.Align);
+        Rebuild(_preview, td?.Align); t[1] = sw.Elapsed.TotalMilliseconds;
         if (TalentLayer.Visibility == Visibility.Visible) Rebuild(TalentSurface, _talentAlign);
-        Outputs.RebuildAll();
-        Ndi.PushContent();
-        Web.PublishHtml();
-        Voice.Reload();
+        t[2] = sw.Elapsed.TotalMilliseconds;
+        Outputs.RebuildAll(); t[3] = sw.Elapsed.TotalMilliseconds;
+        Ndi.PushContent(); t[4] = sw.Elapsed.TotalMilliseconds;
+        Web.PublishHtml(); t[5] = sw.Elapsed.TotalMilliseconds;
+        Voice.Reload(); t[6] = sw.Elapsed.TotalMilliseconds;
+        LastRebuildMs = $"medição {t[0]:0} · prévia {t[1] - t[0]:0} · talento {t[2] - t[1]:0} · janelas {t[3] - t[2]:0} · NDI {t[4] - t[3]:0} · web {t[5] - t[4]:0} · voz {t[6] - t[5]:0}";
     }
+    internal string LastRebuildMs = "";
+    private int _rebuildGen;
     private (int Block, double Frac)? _pendingAnchor;
 
     /// <summary>Medição pronta: posições dos blocos, fim do texto, pausas, rundown.</summary>

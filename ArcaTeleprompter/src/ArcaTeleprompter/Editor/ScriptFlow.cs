@@ -186,14 +186,19 @@ public static class ScriptFlow
     /// Reaplica a apresentação (cores dos apresentadores, blocos pulados riscados, tamanhos dos marcadores)
     /// sem recriar o documento — preserva cursor e desfazer.
     /// </summary>
-    public static void ApplyPresentation(FlowDocument fd, PrompterSettings s, PrompterLayout l)
+    public static void ApplyPresentation(FlowDocument fd, PrompterSettings s, PrompterLayout l, Block? editing = null)
     {
+        // Só muda o que de fato mudou: cada propriedade trocada faz o Windows rediagramar e redesenhar o parágrafo. Antes,
+        // toda pausa na digitação recriava cor, margens e espaçamento de todos os parágrafos (quadros de 80–120 ms).
         var fs = l.FontSize;
         var fg = ParseColor(s.Foreground, Colors.White);
-        fd.FontSize = fs; fd.LineHeight = fs * s.LineHeight;
-        fd.PagePadding = new Thickness(l.PaddingLeft, fd.PagePadding.Top, l.PaddingRight, fd.PagePadding.Bottom);
-        fd.Foreground = new SolidColorBrush(fg);
-        fd.TextAlignment = s.Align switch { "center" => TextAlignment.Center, "right" => TextAlignment.Right, _ => TextAlignment.Left };
+        if (fd.FontSize != fs) fd.FontSize = fs;
+        if (fd.LineHeight != fs * s.LineHeight) fd.LineHeight = fs * s.LineHeight;
+        var pad = new Thickness(l.PaddingLeft, fd.PagePadding.Top, l.PaddingRight, fd.PagePadding.Bottom);
+        if (fd.PagePadding != pad) fd.PagePadding = pad;
+        if ((fd.Foreground as SolidColorBrush)?.Color != fg) fd.Foreground = new SolidColorBrush(fg);
+        var align = s.Align switch { "center" => TextAlignment.Center, "right" => TextAlignment.Right, _ => TextAlignment.Left };
+        if (fd.TextAlignment != align) fd.TextAlignment = align;
         var skip = false; int prevWho = 0;
         foreach (var block in fd.Blocks)
         {
@@ -208,13 +213,17 @@ public static class ScriptFlow
             var tag = p.Tag as BlockTag ?? new BlockTag();
             p.Tag = new BlockTag { Who = tag.Who }; // um objeto por parágrafo (separa os que o WPF compartilhou)
             var c = tag.Who > 0 && tag.Who <= s.Presenters.Count ? ParseColor(s.Presenters[tag.Who - 1].Color, fg) : fg;
-            p.Foreground = skip ? WithAlpha(c, 0.32) : new SolidColorBrush(c);
-            p.TextDecorations = skip ? TextDecorations.Strikethrough : null;
+            var want = skip ? Color.FromArgb((byte)(0.32 * 255), c.R, c.G, c.B) : c;
+            if (p.ReadLocalValue(TextElement.ForegroundProperty) is not SolidColorBrush cur || cur.Color != want) p.Foreground = new SolidColorBrush(want);
+            var deco = skip ? TextDecorations.Strikethrough : null;
+            if (!ReferenceEquals(p.ReadLocalValue(Paragraph.TextDecorationsProperty) as TextDecorationCollection, deco)) p.TextDecorations = deco;
             var start = tag.Who > 0 && tag.Who != prevWho && s.PresenterNames;
             // Igual ao prompter: espaço entre parágrafos proporcional à linha; linha em branco = meia linha.
-            var blank = new TextRange(p.ContentStart, p.ContentEnd).Text.Trim().Length == 0 && p.Inlines.Count <= 1;
-            Spacing.Blank(p, blank, s, l);
-            p.Margin = blank ? new Thickness(0) : new Thickness(0, start ? Spacing.NameRoom(fs) : 0, 0, Spacing.After(s, l));
+            var blank = p != editing && new TextRange(p.ContentStart, p.ContentEnd).Text.Trim().Length == 0 && p.Inlines.Count <= 1;
+            var isBlank = p.ReadLocalValue(Block.LineHeightProperty) is double;
+            if (blank != isBlank || (blank && p.LineHeight != l.FontSize * s.LineHeight * Spacing.BlankLine)) Spacing.Blank(p, blank, s, l);
+            var margin = blank ? new Thickness(0) : new Thickness(0, start ? Spacing.NameRoom(fs) : 0, 0, Spacing.After(s, l));
+            if (p.Margin != margin) p.Margin = margin;
             prevWho = tag.Who;
         }
     }

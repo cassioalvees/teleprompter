@@ -219,6 +219,7 @@ public partial class MainWindow
             case "ndi": ToggleNdi(); break;   // idem
             case "licenca": _ = ShowLicense(); break;   // idem (testes da tela de licença)
             case "linhas": LogLineWords(); break;       // idem (medição de palavras por linha em cada tela)
+            case "medirEdicao": _ = MeasureEditing(); break;   // idem (tempo de cada etapa ao editar)
             case "gotoBm": if (value is { } i) JumpBookmark((int)i); break;
             default: DoAction(name); break;
         }

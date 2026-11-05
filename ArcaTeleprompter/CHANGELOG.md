@@ -3,6 +3,16 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.9.1] — 2026-11-05
+
+### Corrigido
+- **Editor sem travadinhas ao digitar.** Em cada pausa da digitação o app relia o roteiro, refazia inteiras todas as telas (medição, prévia, talento) e recalculava a lista de marcadores na hora: num roteiro de 1.500 palavras a digitação congelava ~220 ms. Agora cada tela troca só o parágrafo alterado, a releitura reaplica cor e espaçamento só onde algo mudou, as telas se atualizam uma por quadro e os marcadores esperam a digitação parar (0,7 s). Com digitação simulada (1.512 palavras, talento aberto), o pior quadro caiu de 241 para 64 ms e os quadros acima de 50 ms, de 21 para 5.
+- **A cor do texto troca na hora** (de 269 ms para 1–2 ms): a cor aparece logo e o resto se atualiza na pausa seguinte.
+- **O Enter não faz mais o texto abrir e recuar.** A linha nova abria com altura cheia, encolhia para "linha em branco" na releitura e crescia de novo ao digitar, e o texto de baixo pulava ~60 px. Agora a linha onde está o cursor não encolhe enquanto é editada (pulo medido: de 59,5 para 0 px).
+
+### Interno
+- `--cmd=medirEdicao` mede a releitura, a troca de cor, o Enter e os quadros durante uma digitação simulada, e aponta a causa de cada quadro lento (ver docs/08-testes.md).
+
 ## Site e servidor de licenças — 2026-10-27
 
 Sem versão nova do app (o manual atualizado entra no próximo instalador).

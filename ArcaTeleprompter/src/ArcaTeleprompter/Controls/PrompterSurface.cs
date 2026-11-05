@@ -100,10 +100,29 @@ public sealed class PrompterSurface : Grid
     public RichTextBox TextBox => _text;
     public FlowDocument? Document => _text.Document;
 
-    /// <summary>Troca o conteúdo (FlowDocument novo, construído para esta saída).</summary>
-    public void SetContent(FlowDocument fd, List<(int Block, int Who)> whoStarts, PrompterSettings s, PrompterLayout l)
+    private string? _lookSig;
+    private List<string> _blockSigs = new();
+
+    /// <summary>
+    /// Troca o conteúdo (FlowDocument novo, construído para esta saída). Com <paramref name="lookSig"/> igual ao da vez
+    /// anterior (mesma fonte, cores, margens…) e as assinaturas de cada parágrafo, troca só os parágrafos que mudaram —
+    /// o Windows rediagrama só esse trecho. Antes, cada pausa na digitação rediagramava o roteiro inteiro em cada tela
+    /// (~150 ms travado num roteiro de 1.500 palavras).
+    /// </summary>
+    public void SetContent(FlowDocument fd, List<(int Block, int Who)> whoStarts, PrompterSettings s, PrompterLayout l, string? lookSig = null, List<string>? blockSigs = null)
     {
         _s = s; _l = l; _whoStarts = whoStarts;
+        if (lookSig != null && blockSigs != null && lookSig == _lookSig && _text.Document is { } cur && cur.Blocks.Count == _blockSigs.Count && blockSigs.Count == fd.Blocks.Count)
+        {
+            Patch(cur, fd, blockSigs);
+            _blockSigs = blockSigs;
+            _mapDirty = true;
+            Background = ScriptFlow.ParseBrush(s.Background, Brushes.Black);
+            Dispatcher.BeginInvoke(new Action(DrawNames), System.Windows.Threading.DispatcherPriority.Loaded);
+            Apply();
+            return;
+        }
+        _lookSig = lookSig; _blockSigs = blockSigs ?? new();
         _pad = fd.PagePadding;
         _text.Document = fd;
         // O RichTextBox redefine a margem do documento ao recebê-lo e ao carregar: reaplica (indicador + margem).
@@ -115,6 +134,34 @@ public sealed class PrompterSurface : Grid
         Dispatcher.BeginInvoke(new Action(DrawNames), System.Windows.Threading.DispatcherPriority.Loaded);
         Apply();
     }
+
+    /// <summary>
+    /// Troca no documento atual só o trecho que mudou: mantém o começo e o fim iguais (pelas assinaturas) e substitui o
+    /// meio pelos parágrafos novos. Os parágrafos mantidos recebem a etiqueta (índice do bloco) nova — um Enter desloca
+    /// os índices de tudo que vem depois sem mudar o texto.
+    /// </summary>
+    private void Patch(FlowDocument cur, FlowDocument fresh, List<string> sigs)
+    {
+        var oldN = _blockSigs.Count; var newN = sigs.Count;
+        var pre = 0; while (pre < oldN && pre < newN && _blockSigs[pre] == sigs[pre]) pre++;
+        var suf = 0; while (suf < oldN - pre && suf < newN - pre && _blockSigs[oldN - 1 - suf] == sigs[newN - 1 - suf]) suf++;
+        var oldBlocks = cur.Blocks.ToList(); var newBlocks = fresh.Blocks.ToList();
+        // Etiquetas novas nos parágrafos mantidos.
+        for (var i = 0; i < pre; i++) oldBlocks[i].Tag = newBlocks[i].Tag;
+        for (var i = 0; i < suf; i++) oldBlocks[oldN - 1 - i].Tag = newBlocks[newN - 1 - i].Tag;
+        // Meio: sai o antigo, entra o novo (no lugar certo).
+        Block? anchor = suf > 0 ? oldBlocks[oldN - suf] : null;
+        for (var i = pre; i < oldN - suf; i++) cur.Blocks.Remove(oldBlocks[i]);
+        for (var i = pre; i < newN - suf; i++)
+        {
+            var b = newBlocks[i]; fresh.Blocks.Remove(b);
+            if (anchor != null) cur.Blocks.InsertBefore(anchor, b); else cur.Blocks.Add(b);
+        }
+        LastPatch = (pre, oldN - pre - suf, newN - pre - suf);
+    }
+
+    /// <summary>Última troca parcial: parágrafos mantidos no começo, removidos e inseridos (medição).</summary>
+    public (int Kept, int Removed, int Inserted) LastPatch { get; private set; }
 
     /// <summary>Atualiza só a aparência (cores, overlay, indicador) sem trocar o texto.</summary>
     public void SetLook(PrompterSettings s, PrompterLayout l)

@@ -21,6 +21,8 @@ public partial class MainWindow
 {
     private readonly DispatcherTimer _editT = new() { Interval = TimeSpan.FromMilliseconds(250) };
     private readonly DispatcherTimer _saveT = new() { Interval = TimeSpan.FromMilliseconds(1200) };
+    // Tempos da lista de marcadores: depois que a digitação para (forçam uma diagramação completa da medição, ~70 ms).
+    private readonly DispatcherTimer _rundownT = new(DispatcherPriority.Background) { Interval = TimeSpan.FromMilliseconds(700) };
     private int _suppress;
     private bool _skipEditorSync, _editorMapDirty = true;
     private readonly List<(int Block, double Top, double Height)> _edMap = new();
@@ -34,8 +36,9 @@ public partial class MainWindow
 
     private void InitEditor()
     {
-        _editT.Tick += (_, _) => { _editT.Stop(); CommitEdits(); };
-        _saveT.Tick += (_, _) => { _saveT.Stop(); SaveSession(); };
+        _editT.Tick += (_, _) => { _editT.Stop(); Trace("releitura", () => CommitEdits(true)); };
+        _saveT.Tick += (_, _) => { _saveT.Stop(); Trace("salvar sessão", SaveSession); };
+        _rundownT.Tick += (_, _) => { _rundownT.Stop(); Trace("marcadores", UpdateRundown); };
         MarkChip.RenameRequested += chip => RenameChip(chip);
         DataObject.AddPastingHandler(Editor, OnPaste);
         _versions = Stores.LoadVersions();
@@ -165,10 +168,17 @@ public partial class MainWindow
         _editT.Stop(); _editT.Start();
     }
 
+    /// <summary>Tempos da última releitura (ms): ler, aparência, comparar, telas (medição em <c>--cmd=medirEdicao</c>).</summary>
+    internal (double Read, double Look, double Compare, double Outputs, double Total) LastCommitMs;
+
+    private void CommitEdits() => CommitEdits(false);
+
     /// <summary>Pausa na digitação: lê o editor, aplica convenções e atualiza saídas.</summary>
-    private void CommitEdits()
+    /// <param name="staged">Vindo da pausa na digitação: as telas se atualizam uma por quadro (ver RebuildOutputs).</param>
+    private void CommitEdits(bool staged)
     {
         var fd = Editor.Document; if (fd == null) return;
+        var sw = System.Diagnostics.Stopwatch.StartNew(); double tRead = 0, tLook = 0, tCmp = 0;
         using (SuppressEdits())
         {
             SplitLineBreaks(fd);
@@ -185,20 +195,29 @@ public partial class MainWindow
                 fd.Blocks.Remove(p);
             }
             var next = ScriptFlow.Read(fd);
-            ScriptFlow.ApplyPresentation(fd, Vm.S, _layout);
+            tRead = sw.Elapsed.TotalMilliseconds;
+            // A linha onde está o cursor não encolhe para "linha em branco" enquanto é editada: depois de um Enter ela
+            // abria com altura cheia, encolhia na releitura e crescia de novo ao digitar (o texto de baixo pulava ~60 px).
+            ScriptFlow.ApplyPresentation(fd, Vm.S, _layout, ScriptFlow.TopBlock(Editor.CaretPosition, fd));
             LayoutEditor(); // garante a folga do topo/rodapé (só altera se mudou)
             DrawEditorNames();
+            tLook = sw.Elapsed.TotalMilliseconds;
             // Só conta como alteração se o conteúdo mudou (layout/margens também disparam TextChanged).
-            if (Same(next, Doc)) { _lastCaret = CaretNow(); return; }
+            var same = Same(next, Doc);
+            tCmp = sw.Elapsed.TotalMilliseconds;
+            if (same) { _lastCaret = CaretNow(); LastCommitMs = (tRead, tLook - tRead, tCmp - tLook, 0, tCmp); return; }
             PushUndo(Doc);
             Doc = next;
             _lastCaret = CaretNow();
             MarkDirty();
         }
-        RebuildOutputs();
-        UpdateRundown();
-        UpdateCurrentWho();
+        var t0 = sw.Elapsed.TotalMilliseconds;
+        RebuildOutputs(staged: staged); var tr = sw.Elapsed.TotalMilliseconds;
+        _rundownT.Stop(); _rundownT.Start(); var tu = sw.Elapsed.TotalMilliseconds;
+        UpdateCurrentWho(); var tw = sw.Elapsed.TotalMilliseconds;
         ScheduleSave();
+        LastRebuildMs += $" · [reconstruir {tr - t0:0} · marcadores {tu - tr:0} · apresentador {tw - tu:0}]";
+        LastCommitMs = (tRead, tLook - tRead, tCmp - tLook, sw.Elapsed.TotalMilliseconds - t0, sw.Elapsed.TotalMilliseconds);
         if ((DateTime.Now - _lastVersion).TotalMinutes >= 2 && _active?.Dirty == true) { _lastVersion = DateTime.Now; AddVersion("automática"); }
     }
 
@@ -507,7 +526,9 @@ public partial class MainWindow
         Editor.Focus();
         if (hex == null) Editor.Selection.ClearAllProperties();
         else Editor.Selection.ApplyPropertyValue(TextElement.ForegroundProperty, ScriptFlow.ParseBrush(hex, Brushes.White));
-        MarkDirty(); CommitEdits();
+        // A cor já aparece no editor; telas e roteiro se atualizam na pausa seguinte (antes a releitura completa vinha
+        // antes de a cor aparecer — ~200–270 ms de espera).
+        MarkDirty(); _editT.Stop(); _editT.Start();
     }
     private void InsertSymbol(string s) { if (Vm.Locked) return; Editor.Focus(); Editor.CaretPosition.InsertTextInRun(s + " "); }
     private void UpperSelection() { if (Vm.Locked || Editor.Selection.IsEmpty) return; Editor.Selection.Text = Editor.Selection.Text.ToUpper(System.Globalization.CultureInfo.CurrentCulture); }
