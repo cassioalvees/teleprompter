@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -28,10 +28,11 @@ public sealed class UpdateInfo
 }
 
 /// <summary>
-/// Atualização automática: ao abrir o app (e em Ajuda › Procurar atualizações) consulta o <c>latest.json</c> da última
+/// Atualização automática: ao abrir o app, ao abrir o ícone com o app já aberto e em Ajuda › Procurar atualizações, consulta o <c>latest.json</c> da última
 /// versão no GitHub. Havendo versão nova, pergunta — "Atualizar agora" baixa o instalador numa tela própria, confere o
 /// SHA-256, fecha o app e roda o instalador em modo atualização (o Windows pede a permissão de administrador quando a
-/// pasta exige); "Lembrar depois" pergunta de novo na próxima vez que o app abrir. Nunca interrompe o prompt rodando.
+/// pasta exige); "Lembrar depois" pergunta de novo na próxima vez que o app abrir, e a etiqueta "Atualização x.y.z" da linha
+/// do menu fica à vista até instalar (clicar nela pergunta de novo). Nunca interrompe o prompt rodando.
 /// </summary>
 public sealed class UpdateService
 {
@@ -71,20 +72,45 @@ public sealed class UpdateService
         return info;
     }
 
-    /// <summary>Ao abrir o app: espera um pouco (não disputa com a abertura) e consulta em segundo plano.</summary>
+    /// <summary>Versão nova encontrada e ainda não instalada (a etiqueta da barra de título abre o aviso de novo).</summary>
+    public UpdateInfo? Available { get; private set; }
+    private DateTime _lastCheck = DateTime.MinValue;
+
+    /// <summary>
+    /// Ao abrir o app: consulta assim que a janela termina de abrir (a consulta é em segundo plano e não trava nada).
+    /// Até a 2.10.1 esperava 8 s, e o aviso chegava uns 10 s depois de abrir.
+    /// </summary>
     public void CheckOnStartup()
     {
         CleanOld();
         if (!_main.Vm.App.UpdateCheck) return;
-        var t = new DispatcherTimer { Interval = TimeSpan.FromSeconds(8) };
-        t.Tick += async (_, _) => { t.Stop(); await Check(manual: false); };
-        t.Start();
+        _main.Dispatcher.BeginInvoke(async () => await Check(manual: false), DispatcherPriority.ApplicationIdle);
+    }
+
+    /// <summary>
+    /// O ícone do app foi aberto de novo com o app já aberto (a janela existente vem para a frente): conta como abrir,
+    /// então procura de novo. Antes, nesse caso não procurava, e uma versão publicada com o app aberto só aparecia pelo menu.
+    /// </summary>
+    public void CheckOnReopen()
+    {
+        if (!_main.Vm.App.UpdateCheck || DateTime.UtcNow - _lastCheck < TimeSpan.FromSeconds(10)) return;
+        _ = Check(manual: false);
+    }
+
+    /// <summary>Clique na etiqueta da barra de título: pergunta de novo pela versão já encontrada.</summary>
+    public void AskAvailable()
+    {
+        Log.Info($"Atualização: etiqueta clicada (versão {Available?.Version ?? "nenhuma"}{(_asking ? ", aviso já pendente" : "")})");
+        if (Available == null || _asking) return;
+        _asking = true;
+        try { Ask(Available); } finally { _asking = false; }
     }
 
     /// <summary>Consulta e, havendo versão nova, pergunta. <paramref name="manual"/>: também avisa "já está atualizado" e erros.</summary>
     public async Task Check(bool manual)
     {
         if (_asking) return;
+        _lastCheck = DateTime.UtcNow;
         UpdateInfo? info;
         try { info = await FetchAsync(); }
         catch (Exception e)
@@ -100,10 +126,12 @@ public sealed class UpdateService
             if (manual) ArcaDialog.Info(_main, "Atualização", "Você está na versão mais recente", $"ARCA Teleprompter {Current.ToString(3)}.");
             return;
         }
-        Log.Info($"Atualização: versão {info.Version} disponível");
+        Log.Info($"Atualização: versão {info.Version} disponível" + (manual ? " (menu)" : ""));
+        Available = info;
+        _main.ShowUpdatePill(info.Version);
         // Nunca no meio do prompt, com a voz ligada ou com outro diálogo aberto: espera ficar livre.
         _asking = true;
-        while (!_main.IsIdleForPrompt) await Task.Delay(3000);
+        while (!_main.IsIdleForPrompt) await Task.Delay(1000);
         try { Ask(info); } finally { _asking = false; }
     }
 

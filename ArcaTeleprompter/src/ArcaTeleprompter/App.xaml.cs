@@ -70,7 +70,9 @@ public partial class App : Application
         else if (arg.StartsWith("--autoteste=")) _ = w.SelfTest(arg[12..]);
         // --ativar=ARCA-XXXX-XXXX-XXXX — ativa a licença sem interface (instalação pela TI, testes); o resultado vai para o registro.
         else if (arg.StartsWith("--ativar=")) _ = w.ActivateFromCommandLine(arg[9..]);
-        else if (arg != "--focus" && File.Exists(arg)) w.OpenPath(arg);
+        // Ícone aberto de novo com o app já aberto: conta como abrir o app (procura atualização).
+        else if (arg == "--focus") w.Updates.CheckOnReopen();
+        else if (File.Exists(arg)) w.OpenPath(arg);
     }
 
     private static async Task ListenPipe(MainWindow w)

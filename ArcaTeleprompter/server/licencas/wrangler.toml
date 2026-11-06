@@ -16,3 +16,11 @@ database_id = "a5e628cc-cb80-415d-b01f-475c9df181a0"
 [assets]
 directory = "./public"
 binding = "ASSETS"
+
+# "Esqueci minha senha" por e-mail (Cloudflare Email Service). Desligado até o domínio estar na Cloudflare
+# com o envio de e-mail ativo (npx wrangler email sending enable seudominio.com.br). Para ligar, tire os # das
+# 4 linhas abaixo, troque o endereço e rode npx wrangler deploy. Passo a passo em docs/13-hospedagem.md.
+# [[send_email]]
+# name = "EMAIL"
+# [vars]
+# MAIL_FROM = "nao-responda@seudominio.com.br"

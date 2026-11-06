@@ -17,12 +17,12 @@ Só para ativar e para atualizar. Depois de ativado, o ARCA funciona offline —
 10 minutos de prompter por dia, um roteiro e uma tela de prompter. NDI, monitor web/iPad, voz, redação (MOS), câmera e impressão pedem a licença.
 
 **Esqueci a senha da conta. E agora?**
-Fale com o suporte informando o e-mail da conta: o administrador gera uma senha provisória, e você troca em Minha conta › Meus dados.
+Em Minha conta, clique em **Esqueci minha senha** e informe o e-mail. Enquanto o envio por e-mail não estiver ligado, a página indica o contato do suporte: o administrador gera uma senha provisória, e você troca em Minha conta › Meus dados.
 
 ## Instalação e atualização
 
 **Como atualizo?**
-O app avisa ao abrir quando há versão nova. **Atualizar agora** baixa, instala e reabre o app sozinho; o Windows pede permissão de administrador quando o ARCA está em Arquivos de Programas. Para procurar na hora: Ajuda › Procurar atualizações.
+O app avisa logo ao abrir quando há versão nova (e também quando você abre o ícone com o app já aberto); enquanto não atualizar, fica a etiqueta **Atualização** na linha do menu, à direita. **Atualizar agora** baixa, instala e reabre o app sozinho; o Windows pede permissão de administrador quando o ARCA está em Arquivos de Programas. Para procurar na hora: Ajuda › Procurar atualizações.
 
 **A atualização é segura?**
 Sim. O app só instala versões assinadas pela ARCA (assinatura digital conferida com uma chave embutida no app) e confere o SHA-256 do instalador logo antes de abrir. Arquivo alterado no caminho é recusado e nada é instalado.

@@ -7,6 +7,7 @@
 //   GET  /api/account          dados e licenças da conta (cookie de sessão)
 //   POST /api/account/release  remove a licença do computador atual (para ativar em outro) · /license gera o código
 //   POST /api/account/profile  atualiza nome, empresa e telefone · /password troca a senha
+//   POST /api/account/forgot   manda por e-mail o link de senha nova (se o e-mail estiver configurado) · /reset grava a senha nova
 //   POST /api/activate         prende o código a um computador e devolve a licença assinada (ECDSA P-256)
 //   POST /api/deactivate       libera o código (trocar de computador) — só do próprio computador
 //   POST /api/check            o app confere de vez em quando se a licença continua valendo (bloqueio, troca)
@@ -155,9 +156,91 @@ async function login(req, env, url, ip) {
   return json({ ok: true }, 200, { 'set-cookie': await startSession(env, url, user.id) });
 }
 
+// ——— Esqueci minha senha ———
+// O link leva um código assinado (HMAC) com a conta, a validade e a senha atual cifrada: vale por 1 hora
+// e só uma vez (depois que a senha muda, o código deixa de conferir). Nada fica guardado no banco.
+// O e-mail sai pelo Cloudflare Email Service: binding send_email "EMAIL" + variável MAIL_FROM no wrangler.toml.
+// Sem isso configurado, a página orienta a falar com o suporte (o painel gera uma senha provisória).
+const RESET_MINUTES = 60;
+const mailOn = env => !!(env.EMAIL && env.MAIL_FROM);
+let resetKeyCache;
+async function resetKey(env) {
+  if (!resetKeyCache) {
+    const raw = await crypto.subtle.digest('SHA-256', enc.encode('arca-senha-nova:' + env.LICENSE_PRIVATE_KEY));
+    resetKeyCache = await crypto.subtle.importKey('raw', raw, { name: 'HMAC', hash: 'SHA-256' }, false, ['sign']);
+  }
+  return resetKeyCache;
+}
+const resetSig = async (env, id, exp, pw) => b64url(await crypto.subtle.sign('HMAC', await resetKey(env), enc.encode(`${id}.${exp}.${pw}`)));
+async function resetToken(env, user) {
+  const exp = Date.now() + RESET_MINUTES * 60_000;
+  return `${user.id}.${exp}.${await resetSig(env, user.id, exp, user.password)}`;
+}
+async function resetUser(env, token) {
+  const m = String(token || '').match(/^(\d{1,12})\.(\d{13})\.([A-Za-z0-9_-]{43})$/);
+  if (!m || +m[2] < Date.now()) return null;
+  const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(+m[1]).first();
+  return user && sameSecret(await resetSig(env, user.id, m[2], user.password), m[3]) ? user : null;
+}
+
+async function forgot(req, env, url, ip) {
+  const b = await body(req);
+  const email = clean(b.email, 160).toLowerCase();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) return fail(400, 'Informe um e-mail válido.');
+  if (!mailOn(env)) return json({ ok: true, mail: false });
+  // Limites: 5 pedidos por hora do mesmo endereço; 3 e-mails por hora para a mesma pessoa.
+  // No histórico fica só o SHA-256 do e-mail (o pedido pode ser de quem nem tem conta).
+  const tag = 'sha256:' + await sha256(email);
+  const byIp = await env.DB.prepare("SELECT COUNT(*) AS n FROM events WHERE kind = 'senha-pedido' AND ip = ? AND at > ?").bind(ip, since(3600_000)).first();
+  if (byIp && byIp.n >= 5) return fail(429, 'Muitos pedidos deste endereço. Tente de novo mais tarde.');
+  const byMail = await env.DB.prepare("SELECT COUNT(*) AS n FROM events WHERE kind = 'senha-pedido' AND detail = ? AND at > ?").bind(tag, since(3600_000)).first();
+  await log(env, null, 'senha-pedido', null, tag, ip);
+  // A resposta é sempre a mesma: não revela se o e-mail tem conta.
+  if (byMail && byMail.n >= 3) return json({ ok: true, mail: true });
+  const user = await env.DB.prepare('SELECT id, name, email, password FROM users WHERE email = ?').bind(email).first();
+  if (user) {
+    const link = `${url.origin}/conta#nova-senha=${await resetToken(env, user)}`;
+    try { await env.EMAIL.send(resetMail(env, user, link)); }
+    catch (e) { console.error('senha-email', e && e.code, e && e.message); await log(env, null, 'senha-email-falhou', null, String(e && e.code || 'erro'), ip); }
+  }
+  return json({ ok: true, mail: true });
+}
+
+function resetMail(env, user, link) {
+  const first = String(user.name || '').split(' ')[0];
+  const h = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  return {
+    to: user.email,
+    from: { email: env.MAIL_FROM, name: 'ARCA Teleprompter' },
+    subject: 'Criar uma senha nova — ARCA Teleprompter',
+    text: `Olá, ${first}.\n\nRecebemos um pedido para criar uma senha nova na sua conta do ARCA Teleprompter.\n\nAbra este link para criar a senha (vale por ${RESET_MINUTES} minutos e só uma vez):\n${link}\n\nSe não foi você, ignore este e-mail: sua senha continua a mesma.\n\nARCA Teleprompter`,
+    html: `<div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:1.5;color:#1b1b1f;max-width:520px">
+<p>Olá, ${h(first)}.</p><p>Recebemos um pedido para criar uma senha nova na sua conta do <b>ARCA Teleprompter</b>.</p>
+<p style="margin:26px 0"><a href="${h(link)}" style="background:#E5484D;color:#fff;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:999px;display:inline-block">Criar senha nova</a></p>
+<p style="color:#55555c;font-size:13px">O link vale por ${RESET_MINUTES} minutos e só uma vez. Se o botão não abrir, copie este endereço no navegador:<br><span style="word-break:break-all">${h(link)}</span></p>
+<p style="color:#55555c;font-size:13px">Se não foi você, ignore este e-mail: sua senha continua a mesma.</p></div>`
+  };
+}
+
+async function resetPassword(req, env, url, ip) {
+  const b = await body(req);
+  const user = await resetUser(env, b.token);
+  if (!user) return fail(400, 'Este link expirou ou já foi usado. Peça um novo em "Esqueci minha senha".');
+  const pe = passwordError(b.password); if (pe) return fail(400, pe);
+  // Senha nova encerra todas as sessões abertas e invalida o link (a assinatura usava a senha antiga).
+  await env.DB.batch([
+    env.DB.prepare('UPDATE users SET password = ? WHERE id = ?').bind(await hashPassword(b.password), user.id),
+    env.DB.prepare('DELETE FROM sessions WHERE user_id = ?').bind(user.id)
+  ]);
+  await log(env, null, 'senha-redefinida', null, user.email, ip);
+  return json({ ok: true }, 200, { 'set-cookie': await startSession(env, url, user.id) });
+}
+
 async function account(req, env, url, ip) {
   if (req.method === 'POST' && url.pathname === '/api/account/signup') return signup(req, env, url, ip);
   if (req.method === 'POST' && url.pathname === '/api/account/login') return login(req, env, url, ip);
+  if (req.method === 'POST' && url.pathname === '/api/account/forgot') return forgot(req, env, url, ip);
+  if (req.method === 'POST' && url.pathname === '/api/account/reset') return resetPassword(req, env, url, ip);
   const user = await currentUser(req, env);
   if (url.pathname === '/api/account/logout') {
     if (user) await env.DB.prepare('DELETE FROM sessions WHERE token = ?').bind(user.session).run();
@@ -318,7 +401,7 @@ async function admin(req, env, url, ip) {
     await log(env, nc, 'admin-ilimitada', null, email, ip);
     return json({ ok: true, code: nc });
   }
-  // Senha esquecida (ainda sem e-mail): o administrador gera uma senha provisória e passa para a pessoa.
+  // Senha provisória (quando o envio por e-mail do "Esqueci minha senha" não está ligado): o administrador gera e passa para a pessoa.
   if (url.pathname === '/api/admin/password') {
     const lic = await env.DB.prepare('SELECT user_id FROM licenses WHERE code = ?').bind(code).first();
     if (!lic || !lic.user_id) return fail(404, 'Esta licença não tem conta no site.');

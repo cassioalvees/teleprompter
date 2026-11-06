@@ -61,6 +61,37 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.11.0) — aviso de atualização e senha esquecida
+
+**Por que o aviso "não vinha".** Pelo registro do app, a consulta ao abrir funcionava, mas só uns 10 s depois de abrir. As três vezes em que foi preciso ir no menu (2.9.2, 2.9.3 e 2.10.0) foram com o app já aberto quando a versão saiu: abrir o ícone de novo só trazia a janela para a frente, sem procurar.
+
+Aviso de atualização (app compilado, servidor local no papel do GitHub com `ARCA_UPDATE_URL`, versão "9.9.9"):
+
+| Passo | Resultado |
+|---|---|
+| Abrir o app | Versão nova encontrada 2,1 s depois de abrir (antes ~10 s); aviso na tela e etiqueta "Atualização 9.9.9" na linha do menu |
+| App aberto, versão publicada depois, ícone aberto de novo | Encontrada 0,35 s depois de reabrir (antes: só pelo menu) |
+| Lembrar depois | Aviso fecha; a etiqueta continua |
+| Clicar na etiqueta | Aviso abre de novo |
+| Janela sem foco ao abrir | Etiqueta aparece na hora; o aviso espera a janela ficar ativa (como antes: nunca por cima do prompt, da voz ou de outro diálogo) |
+| Etiqueta na barra de título (1ª tentativa) | O clique virava "arrastar janela" (área de título do Windows): etiqueta movida para a linha do menu |
+
+Esqueci minha senha (`wrangler dev` local; e-mail simulado pelo Wrangler):
+
+| Verificação | Resultado |
+|---|---|
+| Sem e-mail configurado (como está publicado) | "O envio por e-mail ainda não está ativo. Escreva para o suporte…" |
+| Pedido para conta existente / e-mail sem conta | Mesma resposta; e-mail só para a conta existente |
+| E-mail | Assunto "Criar uma senha nova", link `/conta#nova-senha=…` (o código fica depois do #: não vai para registros de acesso), texto e HTML |
+| Abrir o link | Formulário "Criar uma senha nova"; senhas diferentes recusadas; salvar entra na conta |
+| Mesmo link de novo / link adulterado | "Este link expirou ou já foi usado" |
+| Senha antiga / nova | Recusada / entra |
+| Sessão aberta antes da troca | Encerrada (401) |
+| Chamada de outro site | 403 |
+| Limites | 6º pedido do mesmo endereço em 1 h → 429; no máximo 3 e-mails por hora para a mesma conta |
+| Conta e LGPD (testes antigos) | 31/31 e 13/13 |
+| Logo no topo | Site, Minha conta e Política: logo da ARCA (PNG 501×96, 15 KB, mostrado a 28 px) |
+
 ## Resultados (versão 2.10.1) — auditoria completa
 
 | Verificação | Resultado |

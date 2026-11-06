@@ -24,6 +24,7 @@ Revisão completa em 2.9.0 (25/10/2026): monitor web, servidor de licenças e co
 - Rotas da conta só aceitam POST da própria página (`Origin`); limite de 5 cadastros/hora e 10 senhas erradas a cada 15 min por endereço.
 - **Tempo de resposta do login (2.9.0)**: e-mail sem conta também calcula um hash — o tempo não revela quem tem conta.
 - Licença: ECDSA P-256 assinada no servidor; o app confere com a chave pública embutida. Código de 12 caracteres em alfabeto de 32 (≈ 10¹⁸ combinações): adivinhar não é viável.
+- **Esqueci minha senha (2.11.0)**: link `/conta#nova-senha=<conta>.<validade>.<HMAC>` assinado com uma chave derivada da `LICENSE_PRIVATE_KEY` sobre conta, validade e a senha atual cifrada. Vale 1 hora e uma vez só (a senha nova muda a assinatura) e não precisa de tabela no banco. O código vai depois do `#`, então não aparece em registros de acesso nem no Referer. Mesma resposta com ou sem conta; 5 pedidos/hora por endereço e 3 e-mails/hora por conta (no histórico fica só o SHA-256 do e-mail pedido). A senha nova encerra todas as sessões. O envio usa o Cloudflare Email Service (binding `send_email`), desligado até o domínio estar configurado.
 - Administração: token longo e aleatório comparado em tempo constante; página `/admin` sem indexação.
 - Segredos: `LICENSE_PRIVATE_KEY` e `ADMIN_TOKEN` como *secrets* da Cloudflare; cópia local em `server/licencas/.dev.vars` (fora do git). **Faça backup desse arquivo em lugar seguro** — perder a chave impede emitir licenças que as versões instaladas aceitem.
 
@@ -60,7 +61,7 @@ Revisão completa em 2.9.0 (25/10/2026): monitor web, servidor de licenças e co
 | App .NET pode ser descompilado e a checagem de licença removida | Inerente a apps .NET; ofuscação (ex.: ConfuserEx, pago: Dotfuscator) dificulta, não impede. Com licença gratuita, risco baixo |
 | Contagem da demonstração (10 min/dia) apagável | Guardada assinada em dois lugares; apagar os dois zera o dia. Sem servidor, não há como garantir |
 | Instalador sem assinatura de código (Authenticode) | Windows mostra "Editor desconhecido" e o SmartScreen avisa. Certificado de assinatura de código (≈ US$ 200–400/ano) resolve |
-| Senha esquecida só pelo administrador | Envio por e-mail precisa de domínio + serviço de e-mail |
+| Senha esquecida: envio por e-mail ainda desligado | Pronto no servidor (2.11.0); ligar quando o domínio estiver na Cloudflare ([13](13-hospedagem.md)). Até lá, senha provisória pelo painel |
 | `.dev.vars` com as chaves privadas em disco | Backup cifrado; nunca no git (já no `.gitignore`) |
 | Runtime NDI de terceiros | Carregado só se presente; falha não afeta o app |
 | Endereço do servidor de licenças fixo no app (`workers.dev`) | Mudar de hospedagem exigiria versão nova do app. Usar um domínio próprio (ver [13](13-hospedagem.md)) |

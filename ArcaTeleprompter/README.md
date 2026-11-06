@@ -1,4 +1,4 @@
-# ARCA Teleprompter 2.10
+# ARCA Teleprompter 2.11
 
 Teleprompter profissional para Windows (C# / .NET 8 / WPF) com monitor web/PWA para tablets,
 saída NDI, acompanhamento por voz offline, integração MOS com sistemas de redação e instalador próprio.

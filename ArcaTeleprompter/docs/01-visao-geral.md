@@ -8,7 +8,7 @@ automaticamente (voz offline).
 
 Referências de mercado: Autoscript (VoiceTracking, WinPlus) e PowerPrompter (suborbital).
 
-## Escopo (versão 2.10)
+## Escopo (versão 2.11)
 - Editor de roteiro com marcadores, pausas, apresentadores, trechos pulados, formatação e histórico de versões.
 - Prompter com rolagem suave (DirectX/WPF), velocidade variável, reverso, contagem regressiva,
   linha de leitura, indicador (seta/quadrado/ponto/linha), overlay (faixa/fade/destaque).

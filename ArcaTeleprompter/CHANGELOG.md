@@ -3,6 +3,19 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.11.0] — 2026-11-05
+
+### Atualização automática
+- **O aviso de versão nova chega logo ao abrir o app.** A consulta começa assim que a janela termina de abrir (antes esperava 8 s, e o aviso vinha uns 10 s depois). Medido: 2,1 s entre abrir e encontrar a versão nova.
+- **Abrir o ícone com o app já aberto também procura.** Antes, a janela aberta só vinha para a frente, e uma versão publicada com o app aberto só aparecia por Ajuda › Procurar atualizações. Medido: 0,35 s entre reabrir e encontrar.
+- **Etiqueta "Atualização x.y.z"** na linha do menu, à direita, enquanto houver versão nova não instalada (também depois de "Lembrar depois"). Clicar nela abre o aviso de novo. Fica na linha do menu porque, na barra de título, o Windows trata o clique como arrastar a janela.
+
+### Site e conta
+- **Logo da ARCA** no topo do site, de Minha conta e da política de privacidade, no lugar do nome escrito.
+- **Esqueci minha senha** em Minha conta. A pessoa informa o e-mail e recebe um link para criar uma senha nova; o link vale por 1 hora e uma vez só, e a senha nova encerra todas as sessões abertas. A resposta é a mesma com ou sem conta (não revela quem tem conta); limites de 5 pedidos por hora por endereço e 3 e-mails por hora por conta. Nada fica guardado no banco: o link é assinado (HMAC) com a conta, a validade e a senha atual cifrada.
+- **O envio do e-mail fica desligado até o domínio estar na Cloudflare** (Cloudflare Email Service). Enquanto isso, a página orienta a escrever para o suporte, e o painel gera a senha provisória como antes. Como ligar: [13 — Hospedagem](docs/13-hospedagem.md).
+- Política de privacidade (5/11/2026): o e-mail também serve para mandar o link de senha nova, quando a pessoa pede.
+
 ## [2.10.1] — 2026-11-05
 
 Auditoria completa: app, site, servidor de licenças, monitor web, dependências e documentação.

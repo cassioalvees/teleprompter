@@ -45,6 +45,24 @@ Passos da opção A:
 - **Ativar um computador novo** e **criar conta** precisam do servidor.
 - **Atualizações** não dependem dele (vêm do GitHub).
 
+## Ligar o "Esqueci minha senha" por e-mail
+
+O site já tem a página e o servidor pronto (2.11.0). Falta só o envio do e-mail, que precisa de um domínio seu na Cloudflare. Enquanto estiver desligado, a página diz para escrever para o suporte, e o painel `/admin` gera a senha provisória.
+
+1. Domínio na Cloudflare (o mesmo passo 1 da opção A acima).
+2. Ativar o envio de e-mail do domínio: Cloudflare › Email › Email Sending, ou `npx wrangler email sending enable seudominio.com.br`. A Cloudflare cria os registros SPF/DKIM no DNS.
+3. Em `server/licencas/wrangler.toml`, tirar o `#` das 4 linhas do final e trocar o endereço:
+   ```toml
+   [[send_email]]
+   name = "EMAIL"
+   [vars]
+   MAIL_FROM = "nao-responda@seudominio.com.br"
+   ```
+4. `npx wrangler deploy` em `server/licencas`.
+5. Testar com o seu e-mail em Minha conta › Esqueci minha senha (confira também o spam na primeira vez).
+
+O link do e-mail usa o endereço por onde a pessoa entrou no site, então já sai certo com o domínio novo.
+
 ## Backup (faça hoje)
 - `server/licencas/.dev.vars`: guarde num lugar seguro fora deste computador, como um gerenciador de senhas ou um pendrive guardado. **Sem a `LICENSE_PRIVATE_KEY` não dá para emitir licenças que os apps aceitem; sem a `UPDATE_PRIVATE_KEY` não dá para publicar atualizações que os apps aceitem.**
 - Banco de licenças: `npx wrangler d1 export arca-licencas --remote --output=licencas-AAAA-MM-DD.sql` de tempos em tempos.

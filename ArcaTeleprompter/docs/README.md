@@ -1,4 +1,4 @@
-# Documentação — ARCA Teleprompter 2.10
+# Documentação — ARCA Teleprompter 2.11
 
 | # | Documento | Para quem |
 |---|---|---|

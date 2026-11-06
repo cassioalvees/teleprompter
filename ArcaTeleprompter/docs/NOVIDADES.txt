@@ -1,7 +1,13 @@
-ARCA Teleprompter 2.10.1 — novidades
+ARCA Teleprompter 2.11.0 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- O aviso de versão nova aparece logo ao abrir o app, sem precisar ir em Ajuda › Procurar atualizações.
+- Abrir o ícone do ARCA com o app já aberto também procura versão nova.
+- Etiqueta "Atualização" na linha do menu, à direita, enquanto houver versão nova: clique nela para atualizar.
+- No site: "Esqueci minha senha" em Minha conta.
+
+Também nesta atualização (2.10.1):
 - Revisão de segurança: abrir arquivos DOCX ficou mais seguro (biblioteca corrigida).
 
 Também nesta atualização (2.10.0):

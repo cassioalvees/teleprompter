@@ -135,4 +135,13 @@ public partial class MainWindow
 
     private void Welcome_Click(object s, RoutedEventArgs e) => ShowWelcome(WelcomeKind.Manual);
     private async void CheckUpdates_Click(object s, RoutedEventArgs e) => await Updates.Check(manual: true);
+    private void UpdatePill_Click(object s, RoutedEventArgs e) => Updates.AskAvailable();
+
+    /// <summary>Mostra (ou esconde, com null) a etiqueta "Atualização x.y.z" na barra de título.</summary>
+    internal void ShowUpdatePill(string? version)
+    {
+        UpdatePill.Content = version == null ? null : "Atualização " + version;
+        UpdatePill.ToolTip = version == null ? null : $"ARCA Teleprompter {version} disponível — clique para atualizar";
+        UpdatePill.Visibility = version == null ? Visibility.Collapsed : Visibility.Visible;
+    }
 }

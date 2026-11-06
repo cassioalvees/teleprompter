@@ -116,7 +116,7 @@ section{padding:80px 0}
 /* topo */
 header{position:sticky;top:0;z-index:20;background:rgba(11,11,13,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
 header .wrap{padding-top:16px;padding-bottom:16px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px}
-.brand{display:flex;align-items:center;gap:14px}.brand b{font:800 17px Sora,sans-serif;letter-spacing:.32em}.brand i{width:1px;height:18px;background:#34343A}.brand span{font-size:14px;font-weight:500;color:var(--muted)}
+.brand{display:flex;align-items:center;gap:14px}.brand img{display:block;height:28px;width:auto}.brand i{width:1px;height:18px;background:#34343A}.brand span{font-size:14px;font-weight:500;color:var(--muted)}
 nav{display:flex;flex-wrap:wrap;align-items:center;gap:26px;font-size:14px;font-weight:500}
 nav .btn{min-height:38px;padding:0 18px;font-size:14px}
 /* abertura */
@@ -242,7 +242,7 @@ ${css}
 </head>
 <body>
 <header><div class="wrap">
-<a class="brand" href="#inicio"><b>ARCA</b><i></i><span>Teleprompter</span></a>
+<a class="brand" href="#inicio"><img src="/img/logo.png" alt="ARCA" width="146" height="28"><i></i><span>Teleprompter</span></a>
 <nav aria-label="Principal"><a href="#recursos">Recursos</a><a href="#telas">Telas</a><a href="#especificacoes">Especificações</a><a href="#licenca">Licença</a><a href="#perguntas">Dúvidas</a><a href="/conta">Entrar</a><a class="btn" href="#licenca">Criar conta grátis</a></nav>
 </div></header>
 
@@ -400,6 +400,9 @@ ${faq.map(([q, a], i) => `<div class="faq-item${i === 0 ? ' open' : ''}"><button
 fs.writeFileSync(out, html);
 console.log('Gerado ' + out + ' (' + Math.round(html.length / 1024) + ' KB)');
 
+// Contato do controlador (pedidos de titulares, LGPD).
+const CONTATO = 'cassiosantos.csa@gmail.com';
+
 // ——— Minha conta (public/conta.html): entrar, criar conta, Licenças e Meus dados ———
 const monitor = '<svg width="22" height="22" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1.5" y="2.5" width="13" height="8.5" rx="1.5"/><path d="M5.5 14h5M8 11v3"/></svg>';
 const conta = `<!doctype html>
@@ -458,7 +461,7 @@ dialog .row{justify-content:flex-end}
 </head>
 <body>
 <header><div class="wrap">
-<a class="brand" href="/"><b>ARCA</b><i></i><span>Teleprompter</span></a>
+<a class="brand" href="/"><img src="/img/logo.png" alt="ARCA" width="146" height="28"><i></i><span>Teleprompter</span></a>
 <nav aria-label="Principal"><a href="/#recursos">Recursos</a><a href="/#perguntas">Dúvidas</a><a href="/download" class="btn">${dl}Baixar</a></nav>
 </div></header>
 
@@ -476,7 +479,24 @@ dialog .row{justify-content:flex-end}
 <label for="l-senha">Senha</label><input id="l-senha" name="password" type="password" autocomplete="current-password" required>
 <button class="btn" type="submit" style="margin-top:16px">Entrar</button>
 <p class="err" role="alert"></p>
-<p class="small">Esqueceu a senha? Fale com o suporte informando o e-mail da conta.</p>
+<p class="small"><a href="#" id="go-forgot" style="text-decoration:underline">Esqueci minha senha</a></p>
+</form>
+<form id="forgot" novalidate hidden>
+<h3 style="font:700 19px Sora,sans-serif;margin:0 0 4px">Esqueci minha senha</h3>
+<p class="small" style="margin:0 0 6px">Informe o e-mail da conta. Mandamos um link para você criar uma senha nova.</p>
+<label for="f-email">E-mail</label><input id="f-email" name="email" type="email" autocomplete="email" placeholder="voce@empresa.com" required>
+<button class="btn" type="submit" style="margin-top:16px">Enviar o link</button>
+<p class="err" role="alert"></p>
+<p class="small"><a href="#" class="go-login" style="text-decoration:underline">Voltar para Entrar</a></p>
+</form>
+<form id="reset" novalidate hidden>
+<h3 style="font:700 19px Sora,sans-serif;margin:0 0 4px">Criar uma senha nova</h3>
+<p class="small" style="margin:0 0 6px">Depois de salvar, você já entra na conta. Os outros navegadores precisam entrar de novo.</p>
+<label for="r-nova">Senha nova</label><input id="r-nova" name="password" type="password" autocomplete="new-password" placeholder="Pelo menos 8 caracteres" required>
+<label for="r-conf">Repita a senha nova</label><input id="r-conf" name="confirm" type="password" autocomplete="new-password" required>
+<button class="btn" type="submit" style="margin-top:16px">Salvar a senha nova</button>
+<p class="err" role="alert"></p>
+<p class="small"><a href="#" class="go-login" style="text-decoration:underline">Voltar para Entrar</a></p>
 </form>
 <form id="signup" novalidate hidden>
 ${signupFields}
@@ -538,10 +558,37 @@ ${signupFields}
 
   // ——— Entrar / criar conta ———
   const authTab = which => {
-    $('#t-login').setAttribute('aria-selected', String(which === 'login')); $('#t-signup').setAttribute('aria-selected', String(which === 'signup'));
-    $('#login').hidden = which !== 'login'; $('#signup').hidden = which !== 'signup';
+    $('#t-login').setAttribute('aria-selected', String(which === 'login' || which === 'forgot')); $('#t-signup').setAttribute('aria-selected', String(which === 'signup'));
+    for (const f of ['login', 'signup', 'forgot', 'reset']) $('#' + f).hidden = which !== f;
+    $('.seg').hidden = which === 'reset';
   };
   $('#t-login').onclick = () => authTab('login'); $('#t-signup').onclick = () => authTab('signup');
+  $('#go-forgot').onclick = e => { e.preventDefault(); $('#f-email').value = $('#l-email').value; authTab('forgot'); $('#f-email').focus(); };
+  $$('.go-login').forEach(a => a.onclick = e => { e.preventDefault(); history.replaceState(null, '', '/conta'); authTab('login'); });
+
+  // ——— Esqueci minha senha ———
+  // O link do e-mail traz o código depois do # (não vai para o servidor nem fica em registros de acesso).
+  const resetToken = (location.hash.match(/^#nova-senha=([A-Za-z0-9._-]+)$/) || [])[1];
+  $('#forgot').addEventListener('submit', async e => {
+    e.preventDefault(); const f = e.target, b = f.querySelector('button[type=submit]'), err = f.querySelector('.err');
+    err.className = 'err'; err.textContent = '';
+    if (!f.email.value.trim()) { err.textContent = 'Informe o e-mail da conta.'; return; }
+    b.disabled = true; const d = await api('/api/account/forgot', { email: f.email.value }); b.disabled = false;
+    if (!d.ok) { err.textContent = d.error || 'Não foi possível concluir.'; return; }
+    err.className = 'ok';
+    err.innerHTML = d.mail
+      ? 'Se houver uma conta com esse e-mail, mandamos um link para criar uma senha nova. Ele vale por 1 hora. Confira também a caixa de spam.'
+      : 'O envio por e-mail ainda não está ativo. Escreva para <a href="mailto:${CONTATO}" style="text-decoration:underline">${CONTATO}</a> com o e-mail da conta: mandamos uma senha provisória.';
+  });
+  $('#reset').addEventListener('submit', async e => {
+    e.preventDefault(); const f = e.target, b = f.querySelector('button[type=submit]'), err = f.querySelector('.err');
+    err.className = 'err'; err.textContent = '';
+    if (f.password.value !== f.confirm.value) { err.textContent = 'As duas senhas não são iguais.'; return; }
+    b.disabled = true; const d = await api('/api/account/reset', { token: resetToken, password: f.password.value }); b.disabled = false;
+    if (!d.ok) { err.textContent = d.error || 'Não foi possível concluir.'; return; }
+    history.replaceState(null, '', '/conta'); f.reset(); await load();
+    const n = $('#novo'); n.hidden = false; n.innerHTML = '<span>✓ <b>Senha nova salva.</b> Você já está na sua conta.</span>';
+  });
   const submit = (form, path, done) => form.addEventListener('submit', async e => {
     e.preventDefault(); const b = form.querySelector('button[type=submit]'), err = form.querySelector('.err');
     err.textContent = ''; err.className = 'err'; b.disabled = true;
@@ -556,7 +603,7 @@ ${signupFields}
   // ——— Painel ———
   async function load(fresh) {
     const d = await api('/api/account');
-    if (!d.ok) { view('auth'); authTab(novo ? 'signup' : 'login'); return; }
+    if (!d.ok) { view('auth'); authTab(resetToken ? 'reset' : novo ? 'signup' : 'login'); return; }
     me = d; view('panel');
     $('#hello').textContent = 'Olá, ' + d.user.name.split(' ')[0];
     $('#who').textContent = d.user.email + (d.user.company ? ' · ' + d.user.company : '');
@@ -633,7 +680,8 @@ ${signupFields}
   });
   $('#logout').onclick = async () => { await api('/api/account/logout', {}); me = null; view('auth'); authTab('login'); };
 
-  load();
+  // Link de senha nova abre o formulário mesmo com a conta já aberta neste navegador.
+  if (resetToken) { view('auth'); authTab('reset'); } else load();
 })();
 </script>
 </body>
@@ -645,18 +693,16 @@ fs.writeFileSync(outConta, conta);
 console.log('Gerado ' + outConta + ' (' + Math.round(conta.length / 1024) + ' KB)');
 
 // ——— Política de privacidade (public/privacidade.html) ———
-const ATUALIZADA = '27 de outubro de 2026';
-// Contato do controlador (pedidos de titulares, LGPD).
-const CONTATO = 'cassiosantos.csa@gmail.com';
+const ATUALIZADA = '5 de novembro de 2026';
 const priv = [
   ['Quem somos', 'O ARCA Teleprompter é um aplicativo para Windows. Este site cuida das contas e das licenças do app. Esta política explica quais dados pessoais tratamos, para quê e como você controla esses dados, conforme a Lei Geral de Proteção de Dados (LGPD, Lei 13.709/2018).'],
   ['Quais dados guardamos', '<ul><li><b>Cadastro:</b> nome, e-mail, empresa e telefone.</li><li><b>Senha:</b> guardada cifrada (PBKDF2 com sal) — nunca a senha em si.</li><li><b>Licenças:</b> o código, o tipo, e para cada ativação o nome do computador, uma identificação técnica do computador (um código derivado do Windows, não o seu nome nem arquivos), a versão do app e a data da última conferência.</li><li><b>Segurança:</b> registro de cadastro, entradas, ativações e tentativas de senha errada, com data e endereço IP.</li><li><b>Sessão:</b> um cookie técnico que mantém você conectado em Minha conta por até 30 dias.</li></ul>'],
   ['O que NÃO guardamos', 'Seus <b>roteiros nunca saem do seu computador</b>. O áudio do acompanhamento por voz é processado só no seu computador. O app não envia telemetria nem dados de uso; ele acessa a internet apenas para ativar e conferir a licença, procurar atualizações e baixar modelos de voz.'],
-  ['Para que usamos', '<ul><li>Criar e manter a sua conta e a sua licença (execução do serviço que você pediu).</li><li>Ativar a licença em um computador e permitir a troca de computador.</li><li>Segurança: impedir abuso, como tentativas repetidas de senha (legítimo interesse).</li><li>Avisos sobre o app, como versões novas e mudanças importantes. Não vendemos nem cedemos seus dados para publicidade.</li></ul>'],
+  ['Para que usamos', '<ul><li>Criar e manter a sua conta e a sua licença (execução do serviço que você pediu).</li><li>Ativar a licença em um computador e permitir a troca de computador.</li><li>Mandar para o seu e-mail o link de criar uma senha nova, quando você pedir em <b>Esqueci minha senha</b>.</li><li>Segurança: impedir abuso, como tentativas repetidas de senha (legítimo interesse).</li><li>Avisos sobre o app, como versões novas e mudanças importantes. Não vendemos nem cedemos seus dados para publicidade.</li></ul>'],
   ['Com quem compartilhamos', 'Os dados ficam na <b>Cloudflare</b> (hospedagem do site e do banco de dados), que trata os dados em nosso nome. Os instaladores são baixados do <b>GitHub</b>. Não compartilhamos seus dados com mais ninguém, exceto quando a lei exigir.'],
   ['Por quanto tempo', 'Enquanto a conta existir. Ao excluir a conta, apagamos na hora o cadastro, as licenças, as sessões e o histórico ligado a você. Fica apenas um registro anônimo de que uma conta foi excluída.'],
   ['Seus direitos', 'Em <a href="/conta">Minha conta</a> você pode, a qualquer momento:<ul><li><b>ver e corrigir</b> nome, empresa e telefone (Meus dados);</li><li><b>baixar todos os seus dados</b> num arquivo (Meus dados › Baixar meus dados);</li><li><b>excluir a conta</b> e tudo o que está ligado a ela (Meus dados › Excluir minha conta);</li><li><b>remover a licença de um computador</b> (Licenças).</li></ul><p>Para qualquer outro pedido sobre seus dados — inclusive se não conseguir entrar na conta — escreva para <a href="mailto:' + CONTATO + '">' + CONTATO + '</a>.</p>'],
-  ['Segurança', 'Conexões por https, senha cifrada, sessão em cookie protegido (HttpOnly), limite de tentativas de senha e licenças assinadas digitalmente. Detalhes técnicos no documento de segurança do projeto.'],
+  ['Segurança', 'Conexões por https, senha cifrada, sessão em cookie protegido (HttpOnly), link de senha nova que vale por 1 hora e só uma vez, limite de tentativas de senha e licenças assinadas digitalmente. Detalhes técnicos no documento de segurança do projeto.'],
   ['Contato', 'Dúvidas, pedidos sobre seus dados pessoais ou sobre esta política: <a href="mailto:' + CONTATO + '">' + CONTATO + '</a>. Respondemos em até 15 dias, como prevê a LGPD.'],
   ['Mudanças nesta política', 'Quando esta política mudar, a data abaixo é atualizada e, se a mudança for importante, avisamos pelo app ou por e-mail.'],
 ];
@@ -683,7 +729,7 @@ ${css}
 </head>
 <body>
 <header><div class="wrap">
-<a class="brand" href="/"><b>ARCA</b><i></i><span>Teleprompter</span></a>
+<a class="brand" href="/"><img src="/img/logo.png" alt="ARCA" width="146" height="28"><i></i><span>Teleprompter</span></a>
 <nav aria-label="Principal"><a href="/">Início</a><a href="/conta">Minha conta</a></nav>
 </div></header>
 <main class="wrap doc">
