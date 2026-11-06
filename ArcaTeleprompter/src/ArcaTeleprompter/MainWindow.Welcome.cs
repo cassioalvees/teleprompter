@@ -56,19 +56,25 @@ public partial class MainWindow
         if (kind == WelcomeKind.Upgrade)
         {
             // Novidades da versão (docs\NOVIDADES.txt da instalação)
+            // Todas as notas, numa caixa de altura fixa que rola (antes: até 8 itens soltos, e a tela crescia e cortava).
             sp.Children.Add(Eyebrow("Novidades desta versão"));
-            var items = ReadNews();
-            if (items.Count == 0) sp.Children.Add(Muted("Veja o histórico completo em Ajuda › Manual do operador.", 12));
-            foreach (var n in items.Take(8)) sp.Children.Add(Bullet(n));
+            var notes = new StackPanel();
+            var items = ReadNews(fromVersion);
+            if (items.Count == 0) notes.Children.Add(Muted("Veja o histórico completo em Ajuda › Manual do operador.", 12));
+            foreach (var (header, text) in items)
+                notes.Children.Add(header ? Eyebrow(text, new Thickness(0, 8, 0, 6)) : Bullet(text));
+            sp.Children.Add(NotesBox(notes));
         }
         else
         {
             // Primeiros passos
             sp.Children.Add(Eyebrow("Primeiros passos"));
-            sp.Children.Add(Bullet("Escreva ou cole o roteiro. Uma linha começando com * vira marcador (ex.: *Abertura)."));
-            sp.Children.Add(Bullet("Defina quem fala: selecione o trecho e escolha o apresentador (Alt+1, Alt+2…)."));
-            sp.Children.Add(Bullet("Em Telas, ligue o monitor do prompter, a saída NDI ou o monitor web para o iPad."));
-            sp.Children.Add(Bullet("Espaço roda e pausa; ↑ ↓ ajustam a velocidade; V liga a voz; F5 abre a janela do talento."));
+            var notes = new StackPanel();
+            notes.Children.Add(Bullet("Escreva ou cole o roteiro. Uma linha começando com * vira marcador (ex.: *Abertura)."));
+            notes.Children.Add(Bullet("Defina quem fala: selecione o trecho e escolha o apresentador (Alt+1, Alt+2…)."));
+            notes.Children.Add(Bullet("Em Telas, ligue o monitor do prompter, a saída NDI ou o monitor web para o iPad."));
+            notes.Children.Add(Bullet("Espaço roda e pausa; ↑ ↓ ajustam a velocidade; V liga a voz; F5 abre a janela do talento."));
+            sp.Children.Add(NotesBox(notes));
         }
 
         var bar = new DockPanel { Margin = new Thickness(0, 18, 0, 0), LastChildFill = false };
@@ -96,6 +102,20 @@ public partial class MainWindow
         return new Border { BorderBrush = Br("Line"), BorderThickness = new Thickness(1), CornerRadius = new CornerRadius(10), Margin = new Thickness(4), Child = b };
     }
 
+    /// <summary>Altura fixa da caixa de notas: a tela tem sempre o mesmo tamanho, e notas longas rolam dentro dela.</summary>
+    public const double NotesHeight = 180;
+
+    private UIElement NotesBox(UIElement content)
+    {
+        var sv = new ScrollViewer
+        {
+            VerticalScrollBarVisibility = ScrollBarVisibility.Auto, HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+            Focusable = false, Padding = new Thickness(14, 12, 8, 6), Content = content
+        };
+        sv.Resources["Line"] = Br("Faint");   // barra de rolagem mais visível aqui (no resto do app ela é discreta)
+        return new Border { Height = NotesHeight, CornerRadius = new CornerRadius(10), Background = Br("Field"), BorderBrush = Br("Line"), BorderThickness = new Thickness(1), Child = sv };
+    }
+
     private UIElement Bullet(string text)
     {
         var g = new Grid { Margin = new Thickness(0, 0, 0, 7) };
@@ -112,14 +132,27 @@ public partial class MainWindow
     }
 
     /// <summary>Itens "- …" do NOVIDADES.txt instalado (pasta docs do programa).</summary>
-    private static List<string> ReadNews()
+    /// <summary>
+    /// Itens do docs\NOVIDADES.txt (que guarda o histórico inteiro, da versão atual para trás): "- texto" vira item; a
+    /// linha "Também nesta atualização (2.11.1):" abre a seção de uma versão anterior e vira subtítulo. Mostra só o que
+    /// mudou desde a versão que a pessoa tinha (<paramref name="from"/>); sem ela, só a versão atual.
+    /// </summary>
+    internal static List<(bool Header, string Text)> ReadNews(string? from, string? file = null)
     {
-        var list = new List<string>();
-        foreach (var f in new[] { Path.Combine(AppContext.BaseDirectory, "docs", "NOVIDADES.txt"), Path.Combine(AppContext.BaseDirectory, "..", "docs", "NOVIDADES.txt") })
+        var list = new List<(bool, string)>();
+        Version.TryParse(from, out var since);
+        file ??= new[] { Path.Combine(AppContext.BaseDirectory, "docs", "NOVIDADES.txt"), Path.Combine(AppContext.BaseDirectory, "..", "docs", "NOVIDADES.txt") }.FirstOrDefault(File.Exists);
+        if (file is null) return list;
+        foreach (var raw in File.ReadAllLines(file))
         {
-            if (!File.Exists(f)) continue;
-            foreach (var l in File.ReadAllLines(f)) if (l.StartsWith("- ")) list.Add(l[2..].Trim());
-            break;
+            var l = raw.Trim();
+            if (l.StartsWith("- ")) list.Add((false, l[2..].Trim()));
+            else if (list.Count > 0 && l.EndsWith(':'))
+            {
+                var m = System.Text.RegularExpressions.Regex.Match(l, @"\d+\.\d+\.\d+");
+                if (since is null || !m.Success || new Version(m.Value) <= since) break;   // daqui para baixo a pessoa já tinha
+                list.Add((true, l.TrimEnd(':')));
+            }
         }
         return list;
     }

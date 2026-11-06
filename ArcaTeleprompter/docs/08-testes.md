@@ -61,6 +61,17 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.11.3) — tela de Novidades
+
+App compilado, aberto como atualização (`lastVersion` no settings.json), imagem da janela por PrintWindow e rolagem conferida pela automação do Windows (ScrollPattern):
+
+| Caso | Resultado |
+|---|---|
+| De 2.11.0 para 2.11.3 | Itens da 2.11.3, 2.11.2 e 2.11.1, cada versão anterior com subtítulo; caixa de 180 px |
+| De 2.8.0 para 2.11.3 | Mesma altura de tela; a caixa rola (cerca de 10% visível por vez) e termina na 2.8.1 |
+| Rolar até o fim | 100%; botão Continuar visível o tempo todo |
+| Antes (2.11.2) | Até 8 itens soltos, sem dizer a versão; a tela crescia e cortava o último item numa janela de 626 px de altura |
+
 ## Resultados (versão 2.11.2) — passo de velocidade
 
 Velocidade real lida pelo monitor web (posição transmitida pelo app; 1 linha = 78,6 unidades), comandos "+"/"−" pelo mesmo caminho do botão, das teclas e do iPad. Antes = versão oficial 2.11.0 instalada; depois = 2.11.2 compilada. O valor mostrado na tela bate com o medido nas duas.

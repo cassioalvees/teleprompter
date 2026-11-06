@@ -3,6 +3,13 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.11.3] — 2026-11-06
+
+### Tela de Novidades
+- **Tamanho fixo, com rolagem nas notas.** As notas ficam numa caixa de altura fixa (180 px) que rola; a tela tem sempre o mesmo tamanho e o botão Continuar não sai mais de vista. Antes a tela crescia com as notas e cortava o último item.
+- **Mostra o que mudou desde a versão que você tinha**, com um subtítulo por versão ("Também nesta atualização (2.11.1)"). Antes eram os 8 primeiros itens do histórico, sem dizer de que versão era cada um. Sem versão anterior conhecida, mostra só a versão atual.
+- A tela de Boas-vindas usa a mesma caixa.
+
 ## [2.11.2] — 2026-11-06
 
 ### Velocidade

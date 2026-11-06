@@ -1,13 +1,16 @@
-ARCA Teleprompter 2.11.2 — novidades
+ARCA Teleprompter 2.11.3 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- Tela de Novidades com tamanho fixo: as notas rolam dentro de uma caixa e mostram tudo o que mudou desde a versão que você tinha, separado por versão.
+
+Também nesta atualização (2.11.2):
 - Velocidade mais previsível: cada toque de + ou − muda cerca de 13%, esteja o texto devagar ou rápido (antes um toque pesava muito devagar e quase nada rápido). Vale também para a roda do mouse, o celular e o iPad.
 
 Também nesta atualização (2.11.1):
 - Com o app aberto, o ARCA procura versão nova a cada hora. Achando, aparece só a etiqueta "Atualização" na linha do menu, sem interromper: clique nela quando puder.
 
-E na 2.11.0:
+Também nesta atualização (2.11.0):
 - O aviso de versão nova aparece logo ao abrir o app, sem precisar ir em Ajuda › Procurar atualizações.
 - Abrir o ícone do ARCA com o app já aberto também procura versão nova.
 - Etiqueta "Atualização" na linha do menu, à direita, enquanto houver versão nova: clique nela para atualizar.
