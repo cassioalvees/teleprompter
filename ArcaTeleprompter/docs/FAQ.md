@@ -44,6 +44,9 @@ Sim. Todas as telas quebram as linhas nas mesmas palavras e seguem a mesma posi�
 **A janela do talento cobre a barra do Windows?**
 Sim, ela abre em tela cheia. O botão □ (ou `F11`) alterna com janela; `Esc` fecha.
 
+**A velocidade às vezes muda demais, às vezes de menos.**
+Desde a 2.11.2, cada toque de + ou − muda cerca de 13%, em qualquer velocidade (antes um toque pesava muito devagar e quase nada rápido). Com Shift, são três toques de uma vez. Na roda do mouse, cada giro muda cerca de 5% no padrão (Preferências › Geral › Velocidade (rodando)). Atenção: cada roteiro guarda a sua velocidade, então abrir outro roteiro pode trocar a velocidade.
+
 **O trackpad está sensível demais.**
 Ajuste em Preferências › Geral › Roda do mouse e trackpad: **Rolagem (parado)** e **Velocidade (rodando)**.
 

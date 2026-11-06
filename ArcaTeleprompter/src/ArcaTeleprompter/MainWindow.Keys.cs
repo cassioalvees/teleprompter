@@ -91,7 +91,7 @@ public partial class MainWindow
 
     public void DoAction(string a)
     {
-        var lh = _layout.LineHeightPx; var st = _big ? 0.15 : 0.05; var run = Engine.Live;
+        var lh = _layout.LineHeightPx; var st = _big ? 3 : 1; var run = Engine.Live;
         switch (a)
         {
             case "play": TogglePlay(); break;
@@ -208,8 +208,8 @@ public partial class MainWindow
             case "togglePlay": TogglePlay(); break;
             case "play": if (!Engine.Live) Play(); break;
             case "pause": if (Engine.Live) Pause(); break;
-            case "faster": AdjustSpeed(0.05); break;
-            case "slower": AdjustSpeed(-0.05); break;
+            case "faster": AdjustSpeed(1); break;
+            case "slower": AdjustSpeed(-1); break;
             case "speed": if (value is { } v) { Vm.AutoRun = false; Vm.SpeedT = Math.Clamp(v, 0, 1); } break;
             case "lineUp": LineStep(-1); break;
             case "lineDown": LineStep(1); break;

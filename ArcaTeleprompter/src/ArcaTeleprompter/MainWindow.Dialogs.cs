@@ -176,7 +176,7 @@ public partial class MainWindow
                 sp.Children.Add(Eyebrow("Mouse e trackpad"));
                 var mg = Form();
                 Row(mg, "Rolagem (parado)", SliderRow(0.25, 3, 0.25, app.WheelLines, v => app.WheelLines = v, v => v.ToString("0.##") + (v == 1 ? " linha" : " linhas") + " por giro"));
-                Row(mg, "Velocidade (rodando)", SliderRow(0.005, 0.06, 0.005, app.WheelSpeedStep, v => app.WheelSpeedStep = v, v => (v * 100).ToString("0.#") + "% por giro"));
+                Row(mg, "Velocidade (rodando)", SliderRow(0.005, 0.06, 0.005, app.WheelSpeedStep, v => app.WheelSpeedStep = v, v => ScrollEngine.PressPercent(v / AppSettings.PressStep).ToString("0.#") + "% por giro"));
                 sp.Children.Add(mg);
                 sp.Children.Add(Check("Inverter o sentido da roda (rolar para cima = mais rápido / avançar)", app.WheelInvert, v => app.WheelInvert = v));
                 sp.Children.Add(Muted("No trackpad o deslizar é proporcional: movimentos curtos mudam pouco. Ctrl + roda muda as palavras por linha.", 11.5));
@@ -411,7 +411,7 @@ public partial class MainWindow
         play.Click += (_, _) => TogglePlay(); sp.Children.Add(play);
         var g = new UniformGrid { Columns = 2, Margin = new Thickness(0, 8, 0, 8) };
         Button B(string t, Action a, double h = 48) { var b = Btn(t, a); b.Height = h; b.Margin = new Thickness(4); b.FontSize = t.Length == 1 ? 18 : 13; return b; }
-        g.Children.Add(B("−", () => AdjustSpeed(-0.05))); g.Children.Add(B("+", () => AdjustSpeed(0.05)));
+        g.Children.Add(B("−", () => AdjustSpeed(-1))); g.Children.Add(B("+", () => AdjustSpeed(1)));
         g.Children.Add(B("Marcador anterior", () => DoAction("prevBm"), 44)); g.Children.Add(B("Próximo marcador", () => DoAction("nextBm"), 44));
         sp.Children.Add(g);
         sp.Children.Add(Btn("Voltar ao início", () => DoAction("rewind")));

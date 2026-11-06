@@ -62,8 +62,13 @@ public sealed class AppSettings
     public bool HudBottom { get; set; } = true;
     /// <summary>Roda do mouse/trackpad: linhas por giro com o prompt parado.</summary>
     public double WheelLines { get; set; } = 1.0;
-    /// <summary>Roda do mouse/trackpad: fração da faixa de velocidade por giro com o prompt rodando.</summary>
+    /// <summary>
+    /// Roda do mouse/trackpad com o prompt rodando: quanto um giro vale, na escala antiga em que um toque de +/− era
+    /// <see cref="PressStep"/> (0,02 = 0,4 toque ≈ +5% de velocidade por giro). Guardado assim para não mudar as preferências salvas.
+    /// </summary>
     public double WheelSpeedStep { get; set; } = 0.02;
+    /// <summary>Um toque de +/− na escala de <see cref="WheelSpeedStep"/>.</summary>
+    public const double PressStep = 0.05;
     /// <summary>Inverte o sentido da roda (rolagem e velocidade).</summary>
     public bool WheelInvert { get; set; }
     /// <summary>Procurar versão nova ao abrir o app (GitHub Releases).</summary>

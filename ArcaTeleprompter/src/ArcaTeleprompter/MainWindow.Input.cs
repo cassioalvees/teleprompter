@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Arca.App.Controls;
 using Arca.App.Editor;
 using Arca.Core.Model;
+using Arca.Core.Storage;
 
 namespace Arca.App;
 
@@ -30,7 +31,7 @@ public partial class MainWindow
         {
             if (Voice.Active) return;
             // Rodar para baixo = mais rápido (padrão); "inverter" troca.
-            AdjustSpeed(-notches * a.WheelSpeedStep);
+            AdjustSpeed(-notches * a.WheelSpeedStep / AppSettings.PressStep);
         }
         else ScrollLines(-notches * a.WheelLines);
     }

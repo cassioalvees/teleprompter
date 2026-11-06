@@ -3,6 +3,13 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.11.2] — 2026-11-06
+
+### Velocidade
+- **Cada toque de + ou − muda a velocidade na mesma proporção, devagar ou rápido: +13% (e −12% de volta).** Antes, cada toque somava um valor fixo (5% da régua, 0,115 linha/s), que pesava muito em velocidade baixa e quase nada em alta. Medido na 2.11.0 instalada: +37% a 0,32 linha/s, +21% a 0,55 (a velocidade inicial) e +5% a 2,29. Vale para botão, setas/teclas, clicker, pedal, celular e iPad; Shift soma 3 toques (+44%). Do mínimo ao máximo continuam cerca de 20 toques.
+- **A roda e o trackpad seguem a mesma regra**: no padrão, cada giro muda cerca de 5% em qualquer faixa. Em Preferências › Geral, "Velocidade (rodando)" agora mostra essa variação real ("5% por giro").
+- Nada muda nas velocidades salvas: roteiros e preferências abrem na mesma velocidade de antes, e a régua continua igual.
+
 ## [2.11.1] — 2026-11-05
 
 ### Atualização automática

@@ -78,14 +78,24 @@ public sealed class ScrollEngine
     public void Reverse() { Direction = -Direction; SpeedChanged?.Invoke(_s.SpeedT, Direction); }
     public void SetDirection(int d) { Direction = d >= 0 ? 1 : -1; }
 
+    /// <summary>Quanto um toque de +/− multiplica a velocidade (13%), em qualquer faixa.</summary>
+    public const double PressFactor = 1.13;
+
+    /// <summary>Variação real da velocidade (em %) de <paramref name="presses"/> toques.</summary>
+    public static double PressPercent(double presses) => (Math.Pow(PressFactor, presses) - 1) * 100;
+
     /// <summary>
-    /// Mais rápido (+) / mais devagar (−) no sentido atual. Para na velocidade mínima — a ré é só pelo botão/tecla
+    /// Mais rápido (+) / mais devagar (−) no sentido atual, em toques (1 = um toque; Shift = 3; a roda manda frações).
+    /// Cada toque multiplica a velocidade por <see cref="PressFactor"/>: a mesma sensação devagar ou rápido (antes era
+    /// um passo fixo de 5% da régua: +37% devagar e +5% rápido). Para na velocidade mínima — a ré é só pelo botão/tecla
     /// de inverter (passar por zero ao frear atrapalhava a leitura).
     /// </summary>
-    public bool AdjustSpeed(double delta)
+    public bool AdjustSpeed(double presses)
     {
         if (SpeedLock) return false;
-        _s.SpeedT = Math.Clamp(_s.SpeedT + delta, 0, 1);
+        double min = _s.MinSpeed, span = _s.MaxSpeed - min;
+        var lps = Math.Max(0.05, _s.LinesPerSecond) * Math.Pow(PressFactor, presses);
+        _s.SpeedT = span > 1e-6 ? Math.Clamp((lps - min) / span, 0, 1) : _s.SpeedT;
         SpeedChanged?.Invoke(_s.SpeedT, Direction);
         return true;
     }

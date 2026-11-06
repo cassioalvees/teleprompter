@@ -134,13 +134,36 @@ public class EngineTests
     {
         var s = new PrompterSettings { SpeedT = 0.03 };
         var e = new ScrollEngine(s);
-        e.AdjustSpeed(-0.05);
+        e.AdjustSpeed(-1); e.AdjustSpeed(-1); e.AdjustSpeed(-1);
         Assert.Equal(1, e.Direction);
         Assert.Equal(0, s.SpeedT, 3);
-        e.AdjustSpeed(-0.05);
+        e.AdjustSpeed(-1);
         Assert.Equal(0, s.SpeedT, 3);
         e.Reverse();
         Assert.Equal(-1, e.Direction);
+    }
+
+    [Fact]
+    public void Each_press_changes_speed_by_the_same_percent_at_any_speed()
+    {
+        // Antes: passo fixo de 5% da régua = +37% devagar e +5% rápido. Agora: +13% em qualquer faixa.
+        foreach (var t in new[] { 0.02, 0.05, 0.15, 0.3, 0.5, 0.7, 0.85 })
+        {
+            var s = new PrompterSettings { SpeedT = t };
+            var e = new ScrollEngine(s);
+            var a = s.LinesPerSecond; e.AdjustSpeed(1); var b = s.LinesPerSecond;
+            Assert.Equal(1.13, b / a, 6);
+            e.AdjustSpeed(-1);
+            Assert.Equal(a, s.LinesPerSecond, 9);                  // + e − voltam exatamente ao mesmo ponto
+            if (a * Math.Pow(1.13, 3) < s.MaxSpeed)
+            {
+                e.AdjustSpeed(3);                                  // Shift = 3 toques
+                Assert.Equal(Math.Pow(1.13, 3), s.LinesPerSecond / a, 6);
+            }
+        }
+        var top = new PrompterSettings { SpeedT = 0.98 }; new ScrollEngine(top).AdjustSpeed(1);
+        Assert.Equal(1, top.SpeedT, 9);                            // para no máximo
+        Assert.Equal(5.0, ScrollEngine.PressPercent(0.02 / 0.05), 0); // roda padrão: ≈ +5% por giro
     }
 
     [Fact]
@@ -150,7 +173,7 @@ public class EngineTests
         var e = new ScrollEngine(s) { LineHeight = 100, EndY = 1e9 };
         e.Play();
         for (var i = 0; i < 120; i++) e.Tick(1 / 60.0);       // estável na velocidade máxima
-        e.AdjustSpeed(-1);                                    // freia de uma vez
+        e.AdjustSpeed(-20);                                   // freia de uma vez
         var vs = new List<double>();
         for (var i = 0; i < 30; i++) { e.Tick(1 / 60.0); vs.Add(e.Velocity); }
         var steps = vs.Zip(vs.Skip(1), (a, b) => a - b).Where(d => d > 1e-6).ToList();

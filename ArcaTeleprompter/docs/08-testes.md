@@ -61,6 +61,27 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.11.2) — passo de velocidade
+
+Velocidade real lida pelo monitor web (posição transmitida pelo app; 1 linha = 78,6 unidades), comandos "+"/"−" pelo mesmo caminho do botão, das teclas e do iPad. Antes = versão oficial 2.11.0 instalada; depois = 2.11.2 compilada. O valor mostrado na tela bate com o medido nas duas.
+
+| Um toque de + a partir de | Antes | Depois |
+|---|---|---|
+| 0,32 linha/s | +37% | +13% |
+| 0,55 linha/s (velocidade inicial) | +21% | +13% |
+| 0,90 linha/s | +13% | +13% |
+| 1,36 linha/s | +8% | +13% |
+| 1,83 linha/s | +6% | +13% |
+| 2,29 linha/s | +5% | +10% (para no máximo, 2,5) |
+
+| Sequência | Resultado (depois) |
+|---|---|
+| 5 toques de + a partir de 0,55 | 0,62 · 0,70 · 0,79 · 0,90 · 1,01 linha/s (+13% cada) |
+| 7 toques de − a partir de 1,01 | 0,90 · 0,79 · 0,70 · 0,62 · 0,55 · 0,49 · 0,43 (−11 a −12% cada); volta exatamente aos mesmos valores |
+| Rampa de um toque | Nova velocidade em 0,12 s |
+| Roda (padrão, calculado) | ≈ +5% por giro em qualquer faixa (antes: +14% a 0,32 e +2% a 2,0) |
+| Testes automatizados | 40/40 (novo: mesmo % em 7 faixas, + e − voltam ao mesmo ponto, Shift = 3 toques, para no máximo) |
+
 ## Resultados (versão 2.11.1) — consulta de hora em hora
 
 App compilado, servidor local no papel do GitHub, intervalo encurtado para 8 s (`ARCA_UPDATE_EVERY=8`):
