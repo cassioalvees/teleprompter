@@ -50,7 +50,7 @@ infraestrutura referenciam só `Arca.Core`. O app compõe tudo nos *Services*.
 | CaptionService, MosService | `Services/IntegrationServices.cs` | Legenda e espelho MOS |
 | Native | `Services/Native.cs` | Monitores (DisplayConfig), hotkeys globais, manter tela acesa |
 | LicenseService | `Services/LicenseService.cs` | Ativa/libera o código no servidor, confere a licença assinada (vale sem internet), demonstração |
-| UpdateService | `Services/UpdateService.cs` | Ao abrir (e ao abrir o ícone com o app já aberto): lê o `latest.json`, confere a assinatura; havendo versão nova, mostra o aviso e a etiqueta "Atualização" na linha do menu; baixa, confere o SHA-256 e abre o instalador |
+| UpdateService | `Services/UpdateService.cs` | Ao abrir (e ao abrir o ícone com o app já aberto; com o app aberto, a cada hora só com a etiqueta): lê o `latest.json`, confere a assinatura; havendo versão nova, mostra o aviso e a etiqueta "Atualização" na linha do menu; baixa, confere o SHA-256 e abre o instalador |
 
 Servidor de licenças e site: `server/licencas/src/index.js` (Worker) + `schema.sql` (D1). Detalhes de hospedagem em [13](13-hospedagem.md).
 

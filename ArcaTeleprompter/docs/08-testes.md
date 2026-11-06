@@ -61,6 +61,17 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.11.1) — consulta de hora em hora
+
+App compilado, servidor local no papel do GitHub, intervalo encurtado para 8 s (`ARCA_UPDATE_EVERY=8`):
+
+| Passo | Resultado |
+|---|---|
+| Abrir (nada novo publicado) | "nenhuma versão nova (instalada 2.11.0, publicada 2.10.1)" |
+| Versão 9.9.9 publicada com o app aberto | Encontrada na consulta seguinte: "versão 9.9.9 disponível (consulta de hora em hora: só a etiqueta)" |
+| Tela | Etiqueta "Atualização 9.9.9" visível; nenhum diálogo aberto (conferido pela automação do Windows) |
+| Aviso pendente na tela | A consulta periódica não roda por cima (espera o aviso ser respondido) |
+
 ## Resultados (versão 2.11.0) — aviso de atualização e senha esquecida
 
 **Por que o aviso "não vinha".** Pelo registro do app, a consulta ao abrir funcionava, mas só uns 10 s depois de abrir. As três vezes em que foi preciso ir no menu (2.9.2, 2.9.3 e 2.10.0) foram com o app já aberto quando a versão saiu: abrir o ícone de novo só trazia a janela para a frente, sem procurar.

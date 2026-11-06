@@ -1,7 +1,10 @@
-ARCA Teleprompter 2.11.0 — novidades
+ARCA Teleprompter 2.11.1 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- Com o app aberto, o ARCA procura versão nova a cada hora. Achando, aparece só a etiqueta "Atualização" na linha do menu, sem interromper: clique nela quando puder.
+
+Também nesta atualização (2.11.0):
 - O aviso de versão nova aparece logo ao abrir o app, sem precisar ir em Ajuda › Procurar atualizações.
 - Abrir o ícone do ARCA com o app já aberto também procura versão nova.
 - Etiqueta "Atualização" na linha do menu, à direita, enquanto houver versão nova: clique nela para atualizar.

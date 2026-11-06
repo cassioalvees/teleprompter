@@ -22,7 +22,7 @@ Em Minha conta, clique em **Esqueci minha senha** e informe o e-mail. Enquanto o
 ## Instalação e atualização
 
 **Como atualizo?**
-O app avisa logo ao abrir quando há versão nova (e também quando você abre o ícone com o app já aberto); enquanto não atualizar, fica a etiqueta **Atualização** na linha do menu, à direita. **Atualizar agora** baixa, instala e reabre o app sozinho; o Windows pede permissão de administrador quando o ARCA está em Arquivos de Programas. Para procurar na hora: Ajuda › Procurar atualizações.
+O app avisa logo ao abrir quando há versão nova (e também quando você abre o ícone com o app já aberto; com o app aberto, procura a cada hora e mostra só a etiqueta); enquanto não atualizar, fica a etiqueta **Atualização** na linha do menu, à direita. **Atualizar agora** baixa, instala e reabre o app sozinho; o Windows pede permissão de administrador quando o ARCA está em Arquivos de Programas. Para procurar na hora: Ajuda › Procurar atualizações.
 
 **A atualização é segura?**
 Sim. O app só instala versões assinadas pela ARCA (assinatura digital conferida com uma chave embutida no app) e confere o SHA-256 do instalador logo antes de abrir. Arquivo alterado no caminho é recusado e nada é instalado.

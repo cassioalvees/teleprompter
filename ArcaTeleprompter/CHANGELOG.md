@@ -3,6 +3,11 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.11.1] — 2026-11-05
+
+### Atualização automática
+- **Com o app aberto, procura versão nova a cada hora**, em silêncio: achando, só aparece a etiqueta "Atualização x.y.z" na linha do menu, sem diálogo (o operador pode estar no ar). Clicar na etiqueta abre o aviso. Desliga junto com "Procurar atualizações ao abrir o app" (Preferências › Geral). `ARCA_UPDATE_EVERY` (segundos) troca o intervalo, só para testes.
+
 ## [2.11.0] — 2026-11-05
 
 ### Atualização automática

@@ -72,7 +72,7 @@ public sealed class UpdateService
         return info;
     }
 
-    /// <summary>Versão nova encontrada e ainda não instalada (a etiqueta da barra de título abre o aviso de novo).</summary>
+    /// <summary>Versão nova encontrada e ainda não instalada (a etiqueta da linha do menu abre o aviso de novo).</summary>
     public UpdateInfo? Available { get; private set; }
     private DateTime _lastCheck = DateTime.MinValue;
 
@@ -85,6 +85,12 @@ public sealed class UpdateService
         CleanOld();
         if (!_main.Vm.App.UpdateCheck) return;
         _main.Dispatcher.BeginInvoke(async () => await Check(manual: false), DispatcherPriority.ApplicationIdle);
+        // Com o app aberto, procura de novo a cada hora, em silêncio: achando versão nova, só mostra a etiqueta
+        // (sem diálogo — o operador pode estar no ar). ARCA_UPDATE_EVERY=segundos troca o intervalo (testes).
+        var every = int.TryParse(Environment.GetEnvironmentVariable("ARCA_UPDATE_EVERY"), out var sec) && sec > 0 ? TimeSpan.FromSeconds(sec) : TimeSpan.FromHours(1);
+        var t = new DispatcherTimer(DispatcherPriority.Background) { Interval = every };
+        t.Tick += async (_, _) => { if (_main.Vm.App.UpdateCheck && !_asking) await Check(manual: false, quiet: true); };
+        t.Start();
     }
 
     /// <summary>
@@ -97,7 +103,7 @@ public sealed class UpdateService
         _ = Check(manual: false);
     }
 
-    /// <summary>Clique na etiqueta da barra de título: pergunta de novo pela versão já encontrada.</summary>
+    /// <summary>Clique na etiqueta da linha do menu: pergunta de novo pela versão já encontrada.</summary>
     public void AskAvailable()
     {
         Log.Info($"Atualização: etiqueta clicada (versão {Available?.Version ?? "nenhuma"}{(_asking ? ", aviso já pendente" : "")})");
@@ -106,8 +112,11 @@ public sealed class UpdateService
         try { Ask(Available); } finally { _asking = false; }
     }
 
-    /// <summary>Consulta e, havendo versão nova, pergunta. <paramref name="manual"/>: também avisa "já está atualizado" e erros.</summary>
-    public async Task Check(bool manual)
+    /// <summary>
+    /// Consulta e, havendo versão nova, pergunta. <paramref name="manual"/>: também avisa "já está atualizado" e erros.
+    /// <paramref name="quiet"/> (consulta de hora em hora com o app aberto): só mostra a etiqueta, sem diálogo.
+    /// </summary>
+    public async Task Check(bool manual, bool quiet = false)
     {
         if (_asking) return;
         _lastCheck = DateTime.UtcNow;
@@ -126,9 +135,10 @@ public sealed class UpdateService
             if (manual) ArcaDialog.Info(_main, "Atualização", "Você está na versão mais recente", $"ARCA Teleprompter {Current.ToString(3)}.");
             return;
         }
-        Log.Info($"Atualização: versão {info.Version} disponível" + (manual ? " (menu)" : ""));
+        Log.Info($"Atualização: versão {info.Version} disponível" + (manual ? " (menu)" : quiet ? " (consulta de hora em hora: só a etiqueta)" : ""));
         Available = info;
         _main.ShowUpdatePill(info.Version);
+        if (quiet) return;
         // Nunca no meio do prompt, com a voz ligada ou com outro diálogo aberto: espera ficar livre.
         _asking = true;
         while (!_main.IsIdleForPrompt) await Task.Delay(1000);
