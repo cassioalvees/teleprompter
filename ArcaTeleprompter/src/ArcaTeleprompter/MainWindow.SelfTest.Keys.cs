@@ -105,6 +105,18 @@ public partial class MainWindow
         Press(Key.F5); await wait(800); Press(Key.Escape, fromOutput: false); await wait(400);
         Check("Esc: fecha a janela do talento", TalentLayer.Visibility != Visibility.Visible);
 
+        // Cursor na janela do talento: rodando, some só depois de 3 s parado; mexer o mouse traz de volta; pausar também.
+        Press(Key.F5); await wait(800); Press(Key.Home); await wait(150);
+        Play(); await wait(1000); var tc1 = TalentCursorHidden;
+        await wait(2800); var tc2 = TalentCursorHidden;
+        _talentMouse = new Point(-100, -100);
+        TalentLayer.RaiseEvent(new MouseEventArgs(Mouse.PrimaryDevice, 0) { RoutedEvent = Mouse.MouseMoveEvent }); await wait(100); var tc3 = TalentCursorHidden;
+        await wait(3500); var tc4 = TalentCursorHidden;
+        Pause(); await wait(100); var tc5 = TalentCursorHidden;
+        Check("Talento: cursor some só depois de 3 s parado, volta ao mexer e ao pausar", !tc1 && tc2 && !tc3 && tc4 && !tc5,
+            $"1 s {(tc1 ? "escondido" : "visível")} · 3,8 s {(tc2 ? "escondido" : "visível")} · mexeu {(tc3 ? "escondido" : "visível")} · +3,5 s {(tc4 ? "escondido" : "visível")} · pausou {(tc5 ? "escondido" : "visível")}");
+        Press(Key.Escape, fromOutput: false); await wait(400);
+
         // E (com o talento aberto): fecha o talento e leva o cursor do editor ao trecho que está na seta
         Press(Key.Home); await wait(150); Press(Key.OemCloseBrackets); await wait(300);
         var blk = CurrentBlock();

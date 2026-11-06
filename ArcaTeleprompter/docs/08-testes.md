@@ -61,6 +61,20 @@ Executar: `dotnet test tests/Arca.Core.Tests`. Também roda no passo 1 do `build
 
 Whisper com prompt do roteiro na placa de vídeo (Vulkan); detalhes em [06](06-voz.md#vosk--whisper-24).
 
+## Resultados (versão 2.11.4) — cursor na janela do talento
+
+Novo item do autoteste (63/63), com o texto rodando na janela do talento:
+
+| Momento | Cursor |
+|---|---|
+| 1 s depois do play, sem mexer o mouse | visível |
+| 3,8 s depois do play | escondido |
+| Mexeu o mouse | visível na hora |
+| 3,5 s parado | escondido |
+| Pausou | visível na hora |
+
+Em cima da barra de controles ou da barra de cima, o cursor não some (o tempo de 3 s espera o mouse sair). Esse caso depende da posição real do mouse e não entra no autoteste. Antes (2.11.3): com o texto rodando, o cursor sumia na hora em toda a janela abaixo do topo, inclusive em cima dos controles.
+
 ## Resultados (versão 2.11.3) — tela de Novidades
 
 App compilado, aberto como atualização (`lastVersion` no settings.json), imagem da janela por PrintWindow e rolagem conferida pela automação do Windows (ScrollPattern):

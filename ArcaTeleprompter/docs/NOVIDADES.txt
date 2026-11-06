@@ -1,7 +1,10 @@
-ARCA Teleprompter 2.11.3 — novidades
+ARCA Teleprompter 2.11.4 — novidades
 
 Atualização: roteiros, preferências e modelos de voz são mantidos.
 
+- Janela do talento: o cursor do mouse não some mais de repente. Ele aparece ao mexer o mouse e só some depois de 3 segundos parado com o texto rodando; em cima dos controles ele fica sempre visível.
+
+Também nesta atualização (2.11.3):
 - Tela de Novidades com tamanho fixo: as notas rolam dentro de uma caixa e mostram tudo o que mudou desde a versão que você tinha, separado por versão.
 
 Também nesta atualização (2.11.2):

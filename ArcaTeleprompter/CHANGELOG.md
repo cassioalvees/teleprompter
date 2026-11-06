@@ -3,6 +3,11 @@
 Formato baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/); numeração [SemVer](https://semver.org/lang/pt-BR/)
 (regras em [docs/12-versionamento.md](docs/12-versionamento.md)). A versão mais recente fica no topo.
 
+## [2.11.4] — 2026-11-06
+
+### Janela do talento
+- **O cursor do mouse não some mais de repente.** Com o texto rodando, ele sumia na hora em toda a janela abaixo do topo, inclusive em cima da barra de controles. Agora ele aparece sempre que o mouse mexe e só some depois de 3 s parado (como nas telas do prompter). Em cima dos controles ou da barra de cima ele não some, e volta na hora ao pausar.
+
 ## [2.11.3] — 2026-11-06
 
 ### Tela de Novidades

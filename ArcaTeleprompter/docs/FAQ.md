@@ -41,6 +41,9 @@ Sim. Todas as telas quebram as linhas nas mesmas palavras e seguem a mesma posi�
 **"Palavras por linha" não dá exatamente esse número em cada linha.**
 É uma média: o ajuste define o tamanho da letra. Cada linha quebra onde a próxima palavra não cabe, então uma linha com palavras longas tem menos palavras.
 
+**O cursor do mouse some na janela do talento.**
+Com o texto rodando, ele some depois de 3 segundos parado, para não ficar na frente do texto. Mexa o mouse e ele volta; em cima dos controles ele fica sempre visível. Ao pausar, ele volta na hora.
+
 **A janela do talento cobre a barra do Windows?**
 Sim, ela abre em tela cheia. O botão □ (ou `F11`) alterna com janela; `Esc` fecha.
 

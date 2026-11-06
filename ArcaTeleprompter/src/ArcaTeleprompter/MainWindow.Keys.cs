@@ -349,6 +349,7 @@ public partial class MainWindow
 
     private void BuildTalentTools()
     {
+        SetupTalentCursor();
         ToggleButton T(string icon, string tip, bool on, Action<bool> set)
         {
             var b = new ToggleButton { Style = (Style)FindResource("ToolToggle"), ToolTip = tip, IsChecked = on, Focusable = false, Content = new Icon { Data = icon, Size = 15 } };
@@ -373,8 +374,36 @@ public partial class MainWindow
         var y = e.GetPosition(TalentLayer).Y;
         TalentBar.Opacity = !Engine.Live || y < 70 ? 1 : 0;
         TalentBar.IsHitTestVisible = TalentBar.Opacity > 0;
-        TalentLayer.Cursor = Engine.Live && y >= 70 ? Cursors.None : null;
+        // O cursor aparece sempre que o mouse mexe e só some depois de 3 s parado, com o texto rodando e fora dos
+        // controles. Antes sumia na hora em toda a área abaixo do topo (inclusive em cima da barra de controles).
+        if (Math.Abs(e.GetPosition(TalentLayer).X - _talentMouse.X) + Math.Abs(y - _talentMouse.Y) < 3) return;
+        _talentMouse = e.GetPosition(TalentLayer);
+        TalentLayer.Cursor = null;
+        _talentCursorHide.Stop(); _talentCursorHide.Start();
     }
+
+    private Point _talentMouse = new(-100, -100);
+    private readonly System.Windows.Threading.DispatcherTimer _talentCursorHide = new() { Interval = TimeSpan.FromSeconds(3) };
+
+    /// <summary>Esconde o cursor do talento depois de 3 s parado com o texto rodando (ligado uma vez, em BuildTalentTools).</summary>
+    private void SetupTalentCursor()
+    {
+        _talentCursorHide.Tick += (_, _) =>
+        {
+            if (TalentCtrl.IsMouseOver || TalentBar.IsMouseOver) return;   // mantém enquanto usa os controles
+            _talentCursorHide.Stop();
+            if (Engine.Live && TalentLayer.Visibility == Visibility.Visible) TalentLayer.Cursor = Cursors.None;
+        };
+        Engine.PlayStateChanged += () =>
+        {
+            _talentCursorHide.Stop();
+            if (Engine.Live) _talentCursorHide.Start();   // dar play sem mexer o mouse também esconde depois de 3 s
+            else TalentLayer.Cursor = null;              // pausou: o cursor volta na hora
+        };
+    }
+
+    /// <summary>Para o autoteste: o cursor está escondido na janela do talento?</summary>
+    internal bool TalentCursorHidden => TalentLayer.Cursor == Cursors.None;
 
     private void Talent_Wheel(object sender, MouseWheelEventArgs e)
     {
